@@ -3,13 +3,13 @@ package org.cyuCBMclean.cyufriendsReload.modules.friend
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.ClickEvent
 import net.kyori.adventure.text.event.HoverEvent
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import net.md_5.bungee.api.chat.BaseComponent
 import net.md_5.bungee.api.chat.TextComponent
 import net.md_5.bungee.api.chat.ClickEvent as BungeeClickEvent
 import net.md_5.bungee.api.chat.HoverEvent as BungeeHoverEvent
 import org.bukkit.entity.Player
 import org.cyuCBMclean.cyufriendsReload.CyufriendsReload
-import org.cyuCBMclean.cyufriendsReload.core.config.ColorCompat
 import org.cyuCBMclean.cyufriendsReload.modules.chat.ChatConversationSummary
 import org.cyuCBMclean.cyufriendsReload.modules.social.PendingWallReplyEntry
 import org.cyuCBMclean.cyufriendsReload.modules.social.WallEntry
@@ -21,13 +21,14 @@ import org.cyuCBMclean.cyufriendsReload.extension.sendLang
 object FriendRichMessages {
 
     private val lineTimeFormatter = DateTimeFormatter.ofPattern("MM-dd HH:mm")
+    private val spigotLegacy = LegacyComponentSerializer.legacySection()
 
     private fun message(key: String, placeholders: Map<String, String> = emptyMap()): Component {
         return CyufriendsReload.instance.langEngine.component(key, placeholders) ?: Component.empty()
     }
 
     private fun legacyMessage(key: String, placeholders: Map<String, String> = emptyMap()): String {
-        return ColorCompat.serialize(message(key, placeholders))
+        return spigotLegacy.serialize(message(key, placeholders))
     }
 
     private fun clickable(
