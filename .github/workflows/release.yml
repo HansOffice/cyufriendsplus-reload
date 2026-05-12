@@ -31,11 +31,6 @@ jobs:
       - name: Build
         run: mvn -B -DskipTests clean package
 
-      - name: Publish Maven package
-        run: mvn -B -DskipTests deploy
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Prepare release files
         shell: bash
         run: |
@@ -56,3 +51,9 @@ jobs:
             - 当前公开版按单服发布，跨服代理端暂不随本版本发布
           files: |
             release/*.jar
+
+      - name: Publish Maven package
+        continue-on-error: true
+        run: mvn -B -DskipTests deploy
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
