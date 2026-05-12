@@ -1,5 +1,7 @@
 # CyuFriends Reload
 
+[![Build](https://github.com/HansOffice/cyufriendsplus-reload/actions/workflows/build.yml/badge.svg)](https://github.com/HansOffice/cyufriendsplus-reload/actions/workflows/build.yml)
+
 你的世界，从朋友开始
 
 作者：HansOffice
@@ -34,13 +36,48 @@ Reload 不是旧版换名。它把原本堆在一起的好友系统拆成了更�
 
 ## 安装
 
-1. 将 `cyufriends-reload-1.0.jar` 放入服务端 `plugins/`
-2. 推荐同时安装 `cyuid-reload`，让好友系统使用稳定 UID
-3. 可选安装 PlaceholderAPI，用于计分板、菜单或聊天变量
-4. 启动服务器，生成配置文件
-5. 按需要修改 `plugins/cyufriends-reload/config.yml`、`messages.yml` 和 `gui/` 下的菜单文件
+1. 从 GitHub Releases 下载 `cyufriends-reload-1.0.jar`
+2. 将 jar 放入服务端 `plugins/`
+3. 推荐同时安装 `cyuid-reload`，让好友系统使用稳定 UID
+4. 可选安装 PlaceholderAPI，用于计分板、菜单或聊天变量
+5. 启动服务器，生成配置文件
+6. 按需要修改 `plugins/cyufriends-reload/config.yml`、`messages.yml` 和 `gui/` 下的菜单文件
 
 默认配置按单服发布准备。跨服相关配置保持关闭即可
+
+## 下载
+
+稳定版会放在 GitHub Releases 中。普通服主下载插件本体即可：
+
+- `cyufriends-reload-1.0.jar`
+
+附属插件开发者可以下载 API jar，或通过 GitHub Packages 引入：
+
+- `cyufriends-reload-1.0-api.jar`
+
+## GitHub Packages
+
+Maven 仓库：
+
+```xml
+<repository>
+    <id>github</id>
+    <url>https://maven.pkg.github.com/HansOffice/cyufriendsplus-reload</url>
+</repository>
+```
+
+API 依赖：
+
+```xml
+<dependency>
+    <groupId>org.cyuCBMclean</groupId>
+    <artifactId>cyufriends-reload</artifactId>
+    <version>1.0</version>
+    <classifier>api</classifier>
+</dependency>
+```
+
+如果仓库还没有公开，拉取 GitHub Packages 时需要配置 GitHub token。仓库公开后，仍建议开发者按 GitHub Packages 的 Maven 认证方式配置，避免本地构建环境差异
 
 ## 常用命令
 

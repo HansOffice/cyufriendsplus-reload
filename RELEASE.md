@@ -35,7 +35,20 @@ git tag v1.0
 git push origin v1.0
 ```
 
-GitHub Actions 会在 tag 推送后重新构建 jar，并把产物放进工作流 artifacts
+GitHub Actions 会在 tag 推送后重新构建 jar，创建 GitHub Release，并上传：
+
+- 插件本体 jar
+- API jar
+- Maven package 到 GitHub Packages
+
+如果需要重新发布一个还没有公开过的首发 tag，可以移动 tag 后强制推送：
+
+```bash
+git tag -f v1.0
+git push origin v1.0 --force
+```
+
+公开发布后不要强改已经公开的 tag，补丁请发新版本
 
 ## 回滚
 

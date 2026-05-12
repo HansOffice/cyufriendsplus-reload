@@ -38,6 +38,7 @@ jobs:
           path: |
             target/cyufriends-reload-*.jar
             !target/cyufriends-reload-*-api.jar
+            !target/cyufriends-reload-*-shaded.jar
             !target/original-*.jar
 
       - name: Upload API jar

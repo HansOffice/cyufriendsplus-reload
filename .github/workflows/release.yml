@@ -1,0 +1,58 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: maven
+          server-id: github
+          server-username: GITHUB_ACTOR
+          server-password: GITHUB_TOKEN
+
+      - name: Build
+        run: mvn -B -DskipTests clean package
+
+      - name: Publish Maven package
+        run: mvn -B -DskipTests deploy
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Prepare release files
+        shell: bash
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          mkdir -p release
+          cp "target/cyufriends-reload-${version}.jar" "release/cyufriends-reload-${version}.jar"
+          cp "target/cyufriends-reload-${version}-api.jar" "release/cyufriends-reload-${version}-api.jar"
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: CyuFriends Reload ${{ github.ref_name }}
+          body: |
+            CyuFriends Reload ${{ github.ref_name }}
+
+            - 插件本体见 release 附件
+            - API 依赖见 release 附件
+            - 当前公开版按单服发布，跨服代理端暂不随本版本发布
+          files: |
+            release/*.jar
