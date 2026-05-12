@@ -1,0 +1,55 @@
+title: "<gradient:#5FD9FF:#82E6D2><bold>添加好友</bold></gradient> <dark_gray>|</dark_gray> <gray>%target_name%</gray>"
+layout:
+  - "#########"
+  - "#   M   #"
+  - "#A  H  C#"
+  - "#       #"
+  - "#########"
+items:
+  '#':
+    material: LIGHT_BLUE_STAINED_GLASS_PANE
+    name: " "
+  'H':
+    material: PLAYER_HEAD
+    head: "%target_name%"
+    name: "<aqua><bold>%target_name%</bold></aqua>"
+    lore:
+      - " "
+      - "<gray>玩家 UID</gray> <white>%target_uid%</white>"
+      - "<gray>共同好友</gray> <white>%mutual_friend_count%</white>"
+      - "<gray>共同好友预览</gray> <white>%mutual_friend_preview%</white>"
+      - "<gray>确认后会向对方发送好友申请</gray>"
+  'A':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDJjMjI2MGI3MDI3YzM1NDg2NWU4M2MxMjlmMmQzMzJmZmViZGJiODVmNjY0NjliYmY5ZmQyMGYzYzNjNjA3NyJ9fX0="
+    name: "<aqua><bold>发送好友申请</bold></aqua>"
+    lore:
+      - " "
+      - "<white>左键</white> <gray>确认发送</gray>"
+    actions:
+      left:
+        - "[player] friend add %target_name%"
+        - "[close]"
+  'M':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODY3MjA4NWZmNWRmMGVlODUyMTM2ZTJkNDFhNzY5MjI5MjkxZDY2NmIyOGU5ZmIwNGQ2YzkyZjE1OGU0MmJiIn19fQ=="
+    name: "<white><bold>填写申请附言</bold></white>"
+    lore:
+      - " "
+      - "<gray>在发送申请前补充一句说明</gray>"
+      - "<gray>最大长度</gray> <white>%request_note_max%</white>"
+      - " "
+      - "<white>左键</white> <gray>在聊天栏输入附言</gray>"
+    actions:
+      left:
+        - "[friend_request_note_input] %target_name%"
+  'C':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzY4MzQ2NWY3ZDBkYTJkZDA1NGQwNGViOTc0ZDdkYjkyOTA0NzgxMTc3ZmQwODAzODViNmJjOGFjMDEyN2IwOSJ9fX0="
+    name: "<red><bold>取消</bold></red>"
+    lore:
+      - " "
+      - "<gray>返回上一层，不发送申请</gray>"
+    actions:
+      left:
+        - "[close]"

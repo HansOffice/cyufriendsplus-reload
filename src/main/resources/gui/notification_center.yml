@@ -1,0 +1,91 @@
+title: "<gradient:#5FD9FF:#82E6D2><bold>通知中心</bold></gradient> <dark_gray>|</dark_gray> <gray>工作台</gray>"
+layout:
+  - "####I####"
+  - "#EEEEEEE#"
+  - "#EEEEEEE#"
+  - "#EEEEEEE#"
+  - "# R M Y #"
+  - "P##W#B##N"
+items:
+  '#':
+    material: LIGHT_BLUE_STAINED_GLASS_PANE
+    name: " "
+  'I':
+    material: PLAYER_HEAD
+    head: "%player_name%"
+    name: "<gradient:#5FD9FF:#82E6D2><bold>通知总览</bold></gradient>"
+    lore:
+      - "<gray>收到申请</gray> <white>%request_count%</white> <dark_gray>|</dark_gray> <gray>发出申请</gray> <white>%sent_request_count%</white>"
+      - "<gray>未读消息</gray> <aqua>%unread_count%</aqua>"
+      - "<gray>待审留言</gray> <white>%pending_wall_count%</white> <dark_gray>|</dark_gray> <gray>待审评论</gray> <white>%pending_reply_count%</white>"
+      - "<gray>今日生日</gray> <white>%birthday_today_count%</white> <dark_gray>|</dark_gray> <gray>近期生日</gray> <white>%birthday_upcoming_count%</white>"
+      - "<gray>互动提醒</gray> <white>%social_notice_summary%</white>"
+      - "<gray>工作台条目</gray> <white>%task_count%</white>"
+  'E':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDZiY2EwZjg3MmQ1NmY2MDk2ZTg4YTVkMmUzM2VjOTE1ZmU3NDQ0Y2M1M2U0MDYzZjNhYTNiNjFjMDI2ZjA3MSJ9fX0="
+    name: "<aqua><bold>%task_label%</bold></aqua>"
+    lore:
+      - "<gray>分类</gray> <white>%task_type%</white>"
+      - "<gray>状态</gray> <white>%task_state%</white>"
+      - "<gray>内容</gray> <white>%task_preview%</white>"
+      - "<gray>%task_hint%</gray>"
+  'R':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDYyMmQ4MDRlMmFmZTVjYzk2NzFlMzRmMzdmMDMwNDA2MGM2M2NmNDE5NjEwZWEwOGI3YjI4N2EyYjZkY2EzMCJ9fX0="
+    name: "<yellow><bold>申请中心</bold></yellow>"
+    lore:
+      - "<gray>打开完整好友申请列表</gray>"
+    actions:
+      left:
+        - "[player] friend requests"
+  'M':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvY2QwMDA3MzExZjY1ODk0NTg2Nzg4NDk0NTcyMmE0MzBjNTI3ZjMyMjNiOTA5NjEyZTQ1ZDAzMjA4OTZlYWU5YSJ9fX0="
+    name: "<gradient:#5FD9FF:#82E6D2><bold>消息会话</bold></gradient>"
+    lore:
+      - "<gray>打开最近会话与未读入口</gray>"
+    actions:
+      left:
+        - "[player] friend messages"
+  'Y':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjcwNWZkOTRhMGM0MzE5MjdmYjRlNjM5YjBmY2ZiNDk3MTdlNDEyMjg1YTAyYjQzOWUwMTEyZGEyMmIyZTJlYyJ9fX0="
+    name: "<yellow><bold>生日与发现</bold></yellow>"
+    lore:
+      - "<gray>左键</gray> <white>生日列表</white> <dark_gray>|</dark_gray> <gray>右键</gray> <white>推荐好友</white>"
+    actions:
+      left:
+        - "[player] friend birthdays"
+      right:
+        - "[player] friend recommend"
+  'W':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODY3MjA4NWZmNWRmMGVlODUyMTM2ZTJkNDFhNzY5MjI5MjkxZDY2NmIyOGU5ZmIwNGQ2YzkyZjE1OGU0MmJiIn19fQ=="
+    name: "<gradient:#5FD9FF:#82E6D2><bold>墙与评论</bold></gradient>"
+    lore:
+      - "<gray>打开自己的留言墙和审核入口</gray>"
+    actions:
+      left:
+        - "[player] wall %player_name%"
+      right:
+        - "[player] friend socialsettings"
+  'B':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzQ1YTExMmNmMTdlNWJmMTNiOTkzYzNkYTdmNTdmZDJhYjNhOTU1YTlhZGE2MGJiYzg5MTJmN2MwZGVhN2NjMyJ9fX0="
+    name: "<white><bold>返回主页</bold></white>"
+    actions:
+      left:
+        - "[player] friend home"
+  'P':
+    material: BLUE_STAINED_GLASS_PANE
+    name: "<aqua><bold>上一页</bold></aqua>"
+    actions:
+      left:
+        - "[prev_page]"
+  'N':
+    material: BLUE_STAINED_GLASS_PANE
+    name: "<aqua><bold>下一页</bold></aqua>"
+    actions:
+      left:
+        - "[next_page]"

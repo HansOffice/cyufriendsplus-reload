@@ -1,0 +1,68 @@
+title: "<gradient:#5FD9FF:#82E6D2><bold>推荐好友</bold></gradient> <dark_gray>|</dark_gray> <gray>共同好友发现</gray>"
+layout:
+  - "####I####"
+  - "#RRRRRRR#"
+  - "#RRRRRRR#"
+  - "#RRRRRRR#"
+  - "#RRRRRRR#"
+  - "P##B#O##N"
+items:
+  '#':
+    material: LIGHT_BLUE_STAINED_GLASS_PANE
+    name: " "
+  'I':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODI5NThiNGJiODU3Nzc1ODVhNWUzYWE1YjE5OGJhMzcwZjhiY2QzYzg4MzM0MTA4MjA4ZTMxY2M5N2NmNmQ5MyJ9fX0="
+    name: "<green><bold>推荐好友</bold></green>"
+    lore:
+      - "<gray>当前页</gray> <white>%page%</white><gray>/</gray><white>%total_pages%</white>"
+      - "<gray>推荐数量</gray> <white>%recommend_count%</white>"
+      - "<gray>左键联系，右键申请，中键资料</gray>"
+      - "<gray>命令可用 snooze / hide / restore 管理推荐</gray>"
+      - "<gray>%recommend_hint%</gray>"
+  'R':
+    material: PLAYER_HEAD
+    head: "%candidate_name%"
+    name: "<green><bold>%candidate_name%</bold></green>"
+    lore:
+      - "<gray>推荐理由</gray> <white>%recommend_reason%</white>"
+      - "<gray>共同好友</gray> <white>%mutual_count%</white>"
+      - "<gray>共同好友预览</gray> <white>%mutual_preview%</white>"
+      - "<gray>共同互动参考</gray> <white>%shared_interaction%</white>"
+      - "<gray>当前状态</gray> <white>%request_state%</white>"
+      - "<white>左键</white> <gray>联系</gray> <dark_gray>|</dark_gray> <white>右键</white> <gray>申请</gray>"
+      - "<white>中键</white> <gray>资料</gray> <dark_gray>|</dark_gray> <white>Shift 右键</white> <gray>暂时隐藏</gray>"
+      - "<white>双击</white> <gray>长期隐藏</gray> <dark_gray>|</dark_gray> <white>命令</white> <gray>/friend recommend hide %candidate_name%</gray>"
+    actions:
+      left:
+        - "[player] friend contact %candidate_uid% %candidate_name%"
+      right:
+        - "[player] friend addgui %candidate_name%"
+      middle:
+        - "[player] friend profile %candidate_name%"
+  'P':
+    material: BLUE_STAINED_GLASS_PANE
+    name: "<aqua><bold>上一页</bold></aqua>"
+    actions:
+      left:
+        - "[prev_page]"
+  'N':
+    material: BLUE_STAINED_GLASS_PANE
+    name: "<aqua><bold>下一页</bold></aqua>"
+    actions:
+      left:
+        - "[next_page]"
+  'B':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzQ1YTExMmNmMTdlNWJmMTNiOTkzYzNkYTdmNTdmZDJhYjNhOTU1YTlhZGE2MGJiYzg5MTJmN2MwZGVhN2NjMyJ9fX0="
+    name: "<white><bold>返回主页</bold></white>"
+    actions:
+      left:
+        - "[player] friend home"
+  'O':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2E1MTRiY2NhOGEwNDlhYWRlY2QxNDhhZTA0MzU3YWQwZDUzMzVkYjMwMDMzYTdiM2RkYjU3MWZkNjBkMTc1OCJ9fX0="
+    name: "<green><bold>在线玩家</bold></green>"
+    actions:
+      left:
+        - "[player] friend online"

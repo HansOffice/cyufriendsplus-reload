@@ -1,0 +1,135 @@
+title: "<gradient:#5FD9FF:#82E6D2><bold>标签颜色</bold></gradient> <dark_gray>|</dark_gray> <gray>%target_name% • %tag_name%</gray>"
+layout:
+  - "#########"
+  - "#1 2 3 4#"
+  - "#5 6 7 8#"
+  - "#O O O O#"
+  - "#R R R R#"
+  - "I###X###B"
+items:
+  '#':
+    material: LIGHT_BLUE_STAINED_GLASS_PANE
+    name: " "
+  '1':
+    material: LIGHT_BLUE_CONCRETE
+    name: "<aqua><bold>海盐蓝</bold></aqua>"
+    lore:
+      - "<gray>应用到标签</gray> <white>%selected_tag%</white>"
+    actions:
+      left:
+        - "[player] friend tagcolor %raw_name% %selected_tag% #58C7FF"
+        - "[player] friend tagpanel %raw_name%"
+  '2':
+    material: CYAN_CONCRETE
+    name: "<dark_aqua><bold>薄荷青</bold></dark_aqua>"
+    lore:
+      - "<gray>应用到标签</gray> <white>%selected_tag%</white>"
+    actions:
+      left:
+        - "[player] friend tagcolor %raw_name% %selected_tag% #7ED7C1"
+        - "[player] friend tagpanel %raw_name%"
+  '3':
+    material: YELLOW_CONCRETE
+    name: "<yellow><bold>晨光金</bold></yellow>"
+    lore:
+      - "<gray>应用到标签</gray> <white>%selected_tag%</white>"
+    actions:
+      left:
+        - "[player] friend tagcolor %raw_name% %selected_tag% #F7C948"
+        - "[player] friend tagpanel %raw_name%"
+  '4':
+    material: ORANGE_CONCRETE
+    name: "<yellow><bold>珊瑚橙</bold></yellow>"
+    lore:
+      - "<gray>应用到标签</gray> <white>%selected_tag%</white>"
+    actions:
+      left:
+        - "[player] friend tagcolor %raw_name% %selected_tag% #F78C6B"
+        - "[player] friend tagpanel %raw_name%"
+  '5':
+    material: PURPLE_CONCRETE
+    name: "<light_purple><bold>雾紫</bold></light_purple>"
+    lore:
+      - "<gray>应用到标签</gray> <white>%selected_tag%</white>"
+    actions:
+      left:
+        - "[player] friend tagcolor %raw_name% %selected_tag% #B89CFF"
+        - "[player] friend tagpanel %raw_name%"
+  '6':
+    material: PINK_CONCRETE
+    name: "<light_purple><bold>樱粉</bold></light_purple>"
+    lore:
+      - "<gray>应用到标签</gray> <white>%selected_tag%</white>"
+    actions:
+      left:
+        - "[player] friend tagcolor %raw_name% %selected_tag% #FFB4A2"
+        - "[player] friend tagpanel %raw_name%"
+  '7':
+    material: LIME_CONCRETE
+    name: "<green><bold>青柠绿</bold></green>"
+    lore:
+      - "<gray>应用到标签</gray> <white>%selected_tag%</white>"
+    actions:
+      left:
+        - "[player] friend tagcolor %raw_name% %selected_tag% #8BD450"
+        - "[player] friend tagpanel %raw_name%"
+  '8':
+    material: LIGHT_GRAY_CONCRETE
+    name: "<gray><bold>云雾灰</bold></gray>"
+    lore:
+      - "<gray>应用到标签</gray> <white>%selected_tag%</white>"
+    actions:
+      left:
+        - "[player] friend tagcolor %raw_name% %selected_tag% #9FB3C8"
+        - "[player] friend tagpanel %raw_name%"
+  'O':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTgzYzQ0OTFlNWFmZWY0NTdlNTJkNDYxNTU4ZmZkMDYwMTg3OTM1MWI4OWQ0NjQ0YTQ0ZTE1NTAxMDRjNTMxOCJ9fX0="
+    name: "%common_color_mm%"
+    lore:
+      - "<gray>这位好友常用的标签颜色</gray>"
+      - "<gray>颜色值</gray> <white>%common_color%</white>"
+      - "<gray>应用到标签</gray> <white>%selected_tag%</white>"
+    actions:
+      left:
+        - "[player] friend tagcolor %raw_name% %selected_tag% %common_color%"
+        - "[player] friend tagpanel %raw_name%"
+  'R':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODQ3MmQ4ZTNmYWQ0YTFjMzQzYmNmMTYyMzVjMGFjNzdhN2QzNDUzZWZhYzJkN2IzNTc4YWI2ZDRjZThhZTRhYSJ9fX0="
+    name: "%recent_color_mm%"
+    lore:
+      - "<gray>最近使用颜色</gray> <white>%recent_color%</white>"
+      - "<gray>应用到标签</gray> <white>%selected_tag%</white>"
+    actions:
+      left:
+        - "[player] friend tagcolor %raw_name% %selected_tag% %recent_color%"
+        - "[player] friend tagpanel %raw_name%"
+  'I':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODY3MjA4NWZmNWRmMGVlODUyMTM2ZTJkNDFhNzY5MjI5MjkxZDY2NmIyOGU5ZmIwNGQ2YzkyZjE1OGU0MmJiIn19fQ=="
+    name: "<aqua><bold>自定义颜色</bold></aqua>"
+    lore:
+      - "<gray>支持输入</gray> <white>#RRGGBB</white>"
+      - "<gray>也支持颜色名</gray> <white>aqua、pink、white</white>"
+    actions:
+      left:
+        - "[tag_color_input] %raw_name%||%selected_tag%"
+  'X':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODE4NzMxODQ1YzU1NjQ0ZGU4YjViODUxOTBiMGI5NGQxZGE3MmM5MTdjMTMwOTQ2YzM1ZTYyNzM2MDdmYWEzOCJ9fX0="
+    name: "<red><bold>清除颜色</bold></red>"
+    lore:
+      - "<gray>移除标签自定义颜色</gray>"
+    actions:
+      left:
+        - "[player] friend untagcolor %raw_name% %selected_tag%"
+        - "[player] friend tagpanel %raw_name%"
+  'B':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzQ1YTExMmNmMTdlNWJmMTNiOTkzYzNkYTdmNTdmZDJhYjNhOTU1YTlhZGE2MGJiYzg5MTJmN2MwZGVhN2NjMyJ9fX0="
+    name: "<white><bold>返回标签管理</bold></white>"
+    actions:
+      left:
+        - "[player] friend tagpanel %raw_name%"
+        - "[close]"

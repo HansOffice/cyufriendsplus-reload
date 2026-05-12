@@ -1,0 +1,66 @@
+title: "<gradient:#5FD9FF:#82E6D2><bold>发出申请</bold></gradient> <dark_gray>|</dark_gray> <gray>好友申请</gray>"
+layout:
+  - "####I####"
+  - "#SSSSSSS#"
+  - "#SSSSSSS#"
+  - "#SSSSSSS#"
+  - "#SSSSSSS#"
+  - "P##R#B##N"
+items:
+  '#':
+    material: LIGHT_BLUE_STAINED_GLASS_PANE
+    name: " "
+  'I':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmQ2MjM4YmI2MmM3NmY1N2NkMzY2ZmY5NWMxMWQ3OTExZGYzNWQ0OWIwZjMzYmIxOGNiNTRmYjQ0ZWVkNzI4ZSJ9fX0="
+    name: "<green><bold>操作说明</bold></green>"
+    lore:
+      - "<gray>当前页</gray> <white>%page%</white><gray>/</gray><white>%total_pages%</white>"
+      - "<gray>发出数量</gray> <white>%sent_count%</white>"
+      - " "
+      - "<white>左键</white> <gray>撤回这条好友申请</gray>"
+      - "<white>右键</white> <gray>查看这位玩家的联系入口</gray>"
+  'S':
+    material: PLAYER_HEAD
+    head: "%receiver_name%"
+    name: "<aqua><bold>%receiver_name%</bold></aqua>"
+    lore:
+      - "<gray>发送时间</gray> <white>%request_time%</white>"
+      - "<gray>申请附言</gray> <white>%request_note_preview%</white>"
+      - "<gray>当前状态</gray> <white>等待对方处理</white>"
+      - " "
+      - "<white>左键</white> <gray>撤回这条好友申请</gray>"
+      - "<white>右键</white> <gray>打开这位玩家的联系入口</gray>"
+    actions:
+      left:
+        - "[player] friend revoke %receiver_uid%"
+        - "[close]"
+      right:
+        - "[player] friend contact %receiver_uid% %receiver_name%"
+        - "[close]"
+  'P':
+    material: BLUE_STAINED_GLASS_PANE
+    name: "<aqua><bold>上一页</bold></aqua>"
+    actions:
+      left:
+        - "[prev_page]"
+  'N':
+    material: BLUE_STAINED_GLASS_PANE
+    name: "<aqua><bold>下一页</bold></aqua>"
+    actions:
+      left:
+        - "[next_page]"
+  'R':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDYyMmQ4MDRlMmFmZTVjYzk2NzFlMzRmMzdmMDMwNDA2MGM2M2NmNDE5NjEwZWEwOGI3YjI4N2EyYjZkY2EzMCJ9fX0="
+    name: "<yellow><bold>收到申请</bold></yellow>"
+    actions:
+      left:
+        - "[player] friend requests"
+  'B':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzQ1YTExMmNmMTdlNWJmMTNiOTkzYzNkYTdmNTdmZDJhYjNhOTU1YTlhZGE2MGJiYzg5MTJmN2MwZGVhN2NjMyJ9fX0="
+    name: "<white><bold>返回主页</bold></white>"
+    actions:
+      left:
+        - "[player] friend home"

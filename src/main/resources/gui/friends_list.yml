@@ -1,0 +1,125 @@
+title: "<gradient:#5FD9FF:#82E6D2><bold>好友列表</bold></gradient> <dark_gray>|</dark_gray> <gray>%friend_list_focus%</gray>"
+layout:
+  - "####I####"
+  - "##TSRCO##"
+  - "#FFFFFFF#"
+  - "#FFFFFFF#"
+  - "#FFFFFFF#"
+  - "P###B###N"
+items:
+  '#':
+    material: LIGHT_BLUE_STAINED_GLASS_PANE
+    name: " "
+  'I':
+    material: PLAYER_HEAD
+    head: "%player_name%"
+    name: "<aqua><bold>%player_name%</bold></aqua>"
+    lore:
+      - "<gray>当前页</gray> <white>%page%</white><gray>/</gray><white>%total_pages%</white>"
+      - "<gray>好友</gray> <white>%friend_count%</white> <dark_gray>|</dark_gray> <gray>在线</gray> <aqua>%friend_online_count%</aqua>"
+      - "<gray>当前焦点</gray> <white>%current_tab%</white>"
+      - "<gray>搜索</gray> <white>%search_keyword%</white>"
+      - "<gray>排序</gray> <white>%sort_mode%</white>"
+  'T':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzYxNDMxOGVmMjQ3ZDExZmYwZjU2MGQxYzY1OWU0MjU2Yzk0MWRlMzQ3OGU3YmUxZDcxOTI4Y2QwMzFmYTdjNiJ9fX0="
+    name: "<aqua><bold>标签筛选</bold></aqua>"
+    lore:
+      - "<gray>筛选状态</gray> <white>%filter_state%</white>"
+      - "<gray>当前标签</gray> <white>%filter_tag%</white>"
+      - "<gray>结果数量</gray> <white>%filter_count%</white>"
+      - " "
+      - "<gray>点击打开标签筛选面板</gray>"
+    actions:
+      left:
+        - "[player] friend tagfilterpanel %filter_tag_token%"
+  'S':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODY3MjA4NWZmNWRmMGVlODUyMTM2ZTJkNDFhNzY5MjI5MjkxZDY2NmIyOGU5ZmIwNGQ2YzkyZjE1OGU0MmJiIn19fQ=="
+    name: "<white><bold>关键词搜索</bold></white>"
+    lore:
+      - "<gray>当前关键词</gray> <white>%search_keyword%</white>"
+      - "<gray>状态</gray> <white>%search_state%</white>"
+      - " "
+      - "<white>左键</white> <gray>在聊天栏输入搜索词</gray>"
+      - "<white>右键</white> <gray>清除当前搜索</gray>"
+    actions:
+      left:
+        - "[friend_list_search_input]"
+      right:
+        - "[player] friend list search clear"
+  'R':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjM2OTZlNjYwZDMxMWFlOWQwYzQ1Nzc1ZTk3MjBkYWUzYjMxMGZlZjYzNjBmNTMzMTBjOWJjOTcwYmI3ZjI1In19fQ=="
+    name: "<yellow><bold>好友申请</bold></yellow>"
+    lore:
+      - "<gray>待处理申请</gray> <white>%pending_request_count%</white>"
+      - "<gray>打开申请中心，处理待同意的好友申请</gray>"
+    actions:
+      left:
+        - "[player] friend requests"
+  'O':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjlhZGU4ZjBiMTQyZjdlYTlhMjc3YzMwOGM5Y2QzYzNmMjc0MmU0MTE4ZWZlM2M0NTEwZTZlMzIzYjZhYTJmZSJ9fX0="
+    name: "<aqua><bold>切换排序</bold></aqua>"
+    lore:
+      - "<gray>当前模式</gray> <white>%sort_mode%</white>"
+      - " "
+      - "<white>左键</white> <gray>轮换排序模式</gray>"
+      - "<white>右键</white> <gray>恢复默认排序</gray>"
+    actions:
+      left:
+        - "[player] friend list sort cycle"
+      right:
+        - "[player] friend list sort default"
+  'C':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzJiNjczMjE5OWZhZjFiMjQ0NzcyNWU1NjgyOTA5MGZiY2ViNmMyYjUxNDk1Mzg2MmZmMDNjMTZiNTNmMzU5OSJ9fX0="
+    name: "<red><bold>重置列表</bold></red>"
+    lore:
+      - "<gray>清除搜索、标签和排序状态</gray>"
+    actions:
+      left:
+        - "[player] friend list clear"
+  'F':
+    material: PLAYER_HEAD
+    head: "%raw_name%"
+    name: "<aqua><bold>%friend_name%</bold></aqua>"
+    lore:
+      - "<gray>备注</gray> <white>%note_name%</white>"
+      - "<gray>分组</gray> <white>%group_name%</white> <dark_gray>|</dark_gray> <gray>主标签</gray> %primary_tag_mm%"
+      - "<gray>在线</gray> <aqua>%online_scope%</aqua> <dark_gray>|</dark_gray> <gray>服务器</gray> <white>%server_name%</white>"
+      - "<gray>最近互动</gray> <white>%last_interaction%</white>"
+      - " "
+      - "<white>左键</white> <gray>资料</gray> <dark_gray>|</dark_gray> <white>中键</white> <gray>切主标签</gray>"
+      - "<white>Shift + 右键</white> <gray>解除好友</gray>"
+    actions:
+      left:
+        - "[player] friend profile %raw_name%"
+      shift_right:
+        - "[player] friend removeconfirm %raw_name%"
+  'P':
+    material: BLUE_STAINED_GLASS_PANE
+    name: "<aqua><bold>上一页</bold></aqua>"
+    lore:
+      - "<gray>当前页</gray> <white>%page%</white><gray>/</gray><white>%total_pages%</white>"
+    actions:
+      left:
+        - "[prev_page]"
+  'N':
+    material: BLUE_STAINED_GLASS_PANE
+    name: "<aqua><bold>下一页</bold></aqua>"
+    lore:
+      - "<gray>当前页</gray> <white>%page%</white><gray>/</gray><white>%total_pages%</white>"
+    actions:
+      left:
+        - "[next_page]"
+  'B':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzQ1YTExMmNmMTdlNWJmMTNiOTkzYzNkYTdmNTdmZDJhYjNhOTU1YTlhZGE2MGJiYzg5MTJmN2MwZGVhN2NjMyJ9fX0="
+    name: "<white><bold>返回主页</bold></white>"
+    lore:
+      - "<gray>返回主页</gray>"
+    actions:
+      left:
+        - "[player] friend home"

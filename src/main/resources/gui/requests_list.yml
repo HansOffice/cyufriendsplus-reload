@@ -1,0 +1,73 @@
+title: "<gradient:#5FD9FF:#82E6D2><bold>申请中心</bold></gradient> <dark_gray>|</dark_gray> <gray>好友申请</gray>"
+layout:
+  - "####I####"
+  - "#RRRRRRR#"
+  - "#RRRRRRR#"
+  - "#RRRRRRR#"
+  - "#RRRRRRR#"
+  - "P##O#B##N"
+items:
+  '#':
+    material: LIGHT_BLUE_STAINED_GLASS_PANE
+    name: " "
+  'I':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDYyMmQ4MDRlMmFmZTVjYzk2NzFlMzRmMzdmMDMwNDA2MGM2M2NmNDE5NjEwZWEwOGI3YjI4N2EyYjZkY2EzMCJ9fX0="
+    name: "<yellow><bold>操作说明</bold></yellow>"
+    lore:
+      - "<gray>当前页</gray> <white>%page%</white><gray>/</gray><white>%total_pages%</white>"
+      - "<gray>待处理数量</gray> <white>%pending_count%</white>"
+      - " "
+      - "<white>左键</white> <gray>同意申请</gray>"
+      - "<white>右键</white> <gray>拒绝申请</gray>"
+      - "<gray>聊天栏里也会同步显示可点击按钮</gray>"
+  'R':
+    material: PLAYER_HEAD
+    head: "%sender_name%"
+    name: "<aqua><bold>%sender_name%</bold></aqua>"
+    lore:
+      - "<gray>发送时间</gray> <white>%request_time%</white>"
+      - "<gray>申请附言</gray> <white>%request_note_preview%</white>"
+      - "<gray>这位玩家想添加你为好友</gray>"
+      - " "
+      - "<white>左键</white> <gray>同意好友申请</gray>"
+      - "<white>右键</white> <gray>拒绝好友申请</gray>"
+    actions:
+      left:
+        - "[player] friend accept %sender_uid%"
+        - "[close]"
+      right:
+        - "[player] friend deny %sender_uid%"
+        - "[close]"
+  'P':
+    material: BLUE_STAINED_GLASS_PANE
+    name: "<aqua><bold>上一页</bold></aqua>"
+    lore:
+      - "<gray>当前页</gray> <white>%page%</white><gray>/</gray><white>%total_pages%</white>"
+    actions:
+      left:
+        - "[prev_page]"
+  'N':
+    material: BLUE_STAINED_GLASS_PANE
+    name: "<aqua><bold>下一页</bold></aqua>"
+    lore:
+      - "<gray>当前页</gray> <white>%page%</white><gray>/</gray><white>%total_pages%</white>"
+    actions:
+      left:
+        - "[next_page]"
+  'B':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzQ1YTExMmNmMTdlNWJmMTNiOTkzYzNkYTdmNTdmZDJhYjNhOTU1YTlhZGE2MGJiYzg5MTJmN2MwZGVhN2NjMyJ9fX0="
+    name: "<white><bold>返回主页</bold></white>"
+    actions:
+      left:
+        - "[player] friend home"
+  'O':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDVhY2FkZmNlNzJjYmQ1ZTJmNzcwZjFjZjJhNzU5OTQyM2VmYjE4ZjgyMTk0MTJiYzcxZmIzNDg5MjMwOWIwNiJ9fX0="
+    name: "<green><bold>发出申请</bold></green>"
+    lore:
+      - "<gray>切换到我发出去的好友申请列表</gray>"
+    actions:
+      left:
+        - "[player] friend sentrequests"

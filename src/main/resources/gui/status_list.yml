@@ -1,0 +1,71 @@
+title: "<gradient:#5FD9FF:#82E6D2><bold>朋友动态</bold></gradient> <dark_gray>|</dark_gray> <gray>%view_mode%</gray>"
+layout:
+  - "#########"
+  - "#SSSSSSS#"
+  - "#SSSSSSS#"
+  - "#SSSSSSS#"
+  - "#SSSSSSS#"
+  - "P##HIF##N"
+items:
+  '#':
+    material: LIGHT_BLUE_STAINED_GLASS_PANE
+    name: " "
+  'S':
+    material: PLAYER_HEAD
+    head: "%author%"
+    name: "<aqua><bold>%author% 的动态</bold></aqua>"
+    lore:
+      - "<gray>%time%</gray> <dark_gray>|</dark_gray> <aqua>%visibility%</aqua>"
+      - "<gray>阅读</gray> <white>%unread_state%</white>"
+      - "<gray>互动</gray> <white>%like_count%</white> 赞 <dark_gray>|</dark_gray> <white>%comment_count%</white> 评"
+      - "<gray>状态</gray> <white>%like_state%</white> <dark_gray>|</dark_gray> <white>%pin_state%</white>"
+      - " "
+      - "<white>%content%</white>"
+      - " "
+      - "%status_like_hint_mm% <dark_gray>|</dark_gray> %status_comment_hint_mm%"
+      - "%status_comments_hint_mm% <dark_gray>|</dark_gray> %status_contact_hint_mm%"
+      - "%status_pin_hint_mm%"
+      - "%status_delete_hint_mm%"
+  'P':
+    material: BLUE_STAINED_GLASS_PANE
+    name: "<aqua><bold>上一页</bold></aqua>"
+    actions:
+      left:
+        - "[prev_page]"
+  'N':
+    material: BLUE_STAINED_GLASS_PANE
+    name: "<aqua><bold>下一页</bold></aqua>"
+    actions:
+      left:
+        - "[next_page]"
+  'I':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODY3MjA4NWZmNWRmMGVlODUyMTM2ZTJkNDFhNzY5MjI5MjkxZDY2NmIyOGU5ZmIwNGQ2YzkyZjE1OGU0MmJiIn19fQ=="
+    name: "<white><bold>发布新动态</bold></white>"
+    lore:
+      - "<gray>左键后在聊天栏输入动态内容</gray>"
+      - "<gray>复杂发布规则仍可用 /status publish 处理</gray>"
+      - "<gray>更多命令说明可查看 /friend help</gray>"
+    actions:
+      left:
+        - "[status_input]"
+        - "[close]"
+  'H':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzQ1YTExMmNmMTdlNWJmMTNiOTkzYzNkYTdmNTdmZDJhYjNhOTU1YTlhZGE2MGJiYzg5MTJmN2MwZGVhN2NjMyJ9fX0="
+    name: "<white><bold>%status_back_label%</bold></white>"
+    lore:
+      - "<gray>返回上一层社交入口</gray>"
+      - "<gray>%status_unread_summary%</gray>"
+    actions:
+      left:
+        - "[player] %status_back_command%"
+  'F':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDMxYmRiOWQ0MmJmNTVlYjYwN2QzOTQ4Yjk0MjdmNzAxMGQ4MmFhODQyMTRjNDI1ZmYzNDVhMzNjZDJiOCJ9fX0="
+    name: "<aqua><bold>%status_switch_label%</bold></aqua>"
+    lore:
+      - "<gray>切换查看同一位玩家的留言墙</gray>"
+    actions:
+      left:
+        - "[player] wall %status_target_name%"

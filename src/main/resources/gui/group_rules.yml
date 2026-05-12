@@ -1,0 +1,71 @@
+title: "<gradient:#5FD9FF:#82E6D2><bold>分组规则</bold></gradient> <dark_gray>|</dark_gray> <gray>%group_name%</gray>"
+layout:
+  - "#########"
+  - "#   I   #"
+  - "# T N O #"
+  - "# P M   #"
+  - "#       #"
+  - "####B####"
+items:
+  '#':
+    material: LIGHT_BLUE_STAINED_GLASS_PANE
+    name: " "
+  'I':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmVkNjY0OGNiYzYzZjVkM2I0ODNmNWUzOGQxMzJiNmYwY2JlZGUxMzU0YTQ0NWFmNTIyNWY1NmJkYzE3YTZhMyJ9fX0="
+    name: "<aqua><bold>%group_name%</bold></aqua>"
+    lore:
+      - "<gray>成员数量</gray> <white>%group_count%</white>"
+      - "<gray>传送规则</gray> <white>%state_tp%</white>"
+      - "<gray>接收提醒</gray> <white>%state_notify%</white>"
+      - "<gray>广播可见</gray> <white>%state_notifyme%</white>"
+      - "<gray>列表显示</gray> <white>%state_pin%</white>"
+      - "<gray>命令可用 /friend grouprules show|set|cycle</gray>"
+  'T':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzdmYWU0NmRjYmM3YWYxYTczZDkxNzM0ZGIwM2RhMmFmNDFkNDIxNjEyNDY4YjdiYmJiYTZhOWY2OTkwMDEyYiJ9fX0="
+    name: "<aqua><bold>分组传送规则</bold></aqua>"
+    lore:
+      - "<gray>当前状态</gray> <white>%state_tp%</white>"
+      - "<gray>轮换 继承全局 / 允许直达 / 需要确认 / 拒绝传送</gray>"
+      - "<gray>命令 set [分组] tp [default|allow|confirm|deny]</gray>"
+  'N':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDU2OGI5NjgxMDhlOTRjZWU0OWEzOTBkMGY4NDQ5YTNiZGMxYjFlNTg1NTVmMDlhZWRhNGNmYjZjYTcxMGMxMSJ9fX0="
+    name: "<aqua><bold>分组接收提醒</bold></aqua>"
+    lore:
+      - "<gray>当前状态</gray> <white>%state_notify%</white>"
+      - "<gray>轮换 继承全局 / 允许 / 拒绝</gray>"
+      - "<gray>命令 set [分组] notify [default|allow|deny]</gray>"
+  'O':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjYzZTVkZGNjOGU1YWE0NTFhNzE3YmNhYzliYTYyODkxMmRlZWUyNzEyYmU0YmIxYTcwMDk4YWVkZmI5Yzk2NyJ9fX0="
+    name: "<aqua><bold>分组广播可见</bold></aqua>"
+    lore:
+      - "<gray>当前状态</gray> <white>%state_notifyme%</white>"
+      - "<gray>轮换 继承全局 / 允许 / 拒绝</gray>"
+      - "<gray>命令 set [分组] notifyme [default|allow|deny]</gray>"
+  'P':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjc0NzkwZTRjZGM0NmIyZmMxN2JmNmE5NzM2OTljMmUzNGFkNDU1NmU4ZWY3MTNhZjcyNjIzNjM3ZDQ4MTE1ZCJ9fX0="
+    name: "<aqua><bold>分组置顶显示</bold></aqua>"
+    lore:
+      - "<gray>当前状态</gray> <white>%state_pin%</white>"
+      - "<gray>开启后，这个分组的好友会在列表中整体靠前展示</gray>"
+      - "<gray>命令 set [分组] pin [on|off]</gray>"
+  'M':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmVkNjY0OGNiYzYzZjVkM2I0ODNmNWUzOGQxMzJiNmYwY2JlZGUxMzU0YTQ0NWFmNTIyNWY1NmJkYzE3YTZhMyJ9fX0="
+    name: "<aqua><bold>查看分组成员</bold></aqua>"
+    lore:
+      - "<gray>打开这个分组的成员列表</gray>"
+    actions:
+      left:
+        - "[player] friend groupmembers %group_name%"
+  'B':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzQ1YTExMmNmMTdlNWJmMTNiOTkzYzNkYTdmNTdmZDJhYjNhOTU1YTlhZGE2MGJiYzg5MTJmN2MwZGVhN2NjMyJ9fX0="
+    name: "<white><bold>返回分组列表</bold></white>"
+    actions:
+      left:
+        - "[player] friend grouplist"

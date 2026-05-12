@@ -1,0 +1,77 @@
+title: "<gradient:#5FD9FF:#82E6D2><bold>设置中心</bold></gradient>"
+layout:
+  - "#########"
+  - "#   I   #"
+  - "# R M N #"
+  - "# S O T #"
+  - "#       #"
+  - "####B####"
+items:
+  '#':
+    material: LIGHT_BLUE_STAINED_GLASS_PANE
+    name: " "
+  'I':
+    material: PLAYER_HEAD
+    head: "%player_name%"
+    name: "<aqua><bold>%player_name%</bold></aqua>"
+    lore:
+      - "<gray>好友申请</gray> <white>%state_req%</white>"
+      - "<gray>私聊接收</gray> <white>%state_msg%</white>"
+      - "<gray>好友提醒</gray> <white>%state_notify%</white>"
+      - "<gray>上线广播</gray> <white>%state_notifyme%</white>"
+      - "<gray>好友传送</gray> <white>%state_tp%</white>"
+      - "<gray>互动提醒</gray> <white>%state_social_summary%</white>"
+  'R':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjM2OTZlNjYwZDMxMWFlOWQwYzQ1Nzc1ZTk3MjBkYWUzYjMxMGZlZjYzNjBmNTMzMTBjOWJjOTcwYmI3ZjI1In19fQ=="
+    name: "<aqua><bold>好友申请</bold></aqua>"
+    lore:
+      - "<gray>当前状态</gray> <white>%state_req%</white>"
+      - "<gray>点击切换是否接收好友申请</gray>"
+  'M':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvY2QwMDA3MzExZjY1ODk0NTg2Nzg4NDk0NTcyMmE0MzBjNTI3ZjMyMjNiOTA5NjEyZTQ1ZDAzMjA4OTZlYWU5YSJ9fX0="
+    name: "<aqua><bold>私聊接收</bold></aqua>"
+    lore:
+      - "<gray>当前状态</gray> <white>%state_msg%</white>"
+      - "<gray>点击切换是否接收好友私聊</gray>"
+  'N':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDU2OGI5NjgxMDhlOTRjZWU0OWEzOTBkMGY4NDQ5YTNiZGMxYjFlNTg1NTVmMDlhZWRhNGNmYjZjYTcxMGMxMSJ9fX0="
+    name: "<aqua><bold>好友提醒</bold></aqua>"
+    lore:
+      - "<gray>当前状态</gray> <white>%state_notify%</white>"
+      - "<gray>点击切换好友上下线提醒</gray>"
+  'O':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjYzZTVkZGNjOGU1YWE0NTFhNzE3YmNhYzliYTYyODkxMmRlZWUyNzEyYmU0YmIxYTcwMDk4YWVkZmI5Yzk2NyJ9fX0="
+    name: "<aqua><bold>上线广播</bold></aqua>"
+    lore:
+      - "<gray>当前状态</gray> <white>%state_notifyme%</white>"
+      - "<gray>点击切换好友是否能看到你的上下线</gray>"
+  'T':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzdmYWU0NmRjYmM3YWYxYTczZDkxNzM0ZGIwM2RhMmFmNDFkNDIxNjEyNDY4YjdiYmJiYTZhOWY2OTkwMDEyYiJ9fX0="
+    name: "<aqua><bold>好友传送</bold></aqua>"
+    lore:
+      - "<gray>当前规则</gray> <white>%state_tp%</white>"
+      - "<gray>点击轮换 允许直达 / 需要确认 / 拒绝传送</gray>"
+  'S':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTE4YjdkYmRjZjRlZjliMzY1NzcwYzlmZDEwY2JiYTFiMGU4MWU1NjdmN2Q4ZTg3ODFiN2YyMTUwNzk4MTE4MyJ9fX0="
+    name: "<aqua><bold>互动提醒</bold></aqua>"
+    lore:
+      - "<gray>当前状态</gray> <white>%state_social_summary%</white>"
+      - "<gray>分别控制动态和留言墙的互动提醒</gray>"
+    actions:
+      left:
+        - "[player] friend socialsettings"
+  'B':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzQ1YTExMmNmMTdlNWJmMTNiOTkzYzNkYTdmNTdmZDJhYjNhOTU1YTlhZGE2MGJiYzg5MTJmN2MwZGVhN2NjMyJ9fX0="
+    name: "<white><bold>返回主页</bold></white>"
+    lore:
+      - "<gray>返回主页</gray>"
+    actions:
+      left:
+        - "[player] friend home"

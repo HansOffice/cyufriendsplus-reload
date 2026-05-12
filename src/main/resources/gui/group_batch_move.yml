@@ -1,0 +1,49 @@
+title: "<gradient:#5FD9FF:#82E6D2><bold>批量移动</bold></gradient> <dark_gray>|</dark_gray> <gray>%group_name%</gray>"
+layout:
+  - "####I####"
+  - "#GGGGGGG#"
+  - "#GGGGGGG#"
+  - "#GGGGGGG#"
+  - "#GGGGGGG#"
+  - "P###B###N"
+items:
+  '#':
+    material: LIGHT_BLUE_STAINED_GLASS_PANE
+    name: " "
+  'I':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmVkNjY0OGNiYzYzZjVkM2I0ODNmNWUzOGQxMzJiNmYwY2JlZGUxMzU0YTQ0NWFmNTIyNWY1NmJkYzE3YTZhMyJ9fX0="
+    name: "<aqua><bold>整组移动</bold></aqua>"
+    lore:
+      - "<gray>来源分组</gray> <white>%source_group%</white>"
+      - "<gray>成员数量</gray> <white>%source_count%</white>"
+      - "<gray>左键选择目标分组后，整组好友会一起移动</gray>"
+  'G':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmVkNjY0OGNiYzYzZjVkM2I0ODNmNWUzOGQxMzJiNmYwY2JlZGUxMzU0YTQ0NWFmNTIyNWY1NmJkYzE3YTZhMyJ9fX0="
+    name: "<aqua><bold>%group_name%</bold></aqua>"
+    lore:
+      - "<gray>把来源分组的全部成员移动到这里</gray>"
+      - "<white>左键</white> <gray>确认移动</gray>"
+    actions:
+      left:
+        - "[player] friend groupmoveall %source_group% -- %group_name%"
+  'P':
+    material: BLUE_STAINED_GLASS_PANE
+    name: "<aqua><bold>上一页</bold></aqua>"
+    actions:
+      left:
+        - "[prev_page]"
+  'B':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzQ1YTExMmNmMTdlNWJmMTNiOTkzYzNkYTdmNTdmZDJhYjNhOTU1YTlhZGE2MGJiYzg5MTJmN2MwZGVhN2NjMyJ9fX0="
+    name: "<white><bold>返回成员页</bold></white>"
+    actions:
+      left:
+        - "[player] friend groupmembers %source_group%"
+  'N':
+    material: BLUE_STAINED_GLASS_PANE
+    name: "<aqua><bold>下一页</bold></aqua>"
+    actions:
+      left:
+        - "[next_page]"

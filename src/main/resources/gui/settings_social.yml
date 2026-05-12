@@ -1,0 +1,64 @@
+title: "<gradient:#5FD9FF:#82E6D2><bold>互动提醒</bold></gradient> <dark_gray>|</dark_gray> <gray>设置</gray>"
+layout:
+  - "#########"
+  - "#   I   #"
+  - "# L C W #"
+  - "# K R   #"
+  - "#       #"
+  - "####B####"
+items:
+  '#':
+    material: LIGHT_BLUE_STAINED_GLASS_PANE
+    name: " "
+  'I':
+    material: PLAYER_HEAD
+    head: "%player_name%"
+    name: "<gradient:#5FD9FF:#82E6D2><bold>互动提醒总览</bold></gradient>"
+    lore:
+      - "<gray>动态点赞</gray> <white>%state_status_like%</white>"
+      - "<gray>动态评论</gray> <white>%state_status_comment%</white>"
+      - "<gray>留言通知</gray> <white>%state_wall_post%</white>"
+      - "<gray>留言点赞</gray> <white>%state_wall_like%</white>"
+      - "<gray>留言评论</gray> <white>%state_wall_comment%</white>"
+  'L':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjY4NDQyZTYyNjZmYTM1NWQyZjJkMmQwNzA0NGY1ZDQzZGYwNDA4MGE3ZWNjMTVmZWQ2Nzg2YTMzNDIwNjk3OCJ9fX0="
+    name: "<aqua><bold>动态点赞提醒</bold></aqua>"
+    lore:
+      - "<gray>当前状态</gray> <white>%state_status_like%</white>"
+      - "<gray>点击切换别人点赞你动态时的提醒</gray>"
+  'C':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODkxNTE5ODhiM2M5MTAzM2I1ZTI4OGZmNDZmYWM4NGM1ZDc2ZmQ3MGRhMTMwZTZjY2IyMzFlNDA2NTAxNDUxMyJ9fX0="
+    name: "<aqua><bold>动态评论提醒</bold></aqua>"
+    lore:
+      - "<gray>当前状态</gray> <white>%state_status_comment%</white>"
+      - "<gray>点击切换别人评论你动态时的提醒</gray>"
+  'W':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmYyYWRhYTgxM2MxNTgxOTc5YTU1MTc5NWNhZjM5ZDYxZWZkOGQ2OTY1NmY0M2IyZTkyMWRkYmZkMGM1OTgzMyJ9fX0="
+    name: "<aqua><bold>留言发布提醒</bold></aqua>"
+    lore:
+      - "<gray>当前状态</gray> <white>%state_wall_post%</white>"
+      - "<gray>点击切换别人给你留言时的提醒</gray>"
+  'K':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOWVjMTA0NjA4ODdmOWM2OTg3Njg3MGNhYjBiMmExZDZlMzA4NDdlMzQ2NzAzOGEzMzU3NmRmZmMzM2NkYjRlZCJ9fX0="
+    name: "<aqua><bold>留言点赞提醒</bold></aqua>"
+    lore:
+      - "<gray>当前状态</gray> <white>%state_wall_like%</white>"
+      - "<gray>点击切换别人点赞你留言墙内容时的提醒</gray>"
+  'R':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjA2YWRkZDFjMWJjYzcxYjViYzRiMDhkYThlN2IwYzFhYTM1MGQxYTYzOWIyYWIxNjFlZWU1ODc2ZWI4Y2VhOCJ9fX0="
+    name: "<aqua><bold>留言评论提醒</bold></aqua>"
+    lore:
+      - "<gray>当前状态</gray> <white>%state_wall_comment%</white>"
+      - "<gray>点击切换别人评论你留言墙内容时的提醒</gray>"
+  'B':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzQ1YTExMmNmMTdlNWJmMTNiOTkzYzNkYTdmNTdmZDJhYjNhOTU1YTlhZGE2MGJiYzg5MTJmN2MwZGVhN2NjMyJ9fX0="
+    name: "<white><bold>返回设置中心</bold></white>"
+    actions:
+      left:
+        - "[player] friend settings"

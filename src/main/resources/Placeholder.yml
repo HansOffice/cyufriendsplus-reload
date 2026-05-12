@@ -1,0 +1,161 @@
+# ---------------------------------------------------
+# CyuFriends Reload PlaceholderAPI 参考
+# ---------------------------------------------------
+# 这里整理了 CyuFriends Reload 提供的 PlaceholderAPI 变量，方便接入计分板、TAB、聊天格式或菜单显示
+# 这份文件用于查阅示例，不参与插件功能开关；保持默认即可正常使用
+#
+# 如果你只需要常用变量，可以先看这两组：
+# 1. basic  -> 当前玩家的常用统计
+# 2. player -> 查询指定玩家的好友资料
+#
+# 建议直接复制下方示例，替换其中的 <player>、<index> 等参数
+# 新版主标识：
+# %cyufriends_变量名%
+# 旧版 %friends_变量名% 写法仍保留兼容
+#
+# 参数说明：
+# <player>      = 玩家名；多数场景也兼容 UID
+# <index>       = 好友索引，从 1 开始
+# <statusIndex> = 某位好友的第几条动态，从 1 开始
+# <wallIndex>   = 某位好友的第几条留言，从 1 开始
+# <slot>        = 在线玩家槽位，从 1 开始
+
+# ---------------------------------------------------
+# Placeholder 标识符
+# ---------------------------------------------------
+# 下方标识符决定 PlaceholderAPI 中使用的变量前缀
+# 除非你正在做兼容迁移或与其他插件前缀冲突，否则建议保持默认
+identifiers:
+  reload: "cyufriends"                    # 新版推荐主前缀，示例：%cyufriends_total_count%
+  plus-compatible: "friends"              # 兼容旧版写法，示例：%friends_total_count%
+  relational-reload: "rel_cyufriends"    # 新版关系占位符前缀
+  relational-plus-compatible: "friendsrel" # 兼容旧版关系写法
+
+# ---------------------------------------------------
+# 1. 基础统计类
+# ---------------------------------------------------
+# 这些变量不需要额外参数，可直接写在计分板、TAB、聊天、全息中
+basic:
+  total_count: "%cyufriends_total_count%"                          # 当前玩家好友总数
+  request_count: "%cyufriends_request_count%"                      # 当前玩家待处理好友申请数
+  offline_messages_count: "%cyufriends_offline_messages_count%"    # 当前玩家未读离线留言数
+  daily_requests_remaining: "%cyufriends_daily_requests_remaining%" # 当前玩家今日剩余好友申请次数
+
+# ---------------------------------------------------
+# 2. 按指定玩家查询
+# ---------------------------------------------------
+# 这是除了 basic 之外最常用的一组
+# 例如你想显示某个玩家生日、备注、分组，基本都在这里找
+# 用法示例：
+# %cyufriends_note_<player>%
+# %cyufriends_birthday_<player>%
+# %cyufriends_server_<player>%
+player:
+  last_online: "%cyufriends_last_online_<player>%"                    # 指定玩家最后在线时间
+  online_status: "%cyufriends_online_status_<player>%"                # 指定玩家在线状态
+  online_scope: "%cyufriends_online_scope_<player>%"                  # 指定玩家在线范围（本服 / 跨服 / 离线）
+  server: "%cyufriends_server_<player>%"                              # 指定玩家当前服务器
+  is_remote: "%cyufriends_is_remote_<player>%"                        # 是否为远端在线玩家
+  note: "%cyufriends_note_<player>%"                                  # 当前玩家给该玩家设置的备注
+  note_detail: "%cyufriends_note_detail_<player>%"                    # 当前玩家给该玩家设置的备注说明
+  group: "%cyufriends_group_<player>%"                                # 该好友所在分组
+  primary_tag: "%cyufriends_primary_tag_<player>%"                    # 主标签
+  primary_tag_color: "%cyufriends_primary_tag_color_<player>%"        # 主标签颜色
+  tags: "%cyufriends_tags_<player>%"                                  # 全部标签
+  tag_count: "%cyufriends_tag_count_<player>%"                        # 标签数量
+  is_pinned: "%cyufriends_is_pinned_<player>%"                        # 是否被置顶
+  is_blocked: "%cyufriends_is_blocked_<player>%"                      # 是否已被拉黑
+  first_added: "%cyufriends_first_added_<player>%"                    # 成为好友时间
+  last_interaction: "%cyufriends_last_interaction_<player>%"          # 最近互动时间
+  is_friend: "%cyufriends_is_friend_<player>%"                        # 是否为好友
+  birthday: "%cyufriends_birthday_<player>%"                          # 生日
+  is_tp_allowed: "%cyufriends_is_tp_allowed_<player>%"                # 是否允许好友传送
+  tp_mode: "%cyufriends_tp_mode_<player>%"                            # 该玩家自己的全局传送规则
+  effective_tp_mode: "%cyufriends_effective_tp_mode_<player>%"        # 当前对我实际生效的传送规则
+  personal_tp: "%cyufriends_personal_tp_<player>%"                    # 单好友传送覆盖规则
+  personal_notify: "%cyufriends_personal_notify_<player>%"            # 单好友上线提醒覆盖规则
+  personal_notifyme: "%cyufriends_personal_notifyme_<player>%"        # 我对该好友的广播可见覆盖规则
+
+# ---------------------------------------------------
+# 3. 当前玩家好友列表按索引查询
+# ---------------------------------------------------
+# 适合做“第 1 位好友 / 第 2 位好友”这种固定槽位展示
+# 只有在制作固定槽位展示时才需要这一组
+# 用法示例：
+# %cyufriends_friendlist_friends_1%
+# %cyufriends_friendlist_group_by_index_3%
+friend_index:
+  name: "%cyufriends_friendlist_friends_<index>%"                               # 第 <index> 位好友名称
+  online_status: "%cyufriends_friendlist_online_status_by_index_<index>%"       # 第 <index> 位好友在线状态
+  last_online: "%cyufriends_friendlist_last_online_by_index_<index>%"           # 第 <index> 位好友最后在线时间
+  note: "%cyufriends_friendlist_note_by_index_<index>%"                         # 第 <index> 位好友备注
+  note_detail: "%cyufriends_friendlist_note_detail_by_index_<index>%"           # 第 <index> 位好友备注说明
+  group: "%cyufriends_friendlist_group_by_index_<index>%"                       # 第 <index> 位好友分组
+  primary_tag: "%cyufriends_friendlist_primary_tag_by_index_<index>%"           # 第 <index> 位好友主标签
+  primary_tag_color: "%cyufriends_friendlist_primary_tag_color_by_index_<index>%" # 第 <index> 位好友主标签颜色
+  tags: "%cyufriends_friendlist_tags_by_index_<index>%"                         # 第 <index> 位好友全部标签
+  tag_count: "%cyufriends_friendlist_tag_count_by_index_<index>%"               # 第 <index> 位好友标签数量
+  is_pinned: "%cyufriends_friendlist_is_pinned_by_index_<index>%"               # 第 <index> 位好友是否置顶
+  first_added: "%cyufriends_friendlist_first_added_by_index_<index>%"           # 第 <index> 位好友添加时间
+  last_interaction: "%cyufriends_friendlist_last_interaction_by_index_<index>%" # 第 <index> 位好友最近互动时间
+  is_blocked: "%cyufriends_friendlist_is_blocked_by_index_<index>%"             # 第 <index> 位好友是否被拉黑
+  birthday: "%cyufriends_friendlist_birthday_by_index_<index>%"                 # 第 <index> 位好友生日
+  is_tp_allowed: "%cyufriends_friendlist_is_tp_allowed_by_index_<index>%"       # 第 <index> 位好友是否允许传送
+  tp_mode: "%cyufriends_friendlist_tp_mode_by_index_<index>%"                   # 第 <index> 位好友全局传送模式
+  effective_tp_mode: "%cyufriends_friendlist_effective_tp_mode_by_index_<index>%" # 第 <index> 位好友对我实际生效的传送模式
+  status: "%cyufriends_friendlist_status_by_index_<index>%"                     # 第 <index> 位好友最新动态
+  status_at: "%cyufriends_friendlist_status_by_index_<index>_<statusIndex>%"    # 第 <index> 位好友第 <statusIndex> 条动态
+  status_count: "%cyufriends_friendlist_status_count_by_index_<index>%"         # 第 <index> 位好友动态总数
+  wall_count: "%cyufriends_friendlist_wall_count_by_index_<index>%"             # 第 <index> 位好友留言墙数量
+  wall: "%cyufriends_friendlist_wall_by_index_<index>_<wallIndex>%"             # 第 <index> 位好友第 <wallIndex> 条留言
+  wall_sender: "%cyufriends_friendlist_wall_sender_by_index_<index>_<wallIndex>%" # 第 <index> 位好友第 <wallIndex> 条留言发送者
+  wall_time: "%cyufriends_friendlist_wall_time_by_index_<index>_<wallIndex>%"   # 第 <index> 位好友第 <wallIndex> 条留言时间
+
+# ---------------------------------------------------
+# 4. 自己拥有的标签
+# ---------------------------------------------------
+# 适合做“这个标签有多少好友”“这个标签是不是主标签常用色”之类展示
+owned_tags:
+  count: "%cyufriends_owned_tag_count_<标签名>%"                  # 某个标签被使用了多少次
+  primary_count: "%cyufriends_owned_primary_tag_count_<标签名>%"  # 某个标签被设为主标签多少次
+  color: "%cyufriends_owned_tag_color_<标签名>%"                  # 某个标签当前默认展示色
+
+# ---------------------------------------------------
+# 5. 指定目标玩家公开资料
+# ---------------------------------------------------
+# 这组更适合“我正在看某个目标玩家资料页”这种场景
+target:
+  request_sent: "%cyufriends_friendlist_request_sent_<player>%"           # 我是否已向该玩家发出申请
+  request_received: "%cyufriends_friendlist_request_received_<player>%"   # 我是否收到了该玩家的申请
+  request_status: "%cyufriends_friendlist_request_status_<player>%"       # 我与该玩家当前申请状态
+  friend_count: "%cyufriends_friendlist_friend_count_<player>%"           # 该玩家好友数量
+  status: "%cyufriends_friendlist_status_<player>%"                       # 该玩家最新动态
+  status_count: "%cyufriends_friendlist_status_count_<player>%"           # 该玩家动态总数
+  wall_count: "%cyufriends_friendlist_wall_count_<player>%"               # 该玩家留言墙留言总数
+  wall_page_count: "%cyufriends_friendlist_wall_page_count_<player>%"     # 该玩家留言墙总页数
+  wall_page_current: "%cyufriends_friendlist_wall_page_current_<player>%" # 该玩家留言墙当前页
+  wall: "%cyufriends_friendlist_wall_<player>_<wallIndex>%"               # 该玩家第 <wallIndex> 条留言
+  wall_sender: "%cyufriends_friendlist_wall_sender_<player>_<wallIndex>%" # 该玩家第 <wallIndex> 条留言发送者
+  wall_time: "%cyufriends_friendlist_wall_time_<player>_<wallIndex>%"     # 该玩家第 <wallIndex> 条留言时间
+
+# ---------------------------------------------------
+# 6. 在线玩家槽位
+# ---------------------------------------------------
+# 适合在排行榜、TAB 或在线玩家面板里按槽位读取玩家信息
+online_slots:
+  player_name: "%cyufriends_online_player_name_by_slot_<slot>%"  # 第 <slot> 个在线玩家名称
+  is_friend: "%cyufriends_is_friend_by_slot_<slot>%"             # 第 <slot> 个在线玩家是否是我的好友
+
+# ---------------------------------------------------
+# 7. 关系占位符
+# ---------------------------------------------------
+# 关系占位符通常用于聊天格式、称号前缀、条件显示
+# 它会根据“谁在看”和“被看的是谁”的关系返回结果
+# 主要用于需要判断两名玩家关系的聊天、称号或条件显示
+# 常见测试命令：
+# /papi parserel 玩家A 玩家B %rel_cyufriends_is_friend%
+relational:
+  is_friend: "%rel_cyufriends_is_friend%"                  # 返回关系文本结果
+  is_friend_bool: "%rel_cyufriends_is_friend_bool%"        # 返回 true / false
+  plus_compatible: "%rel_friendsrel_is_friend%"            # 兼容旧版关系占位符
+  plus_compatible_bool: "%rel_friendsrel_is_friend_bool%"  # 兼容旧版关系布尔占位符

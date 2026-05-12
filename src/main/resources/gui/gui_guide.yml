@@ -1,0 +1,567 @@
+# ------------------------------------------------------------
+# CyuFriends Reload GUI 配置速查
+# ------------------------------------------------------------
+#
+# 先记这一句：
+# layout 决定格子摆放，items 决定每个字符对应什么按钮
+#
+# ------------------------------------------------------------
+# 这些文件对应什么
+# ------------------------------------------------------------
+#
+# 路径：
+# plugins/cyufriends-reload/gui/
+#
+# 每个 yml 文件对应一个界面的外观配置
+# 常改的内容：
+# 1. 按钮材质
+# 2. 头颅
+# 3. 按钮名称
+# 4. lore 描述
+# 5. 点击后执行什么动作
+#
+# 大多数美化和交互调整都可以在这里完成，不需要改代码
+#
+# ------------------------------------------------------------
+# 文件和界面
+# ------------------------------------------------------------
+#
+# friends_list.yml
+#   好友列表
+#   常用入口：/friend list
+#
+# friend_profile.yml
+#   单个好友资料页
+#   常用入口：/friend profile <玩家>
+#
+# add_friend.yml
+#   添加好友确认页
+#   常用入口：/friend addgui <玩家>
+#
+# friend_remove_confirm.yml
+#   删除好友确认页
+#   常用入口：/friend removeconfirm <玩家>
+#
+# friend_tag_manage.yml
+#   标签管理页
+#   常用入口：/friend tagpanel <好友>
+#
+# friend_tag_colors.yml
+#   标签颜色页
+#   常用入口：/friend tagcolorpanel <好友> <标签>
+#
+# friend_tag_filters.yml
+#   标签筛选页
+#   常用入口：/friend tagfilterpanel
+#
+# groups_list.yml
+#   分组列表
+#   常用入口：/friend grouplist
+#
+# group_members.yml
+#   某个分组下的好友
+#   常用入口：/friend groupmembers <分组>
+#
+# group_move.yml
+#   给好友换分组
+#   常用入口：/friend groupmove <好友>
+#
+# requests_list.yml
+#   好友申请列表
+#   常用入口：/friend requests
+#
+# blacklist.yml
+#   黑名单列表
+#   常用入口：/friend blacklist
+#
+# online_players.yml
+#   在线玩家发现页
+#   常用入口：/friend online
+#
+# profile_home.yml
+#   自己的资料主页
+#   常用入口：/friend gui
+#
+# settings_panel.yml
+#   个人设置页
+#   常用入口：/settings
+#
+# messages_list.yml
+#   未读留言列表
+#   常用入口：/messages
+#
+# message_chat.yml
+#   私聊会话页
+#   常用入口：/friend chat <好友>
+#
+# status_list.yml
+#   动态列表页
+#   常用入口：/status
+#
+# wall_view.yml
+#   留言墙页
+#   常用入口：/wall <玩家>
+#
+# wall_pending.yml
+#   待审核留言页
+#   常用入口：/wall pending <玩家>
+#
+# wall_comment_pending.yml
+#   待审核回复页
+#   常用入口：/wall commentpending <墙ID>
+#
+# ------------------------------------------------------------
+# GUI 文件结构
+# ------------------------------------------------------------
+#
+# 一个最小结构：
+#
+# title: "<gradient:#5FD9FF:#82E6D2><bold>好友资料</bold></gradient> <dark_gray>|</dark_gray> <gray>%target_name%</gray>"
+#
+# layout:
+#   - "#########"
+#   - "#   B   #"
+#   - "#       #"
+#   - "#   C   #"
+#   - "#       #"
+#   - "#########"
+#
+# items:
+#   '#':
+#     material: LIGHT_BLUE_STAINED_GLASS_PANE
+#     name: " "
+#
+#   'B':
+#     material: PLAYER_HEAD
+#     head: "%player%"
+#     name: "<aqua><bold>返回</bold></aqua>"
+#     lore:
+#       - "<gray>点击返回好友列表</gray>"
+#     actions:
+#       left:
+#         - "[player] friend list"
+#
+#   'C':
+#     material: BARRIER
+#     name: "<red><bold>关闭</bold></red>"
+#     actions:
+#       left:
+#         - "[close]"
+#
+# 基本关系：
+# 1. layout 里面每个字符都代表一个按钮模板
+# 2. items 里面定义这个字符长什么样、点了做什么
+#
+# 这个例子里：
+# # = 边框
+# B = 返回按钮
+# C = 关闭按钮
+#
+# ------------------------------------------------------------
+# layout 写法
+# ------------------------------------------------------------
+#
+# 规则 1：
+# 每一行必须正好 9 个字符
+#
+# 规则 2：
+# 一共有几行，界面就有几行
+# 例如 6 行 = 54 格
+#
+# 规则 3：
+# 同一个字符出现很多次，表示这些格子共用同一个 item 模板
+#
+# 规则 4：
+# 空格可以留空，不放按钮
+#
+# 示例：
+#
+# layout:
+#   - "#########"
+#   - "#FFFFFFF#"
+#   - "#FFFFFFF#"
+#   - "#FFFFFFF#"
+#   - "#########"
+#   - " T P R N "
+#
+# 这个意思是：
+# # = 边框
+# F = 中间那一大片好友卡片
+# T/P/R/N = 底部四个功能按钮
+#
+# ------------------------------------------------------------
+# items 常用字段
+# ------------------------------------------------------------
+#
+# 1. material
+# 按钮材质
+# 例如：
+# material: PAPER
+# material: BARRIER
+# material: PLAYER_HEAD
+#
+# 2. head
+# 只有头颅按钮常用
+# 可以写：
+# head: "%raw_name%"
+# head: "Notch"
+# head: "basehead-后面接一长串Base64"
+# head: "https://textures.minecraft.net/texture/xxxx"
+#
+# 3. craftengine
+# 安装 CraftEngine 时可以直接引用物品：
+# craftengine: "命名空间:物品ID"
+#
+# 4. sound / sounds
+# 可选。按钮点击音效，不写时会按动作自动使用 gui-click / gui-page / gui-confirm 等默认音效
+# sound 使用 sounds.yml 里的键名
+# 例如：
+# sound: gui-confirm
+# sounds:
+#   left: gui-confirm
+#   right: gui-secondary-click
+#
+# 5. amount
+# 物品数量
+# 例如：
+# amount: 1
+#
+# 6. custom_model_data
+# 自定义模型值
+# 例如：
+# custom_model_data: 1001
+#
+# 7. name
+# 按钮名称
+# 使用 MiniMessage 写法，不是老式 &c
+# 例如：
+# name: "<red><bold>关闭</bold></red>"
+# name: "<aqua><bold>下一页</bold></aqua>"
+#
+# 7. lore
+# 按钮说明，多行列表
+# 例如：
+# lore:
+#   - "<gray>点击后打开好友资料</gray>"
+#   - "<gray>目标</gray> <white>%raw_name%</white>"
+#
+# 8. actions
+# 点击后执行的动作
+# 这是最重要的部分
+#
+# ------------------------------------------------------------
+# actions 写法
+# ------------------------------------------------------------
+#
+# 写法：
+#
+# actions:
+#   left:
+#     - "[player] friend profile %raw_name%"
+#   right:
+#     - "[close]"
+#
+# 支持的点击类型：
+# left
+# right
+# shift_left
+# shift_right
+# middle
+# double_click
+# drop
+# all
+#
+# 不区分点击方式时可以直接写 all：
+#
+# actions:
+#   all:
+#     - "[close]"
+#
+# ------------------------------------------------------------
+# 常用动作类型
+# ------------------------------------------------------------
+#
+# 1. 玩家执行指令
+# [player] 指令内容
+#
+# 示例：
+# - "[player] friend list"
+# - "[player] friend profile %raw_name%"
+# - "[player] wall %raw_name%"
+# - "[player] status pin %status_id%"
+#
+# 2. 控制台执行指令
+# [console] 指令内容
+#
+# 示例：
+# - "[console] say %player% 打开了好友界面"
+#
+# 3. 关闭界面
+# - "[close]"
+#
+# 4. 播放音效
+# - "[sound] ENTITY_EXPERIENCE_ORB_PICKUP"
+# - "[sound] UI_BUTTON_CLICK"
+#
+# 5. 上一页 / 下一页
+# - "[prev_page]"
+# - "[next_page]"
+#
+# 6. 进入聊天输入模式
+# 这些动作名被界面逻辑引用，改名会影响功能：
+# - "[pm_input] %raw_name%"
+# - "[note_input] %raw_name%"
+# - "[note_detail_input] %raw_name%"
+# - "[status_input]"
+# - "[wall_input] %raw_name%"
+# - "[birthday_input]"
+# - "[bio_input]"
+# - "[tag_color_input] %raw_name%||%primary_edit_tag%"
+#
+# ------------------------------------------------------------
+# 常见修改
+# ------------------------------------------------------------
+#
+# 1. 改按钮名字
+#
+# 原来：
+# name: "<white><bold>好友申请</bold></white>"
+#
+# 改成：
+# name: "<yellow><bold>新的好友申请</bold></yellow>"
+#
+# 2. 改按钮说明
+#
+# 原来：
+# lore:
+#   - "<gray>查看收到的好友申请</gray>"
+#
+# 改成：
+# lore:
+#   - "<gray>点击查看收到的申请</gray>"
+#   - "<gray>建议及时处理，避免堆积</gray>"
+#
+# 3. 改按钮材质
+#
+# 原来：
+# material: PLAYER_HEAD
+#
+# 改成：
+# material: PAPER
+#
+# 改成普通物品后，head 字段不会生效
+#
+# 4. 改点击执行的命令
+#
+# 原来：
+# actions:
+#   left:
+#     - "[player] friend profile %raw_name%"
+#
+# 改成：
+# actions:
+#   left:
+#     - "[player] friend chat %raw_name%"
+#
+# 5. 给按钮加音效
+#
+# actions:
+#   left:
+#     - "[sound] UI_BUTTON_CLICK"
+#     - "[player] friend list"
+#
+# ------------------------------------------------------------
+# 哪些能改，哪些少动
+# ------------------------------------------------------------
+#
+# 可以改：
+# 1. material
+# 2. head
+# 3. name
+# 4. lore
+# 5. actions 里的提示音、执行命令
+#
+# 少动：
+# 1. layout 里负责列表内容的核心字符
+# 2. 一整个界面的分页按钮
+# 3. 输入类动作名字
+# 4. 不熟悉来源的占位符名称
+#
+# 举例：
+# friends_list.yml 里中间那一大片 F，
+# 本质上是“好友条目区域”
+# 可以改 F 对应的外观
+# 不建议把 layout 里的 F 全部换成别的字符
+#
+# status_list.yml 里中间那一大片 S，
+# 是动态条目区域
+# 也是一样的道理
+#
+# ------------------------------------------------------------
+# 占位符
+# ------------------------------------------------------------
+#
+# GUI 里常见这种写法：
+# %raw_name%
+# %friend_name%
+# %status_id%
+# %content%
+#
+# 这些值不是固定文本
+# 界面打开时会由插件自动替换
+#
+# 处理原则：
+# 1. 同一个文件里，优先沿用它原来就有的占位符
+# 2. 不要自行新增没有来源的占位符名
+#
+# 最稳妥的做法：
+# 复制同文件里已经在用的占位符
+#
+# 例如：
+# friends_list.yml 里本来就有：
+# %friend_name%
+# %raw_name%
+# %group_name%
+# %online_scope%
+# %server_name%
+#
+# 加说明时继续用这些现成占位符：
+# lore:
+#   - "<gray>当前分组</gray> <white>%group_name%</white>"
+#   - "<gray>当前服务器</gray> <white>%server_name%</white>"
+#
+# ------------------------------------------------------------
+# title 标题
+# ------------------------------------------------------------
+#
+# 现在支持直接在每个 GUI 文件最上面写 title
+#
+# 示例：
+# title: "<gradient:#5FD9FF:#82E6D2><bold>留言墙</bold></gradient> <dark_gray>|</dark_gray> <gray>%target_name%</gray>"
+#
+# 可以这样理解：
+# 1. title 控制窗口最上面的标题
+# 2. layout 控制格子摆放
+# 3. items 控制按钮长什么样、点了做什么
+#
+# title 支持两种写法：
+# 1. MiniMessage
+# 2. & 颜色符号
+#
+# 推荐沿用默认文件里的 MiniMessage 写法
+#
+# title 里常见能用的占位符示例：
+# %player%
+# %target_name%
+# %friend_name%
+# %raw_name%
+# %group_name%
+# %tag_name%
+# %filter_tag%
+# %wall_id%
+# %page%
+# %view_mode%
+#
+# 仍然建议沿用当前文件本来就在用的占位符
+#
+# ------------------------------------------------------------
+# 可参考的按钮模板
+# ------------------------------------------------------------
+#
+# 返回按钮模板：
+#
+# 'B':
+#   material: PLAYER_HEAD
+#   head: "basehead-这里放Base64"
+#   name: "<white><bold>返回好友列表</bold></white>"
+#   lore:
+#     - "<gray>点击后返回主界面</gray>"
+#   actions:
+#     left:
+#       - "[sound] UI_BUTTON_CLICK"
+#       - "[player] friend list"
+#
+# 关闭按钮模板：
+#
+# 'X':
+#   material: BARRIER
+#   name: "<red><bold>关闭界面</bold></red>"
+#   lore:
+#     - "<gray>点击后关闭当前 GUI</gray>"
+#   actions:
+#     left:
+#       - "[close]"
+#
+# 发送私聊按钮模板：
+#
+# 'M':
+#   material: PLAYER_HEAD
+#   head: "%raw_name%"
+#   name: "<aqua><bold>发送私聊</bold></aqua>"
+#   lore:
+#     - "<gray>点击后进入与该玩家的私聊界面</gray>"
+#   actions:
+#     left:
+#       - "[player] friend chat %raw_name%"
+#
+# ------------------------------------------------------------
+# 修改后生效
+# ------------------------------------------------------------
+#
+# 稳妥流程：
+# 1. 先备份整个 plugins/cyufriends-reload/gui 文件夹
+# 2. 修改一个文件
+# 3. 进服测试这个界面
+# 4. 没问题再继续改下一个
+#
+# 生效方式：
+# - 重启服务器
+# - 或者执行 /friend reload
+#
+# 一次改动过多时，排查会变得很麻烦
+#
+# ------------------------------------------------------------
+# 排查方向
+# ------------------------------------------------------------
+#
+# 1. 界面打不开
+# 先看：
+# - layout 每一行是不是刚好 9 个字符
+# - YAML 缩进有没有写错
+# - items 里有没有漏冒号
+#
+# 2. 按钮有了，但点了没反应
+# 先看：
+# - actions 有没有写在按钮下面
+# - left / right 拼写对不对
+# - 指令是不是实际存在
+#
+# 3. 头颅不显示
+# 先看：
+# - material 是否为 PLAYER_HEAD
+# - head 的内容是否写对
+# - basehead 或 URL 有没有复制完整
+#
+# 4. 文本颜色不对
+# 先看：
+# - 默认主要使用 MiniMessage
+# - 建议写 <red>、<gray>、<aqua>、<bold> 这类稳定颜色
+# - 渐变适合标题和少数主按钮，lore 尽量保持简洁
+# - 不建议按老式 &c 作为默认写法
+#
+# 5. 显示出了 %placeholder% 原样文本
+# 说明这个占位符没有被当前界面提供
+# 处理办法：
+# - 删掉它
+# - 或者换成同文件原本已经在用的占位符
+#
+# ------------------------------------------------------------
+# 修改建议
+# ------------------------------------------------------------
+#
+# 最稳的改法通常不是重做布局，而是：
+# 1. 保留原有 layout 结构
+# 2. 保留原有按钮字符
+# 3. 只改材质、头颅、文案、动作
+#
+# 这样最不容易把界面改坏

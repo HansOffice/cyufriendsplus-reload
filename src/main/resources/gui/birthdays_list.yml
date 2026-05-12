@@ -1,0 +1,49 @@
+title: "<gradient:#5FD9FF:#82E6D2><bold>好友生日</bold></gradient> <dark_gray>|</dark_gray> <gray>近期提醒</gray>"
+layout:
+  - "####I####"
+  - "#YYYYYYY#"
+  - "#YYYYYYY#"
+  - "#YYYYYYY#"
+  - "#YYYYYYY#"
+  - "P###B###N"
+items:
+  '#':
+    material: LIGHT_BLUE_STAINED_GLASS_PANE
+    name: " "
+  'I':
+    material: PLAYER_HEAD
+    head: "%player_name%"
+    name: "<gradient:#5FD9FF:#82E6D2><bold>生日总览</bold></gradient>"
+    lore:
+      - "<gray>今天生日</gray> <white>%birthday_today_count%</white>"
+      - "<gray>近期生日</gray> <white>%birthday_upcoming_count%</white>"
+      - "<gray>%birthday_summary_hint%</gray>"
+  'Y':
+    material: PLAYER_HEAD
+    head: "%raw_name%"
+    name: "<yellow><bold>%friend_name%</bold></yellow>"
+    lore:
+      - "<gray>生日日期</gray> <white>%birthday%</white>"
+      - "<gray>提醒状态</gray> <white>%birthday_state%</white>"
+      - "<gray>当前状态</gray> <white>%online_scope%</white> <dark_gray>|</dark_gray> <gray>服务器</gray> <white>%server_name%</white>"
+      - "<white>左键</white> <gray>资料</gray> <dark_gray>|</dark_gray> <white>右键</white> <gray>联系</gray>"
+      - "<white>中键</white> <gray>%birthday_middle_action%</gray>"
+  'P':
+    material: BLUE_STAINED_GLASS_PANE
+    name: "<aqua><bold>上一页</bold></aqua>"
+    actions:
+      left:
+        - "[prev_page]"
+  'B':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzQ1YTExMmNmMTdlNWJmMTNiOTkzYzNkYTdmNTdmZDJhYjNhOTU1YTlhZGE2MGJiYzg5MTJmN2MwZGVhN2NjMyJ9fX0="
+    name: "<white><bold>返回主页</bold></white>"
+    actions:
+      left:
+        - "[player] friend home"
+  'N':
+    material: BLUE_STAINED_GLASS_PANE
+    name: "<aqua><bold>下一页</bold></aqua>"
+    actions:
+      left:
+        - "[next_page]"

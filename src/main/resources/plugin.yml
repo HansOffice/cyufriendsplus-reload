@@ -1,0 +1,152 @@
+name: cyufriends-reload
+version: '${project.version}'
+main: org.cyuCBMclean.cyufriendsReload.CyufriendsReload
+api-version: '1.13'
+author: HansOffice
+softdepend: [cyuid-reload, PlaceholderAPI, CraftEngine]
+
+commands:
+  friend:
+    description: 社交好友系统主指令
+    aliases: [cf, cfs, cyuf]
+  msg:
+    description: 发送私聊消息
+    aliases: [m, tell, w]
+  reply:
+    description: 快速回复上一条私聊
+    aliases: [r]
+  messages:
+    description: 打开未读离线留言面板
+  status:
+    description: 打开全服朋友圈动态面板
+  wall:
+    description: 查看或管理个人留言墙
+  settings:
+    description: 打开个人偏好设置
+  bio:
+    description: 设置个人签名
+  birthday:
+    description: 设置个人生日
+
+permissions:
+  cyufriends.use:
+    description: 普通玩家常用功能总权限
+    default: true
+    children:
+      cyufriends.use.friend: true
+      cyufriends.use.group: true
+      cyufriends.use.chat: true
+      cyufriends.use.social: true
+      cyufriends.use.profile: true
+  cyufriends.use.friend:
+    description: 好友核心功能
+    default: true
+    children:
+      cyufriends.command.add: true
+      cyufriends.command.accept: true
+      cyufriends.command.deny: true
+      cyufriends.command.remove: true
+      cyufriends.command.block: true
+      cyufriends.command.unblock: true
+      cyufriends.command.tp: true
+      cyufriends.command.tptoggle: true
+      cyufriends.command.personal: true
+      cyufriends.command.notify: true
+      cyufriends.command.notifyme: true
+      cyufriends.command.note: true
+      cyufriends.command.gui: true
+      cyufriends.command.requests: true
+      cyufriends.command.blacklist: true
+      cyufriends.command.online: true
+  cyufriends.use.group:
+    description: 分组相关功能
+    default: true
+    children:
+      cyufriends.command.group: true
+  cyufriends.use.chat:
+    description: 私聊与消息中心功能
+    default: true
+    children:
+      cyufriends.command.msg: true
+      cyufriends.command.reply: true
+      cyufriends.command.messages: true
+  cyufriends.use.social:
+    description: 动态与留言墙功能
+    default: true
+    children:
+      cyufriends.command.status: true
+      cyufriends.command.wall: true
+  cyufriends.use.profile:
+    description: 个人资料与设置功能
+    default: true
+    children:
+      cyufriends.command.settings: true
+      cyufriends.command.bio: true
+      cyufriends.command.birthday: true
+      cyufriends.birthday.default: true
+  cyufriends.admin:
+    default: op
+  cyufriends.command.add:
+    default: true
+  cyufriends.command.accept:
+    default: true
+  cyufriends.command.deny:
+    default: true
+  cyufriends.command.remove:
+    default: true
+  cyufriends.command.block:
+    default: true
+  cyufriends.command.unblock:
+    default: true
+  cyufriends.command.tp:
+    default: true
+  cyufriends.command.tptoggle:
+    default: true
+  cyufriends.command.personal:
+    default: true
+  cyufriends.command.notify:
+    default: true
+  cyufriends.command.notifyme:
+    default: true
+  cyufriends.command.note:
+    default: true
+  cyufriends.command.group:
+    default: true
+  cyufriends.command.gui:
+    default: true
+  cyufriends.command.requests:
+    default: true
+  cyufriends.command.blacklist:
+    default: true
+  cyufriends.command.online:
+    default: true
+  cyufriends.command.msg:
+    default: true
+  cyufriends.command.reply:
+    default: true
+  cyufriends.command.messages:
+    default: true
+  cyufriends.command.settings:
+    default: true
+  cyufriends.command.bio:
+    default: true
+  cyufriends.command.birthday:
+    default: true
+  cyufriends.command.status:
+    default: true
+  cyufriends.birthday.default:
+    default: true
+  cyufriends.command.wall:
+    default: true
+  cyufriends.request.vip:
+    default: false
+  cyufriends.request.svip:
+    default: false
+  cyufriends.status.vip:
+    default: false
+  cyufriends.status.svip:
+    default: false
+  cyufriends.wall.vip:
+    default: false
+  cyufriends.wall.svip:
+    default: false

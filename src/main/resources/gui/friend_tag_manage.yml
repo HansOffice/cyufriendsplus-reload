@@ -1,0 +1,64 @@
+title: "<gradient:#5FD9FF:#82E6D2><bold>标签管理</bold></gradient> <dark_gray>|</dark_gray> <gray>%target_name%</gray>"
+layout:
+  - "#########"
+  - "#TTTTTTT#"
+  - "#TTTTTTT#"
+  - "#TTTTTTT#"
+  - "#TTTTTTT#"
+  - "P##H#B##N"
+items:
+  '#':
+    material: LIGHT_BLUE_STAINED_GLASS_PANE
+    name: " "
+  'T':
+    material: NAME_TAG
+    name: "%tag_mm%"
+    lore:
+      - "<gray>当前状态</gray> <white>%primary_state%</white>"
+      - "<gray>颜色值</gray> <white>%tag_color%</white>"
+      - " "
+      - "<white>左键</white> <gray>设为主标签</gray>"
+      - "<white>右键</white> <gray>选择预设颜色</gray>"
+      - "<white>中键</white> <gray>清除标签颜色</gray>"
+      - "<white>Shift + 右键</white> <gray>移除这个标签</gray>"
+    actions:
+      left:
+        - "[player] friend tagprimary %raw_name% %tag_name%"
+        - "[player] friend tagpanel %raw_name%"
+      right:
+        - "[player] friend tagcolorpanel %raw_name% %tag_name%"
+      middle:
+        - "[player] friend untagcolor %raw_name% %tag_name%"
+        - "[player] friend tagpanel %raw_name%"
+      shift_right:
+        - "[player] friend untag %raw_name% %tag_name%"
+        - "[player] friend tagpanel %raw_name%"
+  'P':
+    material: BLUE_STAINED_GLASS_PANE
+    name: "<aqua><bold>上一页</bold></aqua>"
+    actions:
+      left:
+        - "[prev_page]"
+  'N':
+    material: BLUE_STAINED_GLASS_PANE
+    name: "<aqua><bold>下一页</bold></aqua>"
+    actions:
+      left:
+        - "[next_page]"
+  'H':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODY3MjA4NWZmNWRmMGVlODUyMTM2ZTJkNDFhNzY5MjI5MjkxZDY2NmIyOGU5ZmIwNGQ2YzkyZjE1OGU0MmJiIn19fQ=="
+    name: "<white><bold>操作说明</bold></white>"
+    lore:
+      - "<gray>左键设置主标签</gray>"
+      - "<gray>右键打开颜色面板</gray>"
+      - "<gray>中键清除标签颜色</gray>"
+      - "<gray>Shift + 右键移除标签</gray>"
+  'B':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzQ1YTExMmNmMTdlNWJmMTNiOTkzYzNkYTdmNTdmZDJhYjNhOTU1YTlhZGE2MGJiYzg5MTJmN2MwZGVhN2NjMyJ9fX0="
+    name: "<white><bold>返回资料页</bold></white>"
+    actions:
+      left:
+        - "[player] friend profile %raw_name%"
+        - "[close]"

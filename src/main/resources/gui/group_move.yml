@@ -1,0 +1,40 @@
+title: "<gradient:#5FD9FF:#82E6D2><bold>移动分组</bold></gradient> <dark_gray>|</dark_gray> <gray>%target_name%</gray>"
+layout:
+  - "#########"
+  - "#GGGGGGG#"
+  - "#GGGGGGG#"
+  - "#GGGGGGG#"
+  - "#GGGGGGG#"
+  - "P###B###N"
+items:
+  '#':
+    material: LIGHT_BLUE_STAINED_GLASS_PANE
+    name: " "
+  'G':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmVkNjY0OGNiYzYzZjVkM2I0ODNmNWUzOGQxMzJiNmYwY2JlZGUxMzU0YTQ0NWFmNTIyNWY1NmJkYzE3YTZhMyJ9fX0="
+    name: "<aqua><bold>%group_name%</bold></aqua>"
+    lore:
+      - " "
+      - "<gray>当前成员</gray> <white>%group_count%</white>"
+      - " "
+      - "<white>点击</white> <gray>移动到这个分组</gray>"
+  'P':
+    material: BLUE_STAINED_GLASS_PANE
+    name: "<aqua><bold>上一页</bold></aqua>"
+    actions:
+      left:
+        - "[prev_page]"
+  'N':
+    material: BLUE_STAINED_GLASS_PANE
+    name: "<aqua><bold>下一页</bold></aqua>"
+    actions:
+      left:
+        - "[next_page]"
+  'B':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzQ1YTExMmNmMTdlNWJmMTNiOTkzYzNkYTdmNTdmZDJhYjNhOTU1YTlhZGE2MGJiYzg5MTJmN2MwZGVhN2NjMyJ9fX0="
+    name: "<white><bold>返回好友资料</bold></white>"
+    actions:
+      left:
+        - "[player] friend profile %raw_name%"

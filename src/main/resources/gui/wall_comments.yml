@@ -1,0 +1,51 @@
+title: "<gradient:#5FD9FF:#82E6D2><bold>评论列表</bold></gradient> <dark_gray>|</dark_gray> <gray>#%wall_id%</gray>"
+layout:
+  - "####I####"
+  - "#CCCCCCC#"
+  - "#CCCCCCC#"
+  - "#CCCCCCC#"
+  - "#CCCCCCC#"
+  - "P###B###N"
+items:
+  '#':
+    material: LIGHT_BLUE_STAINED_GLASS_PANE
+    name: " "
+  'I':
+    material: PLAYER_HEAD
+    head: "%player_name%"
+    name: "<gradient:#5FD9FF:#82E6D2><bold>评论总览</bold></gradient>"
+    lore:
+      - "<gray>留言编号</gray> <white>#%wall_id%</white>"
+      - "<gray>评论数量</gray> <white>%comment_total%</white>"
+      - "<gray>待审数量</gray> <white>%pending_count%</white>"
+      - "<gray>待审时 左键通过 / 右键拒绝；已通过时 左键联系 / 右键删除</gray>"
+  'C':
+    material: PLAYER_HEAD
+    head: "%author%"
+    name: "<aqua><bold>%author%</bold></aqua>"
+    lore:
+      - "<gray>评论编号</gray> <white>#%comment_id%</white>"
+      - "<gray>评论时间</gray> <white>%time%</white>"
+      - "<gray>审核状态</gray> <white>%approve_state%</white>"
+      - "<white>%content%</white>"
+      - "%comment_action_hint_mm%"
+      - "<white>中键</white> <gray>返回留言墙</gray>"
+  'P':
+    material: BLUE_STAINED_GLASS_PANE
+    name: "<aqua><bold>上一页</bold></aqua>"
+    actions:
+      left:
+        - "[prev_page]"
+  'B':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzQ1YTExMmNmMTdlNWJmMTNiOTkzYzNkYTdmNTdmZDJhYjNhOTU1YTlhZGE2MGJiYzg5MTJmN2MwZGVhN2NjMyJ9fX0="
+    name: "<white><bold>返回留言墙</bold></white>"
+    actions:
+      left:
+        - "[player] wall %owner_name%"
+  'N':
+    material: BLUE_STAINED_GLASS_PANE
+    name: "<aqua><bold>下一页</bold></aqua>"
+    actions:
+      left:
+        - "[next_page]"

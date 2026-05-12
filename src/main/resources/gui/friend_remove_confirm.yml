@@ -1,0 +1,38 @@
+title: "<gradient:#5FD9FF:#82E6D2><bold>确认删除</bold></gradient> <dark_gray>|</dark_gray> <gray>%target_name%</gray>"
+layout:
+  - "#########"
+  - "# C H X #"
+  - "#########"
+items:
+  '#':
+    material: LIGHT_BLUE_STAINED_GLASS_PANE
+    name: " "
+  'H':
+    material: PLAYER_HEAD
+    head: "%raw_name%"
+    name: "<yellow><bold>%friend_name%</bold></yellow>"
+    lore:
+      - " "
+      - "<gray>真实名称</gray> <white>%raw_name%</white>"
+      - "<gray>当前分组</gray> <white>%group_name%</white>"
+      - " "
+      - "<red>确认后会解除双方好友关系</red>"
+  'C':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDMxMmNhNDYzMmRlZjVmZmFmMmViMGQ5ZDdjYzdiNTVhNTBjNGUzOTIwZDkwMzcyYWFiMTQwNzgxZjVkZmJjNCJ9fX0="
+    name: "<green><bold>确认删除</bold></green>"
+    lore:
+      - "<gray>解除与 <white>%friend_name%</white> 的好友关系</gray>"
+    actions:
+      left:
+        - "[player] friend remove %raw_name%"
+        - "[close]"
+  'X':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzY4MzQ2NWY3ZDBkYTJkZDA1NGQwNGViOTc0ZDdkYjkyOTA0NzgxMTc3ZmQwODAzODViNmJjOGFjMDEyN2IwOSJ9fX0="
+    name: "<red><bold>取消</bold></red>"
+    lore:
+      - "<gray>返回好友资料</gray>"
+    actions:
+      left:
+        - "[player] friend profile %raw_name%"

@@ -1,0 +1,56 @@
+title: "<gradient:#5FD9FF:#82E6D2><bold>在线玩家</bold></gradient> <dark_gray>|</dark_gray> <gray>发现新朋友</gray>"
+layout:
+  - "####I####"
+  - "#OOOOOOO#"
+  - "#OOOOOOO#"
+  - "#OOOOOOO#"
+  - "#OOOOOOO#"
+  - "P###R###N"
+items:
+  '#':
+    material: LIGHT_BLUE_STAINED_GLASS_PANE
+    name: " "
+  'I':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2E1MTRiY2NhOGEwNDlhYWRlY2QxNDhhZTA0MzU3YWQwZDUzMzVkYjMwMDMzYTdiM2RkYjU3MWZkNjBkMTc1OCJ9fX0="
+    name: "<green><bold>在线玩家列表</bold></green>"
+    lore:
+      - "<gray>当前页</gray> <white>%page%</white><gray>/</gray><white>%total_pages%</white>"
+      - "<gray>可添加人数</gray> <white>%online_count%</white>"
+      - " "
+      - "<gray>左键打开添加好友确认界面</gray>"
+  'O':
+    material: PLAYER_HEAD
+    head: "%target_name%"
+    name: "<green><bold>%target_name%</bold></green>"
+    lore:
+      - " "
+      - "<gray>当前在线玩家</gray>"
+      - " "
+      - "<white>左键</white> <gray>打开添加好友确认</gray>"
+    actions:
+      left:
+        - "[player] friend addgui %target_name%"
+  'P':
+    material: BLUE_STAINED_GLASS_PANE
+    name: "<aqua><bold>上一页</bold></aqua>"
+    lore:
+      - "<gray>当前页</gray> <white>%page%</white><gray>/</gray><white>%total_pages%</white>"
+    actions:
+      left:
+        - "[prev_page]"
+  'N':
+    material: BLUE_STAINED_GLASS_PANE
+    name: "<aqua><bold>下一页</bold></aqua>"
+    lore:
+      - "<gray>当前页</gray> <white>%page%</white><gray>/</gray><white>%total_pages%</white>"
+    actions:
+      left:
+        - "[next_page]"
+  'R':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzQ1YTExMmNmMTdlNWJmMTNiOTkzYzNkYTdmNTdmZDJhYjNhOTU1YTlhZGE2MGJiYzg5MTJmN2MwZGVhN2NjMyJ9fX0="
+    name: "<white><bold>返回主页</bold></white>"
+    actions:
+      left:
+        - "[player] friend home"

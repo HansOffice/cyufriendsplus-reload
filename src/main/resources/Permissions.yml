@@ -1,0 +1,75 @@
+# ---------------------------------------------------
+# CyuFriends Reload 权限说明
+# ---------------------------------------------------
+
+# 普通玩家常用功能：
+# cyufriends.use
+#
+# 只给某一块：
+# cyufriends.use.friend   -> 好友核心
+# cyufriends.use.group    -> 分组
+# cyufriends.use.chat     -> 私聊 / 回复 / 消息中心
+# cyufriends.use.social   -> 动态 / 留言墙
+# cyufriends.use.profile  -> 设置 / 签名 / 生日
+#
+# 管理员：
+# cyufriends.admin
+
+# ---------------------------------------------------
+# 板块节点
+# ---------------------------------------------------
+parents:
+  cyufriends.use: "普通玩家常用功能"
+  cyufriends.use.friend: "好友核心：申请、删除、拉黑、传送、备注、主页这些"
+  cyufriends.use.group: "分组功能"
+  cyufriends.use.chat: "私聊、回复、消息中心"
+  cyufriends.use.social: "动态、留言墙"
+  cyufriends.use.profile: "设置、签名、生日"
+  cyufriends.admin: "管理员功能"
+
+# ---------------------------------------------------
+# 细分节点
+# ---------------------------------------------------
+single:
+  cyufriends.command.gui: "/friend gui，以及 Shift+右键玩家快捷菜单"
+  cyufriends.command.add: "/friend add"
+  cyufriends.command.accept: "/friend accept"
+  cyufriends.command.deny: "/friend deny"
+  cyufriends.command.remove: "/friend remove"
+  cyufriends.command.block: "/friend block"
+  cyufriends.command.unblock: "/friend unblock"
+  cyufriends.command.tp: "/friend tp"
+  cyufriends.command.tptoggle: "/friend tptoggle"
+  cyufriends.command.personal: "/friend personal"
+  cyufriends.command.notify: "/friend notify"
+  cyufriends.command.notifyme: "/friend notifyme"
+  cyufriends.command.note: "/friend note / notedetail"
+  cyufriends.command.group: "分组相关命令"
+  cyufriends.command.requests: "/friend requests / sentrequests / revoke"
+  cyufriends.command.blacklist: "/friend blacklist"
+  cyufriends.command.online: "/friend online"
+  cyufriends.command.msg: "/msg"
+  cyufriends.command.reply: "/reply"
+  cyufriends.command.messages: "/messages"
+  cyufriends.command.settings: "/settings"
+  cyufriends.command.bio: "/bio"
+  cyufriends.command.birthday: "/birthday"
+  cyufriends.command.status: "/status"
+  cyufriends.command.wall: "/wall"
+
+# ---------------------------------------------------
+# 特殊权限
+# ---------------------------------------------------
+# 例如：
+# requestLimits:
+#   mvp:
+#     daily: 80
+#     cooldown: 15
+#
+# 对应节点为：
+# cyufriends.request.mvp
+tiers:
+  cyufriends.request.<组名>: "对应 requestLimits.<组名>"
+  cyufriends.status.<组名>: "对应 statusLimits.<组名>"
+  cyufriends.wall.<组名>: "对应 wallLimits.<组名>"
+  cyufriends.birthday.<组名>: "对应 birthdayLimits.<组名>"

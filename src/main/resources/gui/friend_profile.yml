@@ -1,0 +1,176 @@
+title: "<gradient:#5FD9FF:#82E6D2><bold>好友资料</bold></gradient> <dark_gray>|</dark_gray> <gray>%target_name%</gray>"
+layout:
+  - "#########"
+  - "#H#     #"
+  - "# # MTNG#"
+  - "#F# SWD #"
+  - "#O# IJK #"
+  - "########B"
+items:
+  '#':
+    material: LIGHT_BLUE_STAINED_GLASS_PANE
+    name: " "
+  'H':
+    material: PLAYER_HEAD
+    head: "%raw_name%"
+    name: "<aqua><bold>%friend_name%</bold></aqua>"
+    lore:
+      - "<gray>真实名称</gray> <white>%raw_name%</white>"
+      - "<gray>备注名称</gray> <white>%note_name%</white>"
+      - "<gray>所属分组</gray> <white>%group_name%</white> <dark_gray>|</dark_gray> <gray>显示</gray> <white>%group_pin_state%</white>"
+      - "<gray>主标签</gray> %primary_tag_mm% <dark_gray>|</dark_gray> <gray>标签数</gray> <white>%tag_count%</white>"
+      - "<gray>共同好友</gray> <white>%mutual_friend_count%</white> <dark_gray>|</dark_gray> <gray>最近互动</gray> <white>%last_interaction%</white>"
+      - "<gray>亲密度</gray> <aqua>%intimacy_points%</aqua> <dark_gray>|</dark_gray> <gray>关系</gray> %intimacy_level_mm%"
+      - "<gray>在线状态</gray> <aqua>%online_scope%</aqua> <dark_gray>|</dark_gray> <gray>服务器</gray> <white>%server_name%</white>"
+      - " "
+      - "<white>左键</white> <gray>标签管理</gray> <dark_gray>|</dark_gray> <white>中键</white> <gray>查看详情</gray>"
+      - "<white>右键</white> <gray>主标签颜色</gray>"
+    actions:
+      left:
+        - "[player] friend tagpanel %raw_name%"
+      middle:
+        - "[player] friend profiledetail %raw_name%"
+      right:
+        - "[player] friend tagcolorpanel %raw_name% %primary_edit_tag%"
+  'M':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjQ4Y2UxY2YxOGFmMDVhNTc2ZDYwODEyMzAwMWI3OTFmZWRiNjIyOTExZWY4ZDM4YTMyMGRhM2JjYmY2ZmQyMCJ9fX0="
+    name: "<gradient:#5FD9FF:#82E6D2><bold>私聊会话</bold></gradient>"
+    lore:
+      - "<gray>查看最近消息并继续聊天</gray>"
+    actions:
+      left:
+        - "[player] friend chat %raw_name%"
+  'T':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjY5NjNmNzllNWYwMTUzNmQwNGJlMThjOTkzMzBjZGFjZGVlOTFiMzIzMmJhZWJlNThiYWNhMDVmNDY0MGQxYSJ9fX0="
+    name: "<aqua><bold>传送到身边</bold></aqua>"
+    lore:
+      - "<gray>按对方规则直接传送，或在需要确认时发起请求</gray>"
+      - "<gray>目标服务器</gray> <white>%server_name%</white>"
+    actions:
+      left:
+        - "[player] friend tp %raw_name%"
+        - "[close]"
+  'N':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODY3MjA4NWZmNWRmMGVlODUyMTM2ZTJkNDFhNzY5MjI5MjkxZDY2NmIyOGU5ZmIwNGQ2YzkyZjE1OGU0MmJiIn19fQ=="
+    name: "<yellow><bold>设置备注</bold></yellow>"
+    lore:
+      - "<gray>当前备注</gray> <white>%note_name%</white>"
+      - "<gray>当前说明</gray> <white>%note_detail%</white>"
+      - " "
+      - "<white>左键</white> <gray>编辑备注名称</gray>"
+      - "<white>右键</white> <gray>编辑备注说明</gray>"
+    actions:
+      left:
+        - "[note_input] %raw_name%"
+      right:
+        - "[note_detail_input] %raw_name%"
+  'G':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmVkNjY0OGNiYzYzZjVkM2I0ODNmNWUzOGQxMzJiNmYwY2JlZGUxMzU0YTQ0NWFmNTIyNWY1NmJkYzE3YTZhMyJ9fX0="
+    name: "<aqua><bold>修改分组</bold></aqua>"
+    lore:
+      - "<gray>当前分组</gray> <white>%group_name%</white>"
+      - "<gray>左键移动分组，右键查看规则</gray>"
+    actions:
+      left:
+        - "[player] friend groupmove %raw_name%"
+      right:
+        - "[player] friend grouprules -- %group_name%"
+  'F':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvM2I5NDg0M2QzNDBhYmFkYmQ2NDAxZWY0ZWM3NGRjZWM0YjY2OTY2MTA2NWJkMWEwMWY5YTU5MDVhODkxOWM3MiJ9fX0="
+    name: "<gradient:#5FD9FF:#82E6D2><bold>好友列表</bold></gradient>"
+    lore:
+      - "<gray>返回好友列表</gray>"
+    actions:
+      left:
+        - "[player] friend list"
+  'S':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjQxOTY2MjM1NzVkNmM2MzdlZTc3ZWIyODEwYzRkMDI1MTUzMDhjYmIxYTQ2ZGNjMDNlZDAyMjY5MmI1N2U0YiJ9fX0="
+    name: "<gradient:#5FD9FF:#82E6D2><bold>查看动态</bold></gradient>"
+    lore:
+      - "<gray>打开这位好友的动态列表</gray>"
+      - "<gray>未读更新</gray> <white>%status_unread_count%</white> <dark_gray>|</dark_gray> <gray>%status_unread_state%</gray>"
+    actions:
+      left:
+        - "[player] status view %raw_name%"
+        - "[close]"
+  'W':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODY3MjA4NWZmNWRmMGVlODUyMTM2ZTJkNDFhNzY5MjI5MjkxZDY2NmIyOGU5ZmIwNGQ2YzkyZjE1OGU0MmJiIn19fQ=="
+    name: "<gradient:#5FD9FF:#82E6D2><bold>查看留言墙</bold></gradient>"
+    lore:
+      - "<gray>浏览这位好友的留言墙</gray>"
+      - "<gray>未读留言</gray> <white>%wall_unread_count%</white> <dark_gray>|</dark_gray> <gray>%wall_unread_state%</gray>"
+    actions:
+      left:
+        - "[player] wall %raw_name%"
+        - "[close]"
+  'D':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODE4NzMxODQ1YzU1NjQ0ZGU4YjViODUxOTBiMGI5NGQxZGE3MmM5MTdjMTMwOTQ2YzM1ZTYyNzM2MDdmYWEzOCJ9fX0="
+    name: "<red><bold>解除好友关系</bold></red>"
+    lore:
+      - "<gray>进入确认面板后再执行删除</gray>"
+    actions:
+      left:
+        - "[player] friend removeconfirm %raw_name%"
+  'O':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2E1MTRiY2NhOGEwNDlhYWRlY2QxNDhhZTA0MzU3YWQwZDUzMzVkYjMwMDMzYTdiM2RkYjU3MWZkNjBkMTc1OCJ9fX0="
+    name: "<green><bold>在线玩家</bold></green>"
+    lore:
+      - "<gray>返回在线玩家列表</gray>"
+    actions:
+      left:
+        - "[player] friend online"
+  'I':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzdmYWU0NmRjYmM3YWYxYTczZDkxNzM0ZGIwM2RhMmFmNDFkNDIxNjEyNDY4YjdiYmJiYTZhOWY2OTkwMDEyYiJ9fX0="
+    name: "<aqua><bold>单独传送规则</bold></aqua>"
+    lore:
+      - "<gray>当前状态</gray> <white>%personal_tp%</white>"
+      - "<gray>控制这位好友对你是直达、确认还是拒绝</gray>"
+      - " "
+      - "<white>左键</white> <gray>轮换 继承全局 / 允许直达 / 需要确认 / 拒绝传送</gray>"
+    actions:
+      left:
+        - "[player] friend personal %raw_name% tp"
+        - "[player] friend profile %raw_name%"
+  'J':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDU2OGI5NjgxMDhlOTRjZWU0OWEzOTBkMGY4NDQ5YTNiZGMxYjFlNTg1NTVmMDlhZWRhNGNmYjZjYTcxMGMxMSJ9fX0="
+    name: "<aqua><bold>上线特别关注</bold></aqua>"
+    lore:
+      - "<gray>当前状态</gray> <white>%personal_notify%</white>"
+      - "<gray>控制你是否接收这位好友的上线提醒</gray>"
+      - " "
+      - "<white>左键</white> <gray>轮换 继承全局 / 允许 / 拒绝</gray>"
+    actions:
+      left:
+        - "[player] friend personal %raw_name% notify"
+        - "[player] friend profile %raw_name%"
+  'K':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjYzZTVkZGNjOGU1YWE0NTFhNzE3YmNhYzliYTYyODkxMmRlZWUyNzEyYmU0YmIxYTcwMDk4YWVkZmI5Yzk2NyJ9fX0="
+    name: "<aqua><bold>对 TA 上线可见</bold></aqua>"
+    lore:
+      - "<gray>当前状态</gray> <white>%personal_notifyme%</white>"
+      - "<gray>控制这位好友是否能收到你的上线提醒</gray>"
+      - " "
+      - "<white>左键</white> <gray>轮换 继承全局 / 允许 / 拒绝</gray>"
+    actions:
+      left:
+        - "[player] friend personal %raw_name% notifyme"
+        - "[player] friend profile %raw_name%"
+  'B':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzQ1YTExMmNmMTdlNWJmMTNiOTkzYzNkYTdmNTdmZDJhYjNhOTU1YTlhZGE2MGJiYzg5MTJmN2MwZGVhN2NjMyJ9fX0="
+    name: "<white><bold>返回主页</bold></white>"
+    actions:
+      left:
+        - "[player] friend home"

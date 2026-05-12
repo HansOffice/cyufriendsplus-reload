@@ -1,0 +1,48 @@
+title: "<gradient:#5FD9FF:#82E6D2><bold>关系时间线</bold></gradient> <dark_gray>|</dark_gray> <gray>%target_name%</gray>"
+layout:
+  - "####I####"
+  - "#EEEEEEE#"
+  - "#EEEEEEE#"
+  - "#EEEEEEE#"
+  - "#       #"
+  - "P###B###N"
+items:
+  '#':
+    material: LIGHT_BLUE_STAINED_GLASS_PANE
+    name: " "
+  'I':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjcxZDVjMDI1MzZhY2Q1Mjg3NWY4MzA1NzIwNTFiZWI0NTJjZTRhMTk3NzQzNDk2YjcwYzI2OGQ0ODkyZjNmMSJ9fX0="
+    name: "<aqua><bold>最近关系记录</bold></aqua>"
+    lore:
+      - "<gray>已收录</gray> <white>%timeline_count%</white> <gray>条记录</gray>"
+      - "<gray>最近类型</gray> <white>%timeline_latest_type%</white>"
+      - "<gray>最近时间</gray> <white>%timeline_latest_time%</white>"
+      - "<gray>左键条目前往相关页，右键返回好友详情</gray>"
+  'E':
+    material: PLAYER_HEAD
+    name: "<aqua><bold>%timeline_type%</bold></aqua>"
+    lore:
+      - "<gray>时间</gray> <white>%timeline_time%</white>"
+      - "<gray>发起方</gray> <white>%timeline_actor%</white> <dark_gray>|</dark_gray> <gray>%timeline_state%</gray>"
+      - "<gray>内容</gray> <white>%timeline_preview%</white>"
+      - "<gray>%timeline_action%</gray> <dark_gray>|</dark_gray> <gray>右键返回资料</gray>"
+  'P':
+    material: BLUE_STAINED_GLASS_PANE
+    name: "<aqua><bold>上一页</bold></aqua>"
+    actions:
+      left:
+        - "[prev_page]"
+  'N':
+    material: BLUE_STAINED_GLASS_PANE
+    name: "<aqua><bold>下一页</bold></aqua>"
+    actions:
+      left:
+        - "[next_page]"
+  'B':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzQ1YTExMmNmMTdlNWJmMTNiOTkzYzNkYTdmNTdmZDJhYjNhOTU1YTlhZGE2MGJiYzg5MTJmN2MwZGVhN2NjMyJ9fX0="
+    name: "<white><bold>返回好友详情</bold></white>"
+    actions:
+      left:
+        - "[player] friend profiledetail %raw_name%"

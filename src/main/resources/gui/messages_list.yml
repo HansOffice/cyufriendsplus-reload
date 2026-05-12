@@ -1,0 +1,71 @@
+title: "<gradient:#5FD9FF:#82E6D2><bold>消息会话</bold></gradient> <dark_gray>|</dark_gray> <gray>列表</gray>"
+layout:
+  - "####I####"
+  - "#MMMMMMM#"
+  - "#MMMMMMM#"
+  - "#MMMMMMM#"
+  - "#MMMMMMM#"
+  - "P##C#B##N"
+items:
+  '#':
+    material: LIGHT_BLUE_STAINED_GLASS_PANE
+    name: " "
+  'I':
+    material: PLAYER_HEAD
+    head: "%player_name%"
+    name: "<gradient:#5FD9FF:#82E6D2><bold>会话总览</bold></gradient>"
+    lore:
+      - "<gray>会话数量</gray> <white>%conversation_count%</white>"
+      - "<gray>未读总数</gray> <aqua>%unread_count%</aqua>"
+      - "<gray>左键打开会话，右键查看资料，Shift 右键单独已读</gray>"
+      - "<gray>命令也可用 /messages read [好友]</gray>"
+  'M':
+    material: PLAYER_HEAD
+    head: "%sender_name%"
+    name: "<aqua><bold>%sender_name%</bold></aqua>"
+    lore:
+      - "<gray>时间</gray> <white>%time%</white>"
+      - "<gray>未读数量</gray> <aqua>%unread_amount%</aqua>"
+      - "<gray>最新方向</gray> <white>%direction%</white>"
+      - "<gray>消息预览</gray> <white>%latest_preview%</white>"
+      - "<gray>当前状态</gray> <white>%online_scope%</white> <dark_gray>|</dark_gray> <gray>服务器</gray> <white>%server_name%</white>"
+      - "<white>左键</white> <gray>打开会话</gray> <dark_gray>|</dark_gray> <white>右键</white> <gray>查看资料</gray>"
+      - "<white>中键</white> <gray>聊天输入</gray> <dark_gray>|</dark_gray> <white>Shift 右键</white> <gray>仅标记已读</gray>"
+      - "<gray>命令</gray> <white>/messages read %sender_name%</white>"
+    actions:
+      left:
+        - "[player] friend chat %sender_name%"
+      right:
+        - "[player] friend profile %sender_name%"
+      middle:
+        - "[pm_input] %sender_name%"
+  'P':
+    material: BLUE_STAINED_GLASS_PANE
+    name: "<aqua><bold>上一页</bold></aqua>"
+    actions:
+      left:
+        - "[prev_page]"
+  'C':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjc1NDgzNjJhMjRjMGZhODQ1M2U0ZDkzZTY4YzU5NjlkZGJkZTU3YmY2NjY2YzAzMTljMWVkMWU4NGQ4OTA2NSJ9fX0="
+    name: "<red><bold>清空所有未读</bold></red>"
+    lore:
+      - "<gray>将所有未读私聊标记为已读</gray>"
+      - "<white>Shift 右键</white> <gray>确认清空</gray>"
+      - "<gray>命令</gray> <white>/messages clear</white>"
+    actions:
+      shift_right:
+        - "[player] messages clear"
+  'B':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzQ1YTExMmNmMTdlNWJmMTNiOTkzYzNkYTdmNTdmZDJhYjNhOTU1YTlhZGE2MGJiYzg5MTJmN2MwZGVhN2NjMyJ9fX0="
+    name: "<white><bold>返回主页</bold></white>"
+    actions:
+      left:
+        - "[player] friend home"
+  'N':
+    material: BLUE_STAINED_GLASS_PANE
+    name: "<aqua><bold>下一页</bold></aqua>"
+    actions:
+      left:
+        - "[next_page]"

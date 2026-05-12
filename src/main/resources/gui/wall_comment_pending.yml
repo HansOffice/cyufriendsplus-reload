@@ -1,0 +1,77 @@
+title: "<gradient:#5FD9FF:#82E6D2><bold>待审评论</bold></gradient> <dark_gray>|</dark_gray> <gray>#%wall_id%</gray>"
+layout:
+  - "#########"
+  - "#RRRRRRR#"
+  - "#RRRRRRR#"
+  - "#RRRRRRR#"
+  - "#RRRRRRR#"
+  - "P#B#A#X#N"
+items:
+  '#':
+    material: LIGHT_BLUE_STAINED_GLASS_PANE
+    name: " "
+  'R':
+    material: PLAYER_HEAD
+    head: "%author%"
+    name: "<aqua><bold>%author% 的待审评论</bold></aqua>"
+    lore:
+      - "<gray>留言</gray> <white>#%wall_id%</white> <dark_gray>|</dark_gray> <gray>时间</gray> <white>%time%</white>"
+      - "<white>%content%</white>"
+      - " "
+      - "<white>左键</white> <gray>通过</gray> <dark_gray>|</dark_gray> <white>右键</white> <gray>拒绝</gray>"
+      - "<white>Shift 左键</white> <gray>联系</gray> <dark_gray>|</dark_gray> <white>Shift 右键</white> <gray>资料</gray>"
+    actions:
+      left:
+        - "[player] wall commentapprove %comment_id%"
+        - "[player] wall commentpending %wall_id%"
+      right:
+        - "[player] wall commentreject %comment_id%"
+        - "[player] wall commentpending %wall_id%"
+      shift_left:
+        - "[player] friend contact %author_uid% %author%"
+        - "[close]"
+      shift_right:
+        - "[player] friend profile %author%"
+        - "[close]"
+  'B':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzQ1YTExMmNmMTdlNWJmMTNiOTkzYzNkYTdmNTdmZDJhYjNhOTU1YTlhZGE2MGJiYzg5MTJmN2MwZGVhN2NjMyJ9fX0="
+    name: "<aqua><bold>返回留言墙</bold></aqua>"
+    lore:
+      - "<gray>待审评论</gray> <white>%pending_count%</white>"
+      - "<gray>%pending_hint%</gray>"
+    actions:
+      left:
+        - "[player] wall view %owner%"
+  'A':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTc5YTVjOTVlZTE3YWJmZWY0NWM4ZGMyMjQxODk5NjQ5NDRkNTYwZjE5YTQ0ZjE5ZjhhNDZhZWYzZmVlNDc1NiJ9fX0="
+    name: "<aqua><bold>全部通过</bold></aqua>"
+    lore:
+      - "<gray>批量通过留言 <white>#%wall_id%</white> 下的全部待审评论</gray>"
+    actions:
+      left:
+        - "[player] wall commentapproveall %wall_id%"
+        - "[player] wall commentpending %wall_id%"
+  'X':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODE4NzMxODQ1YzU1NjQ0ZGU4YjViODUxOTBiMGI5NGQxZGE3MmM5MTdjMTMwOTQ2YzM1ZTYyNzM2MDdmYWEzOCJ9fX0="
+    name: "<aqua><bold>全部拒绝</bold></aqua>"
+    lore:
+      - "<gray>批量拒绝留言 <white>#%wall_id%</white> 下的全部待审评论</gray>"
+    actions:
+      left:
+        - "[player] wall commentrejectall %wall_id%"
+        - "[player] wall commentpending %wall_id%"
+  'P':
+    material: BLUE_STAINED_GLASS_PANE
+    name: "<aqua><bold>上一页</bold></aqua>"
+    actions:
+      left:
+        - "[prev_page]"
+  'N':
+    material: BLUE_STAINED_GLASS_PANE
+    name: "<aqua><bold>下一页</bold></aqua>"
+    actions:
+      left:
+        - "[next_page]"

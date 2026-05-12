@@ -1,0 +1,48 @@
+title: "<gradient:#5FD9FF:#82E6D2><bold>黑名单</bold></gradient> <dark_gray>|</dark_gray> <gray>列表</gray>"
+layout:
+  - "#########"
+  - "#BBBBBBB#"
+  - "#BBBBBBB#"
+  - "#BBBBBBB#"
+  - "#BBBBBBB#"
+  - "P###R###N"
+items:
+  '#':
+    material: LIGHT_BLUE_STAINED_GLASS_PANE
+    name: " "
+  'B':
+    material: PLAYER_HEAD
+    head: "%target_name%"
+    name: "<red><bold>%target_name%</bold></red>"
+    lore:
+      - " "
+      - "<gray>状态</gray> <red>已屏蔽</red>"
+      - "<gray>左键解除屏蔽</gray>"
+    actions:
+      left:
+        - "[player] friend unblock %target_name%"
+        - "[close]"
+  'P':
+    material: BLUE_STAINED_GLASS_PANE
+    name: "<aqua><bold>上一页</bold></aqua>"
+    actions:
+      left:
+        - "[prev_page]"
+  'N':
+    material: BLUE_STAINED_GLASS_PANE
+    name: "<aqua><bold>下一页</bold></aqua>"
+    actions:
+      left:
+        - "[next_page]"
+  'R':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzQ1YTExMmNmMTdlNWJmMTNiOTkzYzNkYTdmNTdmZDJhYjNhOTU1YTlhZGE2MGJiYzg5MTJmN2MwZGVhN2NjMyJ9fX0="
+    name: "<white><bold>返回主页 / 好友列表</bold></white>"
+    lore:
+      - "<white>左键</white> <gray>返回主页</gray>"
+      - "<white>右键</white> <gray>返回好友列表</gray>"
+    actions:
+      left:
+        - "[player] friend home"
+      right:
+        - "[player] friend list"

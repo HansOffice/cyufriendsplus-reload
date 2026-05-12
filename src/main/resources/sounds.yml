@@ -1,0 +1,260 @@
+# ---------------------------------------------------
+# CyuFriends Reload 音效配置
+# ---------------------------------------------------
+# 这份文件通常只需要改 sound
+# 如果你不熟悉音效名，就别动 volume / pitch，默认这套已经够用
+# sound  = Bukkit / Paper 音效名
+# volume = 音量，1.0 是正常大小
+# pitch  = 音调，1.0 是默认；越大越尖，越小越沉
+# 不想让某个提示响，直接删掉那一段就行
+
+# ---------------------------------------------------
+# GUI 操作
+# ---------------------------------------------------
+# 普通按钮点击
+gui-click:
+  sound: UI_BUTTON_CLICK
+  volume: 0.45
+  pitch: 1.15
+
+# 右键 / Shift 右键等次级操作
+gui-secondary-click:
+  sound: UI_BUTTON_CLICK
+  volume: 0.42
+  pitch: 0.95
+
+# 中键操作
+gui-middle-click:
+  sound: UI_BUTTON_CLICK
+  volume: 0.42
+  pitch: 1.35
+
+# 上一页 / 下一页
+gui-page:
+  sound: BLOCK_NOTE_BLOCK_HAT
+  volume: 0.38
+  pitch: 1.25
+
+# 关闭或返回
+gui-close:
+  sound: UI_BUTTON_CLICK
+  volume: 0.42
+  pitch: 0.8
+
+# 确认、通过、应用设置
+gui-confirm:
+  sound: BLOCK_NOTE_BLOCK_PLING
+  volume: 0.55
+  pitch: 1.35
+
+# 取消、拒绝、返回上层
+gui-cancel:
+  sound: BLOCK_NOTE_BLOCK_BASS
+  volume: 0.45
+  pitch: 0.8
+
+# ---------------------------------------------------
+# 好友申请
+# ---------------------------------------------------
+# 我发出好友申请
+request-sent:
+  sound: ENTITY_EXPERIENCE_ORB_PICKUP
+  volume: 0.8
+  pitch: 1.2
+
+# 我收到好友申请
+request-received:
+  sound: BLOCK_NOTE_BLOCK_PLING
+  volume: 0.8
+  pitch: 1.0
+
+# ---------------------------------------------------
+# 关系变更与通用成功提示
+# ---------------------------------------------------
+# 成为好友
+friend-added:
+  sound: ENTITY_PLAYER_LEVELUP
+  volume: 0.8
+  pitch: 1.1
+
+# 删除好友
+friend-removed:
+  sound: BLOCK_NOTE_BLOCK_BASS
+  volume: 0.7
+  pitch: 0.8
+
+# 通用成功动作
+success:
+  sound: UI_BUTTON_CLICK
+  volume: 0.8
+  pitch: 1.2
+
+# Shift + 右键玩家等快捷交互
+quick-interact:
+  sound: UI_BUTTON_CLICK
+  volume: 0.7
+  pitch: 1.3
+
+# ---------------------------------------------------
+# 好友传送
+# ---------------------------------------------------
+# 收到需要确认的传送请求
+tp-request-received:
+  sound: ENTITY_ENDERMAN_TELEPORT
+  volume: 0.7
+  pitch: 1.2
+
+# ---------------------------------------------------
+# 私聊与离线留言
+# ---------------------------------------------------
+# 我成功发出私聊 / 留言
+msg-sent:
+  sound: UI_BUTTON_CLICK
+  volume: 0.6
+  pitch: 1.3
+
+# 我收到私聊 / 留言
+msg-received:
+  sound: BLOCK_NOTE_BLOCK_PLING
+  volume: 0.8
+  pitch: 1.4
+
+# 未读消息摘要提醒
+# 如果你嫌消息中心太吵，通常先改这一段
+unread-alert:
+  sound: BLOCK_NOTE_BLOCK_CHIME
+  volume: 0.8
+  pitch: 1.0
+
+# ---------------------------------------------------
+# 动态与留言墙
+# ---------------------------------------------------
+# 发布动态
+status-publish:
+  sound: ENTITY_EXPERIENCE_ORB_PICKUP
+  volume: 0.7
+  pitch: 1.2
+
+# 动态点赞
+status-like:
+  sound: BLOCK_NOTE_BLOCK_PLING
+  volume: 0.7
+  pitch: 1.25
+
+# 动态评论
+status-comment:
+  sound: BLOCK_NOTE_BLOCK_CHIME
+  volume: 0.8
+  pitch: 1.05
+
+# 在别人留言墙发布留言
+wall-post:
+  sound: UI_BUTTON_CLICK
+  volume: 0.7
+  pitch: 1.1
+
+# 我收到新的留言墙留言提醒
+# 这是高频提醒，不想太吵就优先改这段
+wall-post-notice:
+  sound: BLOCK_NOTE_BLOCK_CHIME
+  volume: 0.8
+  pitch: 1.0
+
+# 留言点赞
+wall-like:
+  sound: BLOCK_NOTE_BLOCK_PLING
+  volume: 0.7
+  pitch: 1.2
+
+# 留言评论
+wall-comment:
+  sound: BLOCK_NOTE_BLOCK_BELL
+  volume: 0.8
+  pitch: 1.0
+
+# ---------------------------------------------------
+# 上下线提醒与提醒开关
+# ---------------------------------------------------
+# 好友上线
+friend-online:
+  sound: BLOCK_NOTE_BLOCK_PLING
+  volume: 0.7
+  pitch: 1.5
+
+# 好友下线
+friend-offline:
+  sound: BLOCK_NOTE_BLOCK_BASS
+  volume: 0.5
+  pitch: 0.9
+
+# 开启好友上下线提醒
+notify-enabled:
+  sound: UI_BUTTON_CLICK
+  volume: 0.7
+  pitch: 1.2
+
+# 关闭好友上下线提醒
+notify-disabled:
+  sound: UI_BUTTON_CLICK
+  volume: 0.7
+  pitch: 0.8
+
+# 允许自己的上下线广播给好友
+notifyme-enabled:
+  sound: UI_BUTTON_CLICK
+  volume: 0.7
+  pitch: 1.2
+
+# 不再广播自己的上下线给好友
+notifyme-disabled:
+  sound: UI_BUTTON_CLICK
+  volume: 0.7
+  pitch: 0.8
+
+# ---------------------------------------------------
+# 好友传送模式切换
+# ---------------------------------------------------
+# 切到“允许直达”
+tp-toggle-enabled:
+  sound: ENTITY_EXPERIENCE_ORB_PICKUP
+  volume: 0.7
+  pitch: 1.2
+
+# 切到“需要确认”
+tp-toggle-confirm:
+  sound: UI_BUTTON_CLICK
+  volume: 0.7
+  pitch: 1.0
+
+# 切到“拒绝传送”
+tp-toggle-disabled:
+  sound: BLOCK_NOTE_BLOCK_BASS
+  volume: 0.7
+  pitch: 0.8
+
+# ---------------------------------------------------
+# 生日
+# ---------------------------------------------------
+# 成功设置生日
+birthday-set-success:
+  sound: ENTITY_EXPERIENCE_ORB_PICKUP
+  volume: 0.8
+  pitch: 1.2
+
+# 生日设置失败 / 输入无效
+birthday-set-failed:
+  sound: BLOCK_NOTE_BLOCK_BASS
+  volume: 0.7
+  pitch: 0.8
+
+# 玩家自己收到生日提醒
+birthday-reminder-self:
+  sound: ENTITY_PLAYER_LEVELUP
+  volume: 0.9
+  pitch: 1.2
+
+# 玩家收到好友生日提醒
+birthday-reminder-friend:
+  sound: BLOCK_NOTE_BLOCK_CHIME
+  volume: 0.8
+  pitch: 1.1

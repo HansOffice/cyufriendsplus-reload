@@ -1,0 +1,47 @@
+title: "<gradient:#5FD9FF:#82E6D2><bold>好友分组</bold></gradient> <dark_gray>|</dark_gray> <gray>列表</gray>"
+layout:
+  - "#########"
+  - "#GGGGGGG#"
+  - "#GGGGGGG#"
+  - "#GGGGGGG#"
+  - "#GGGGGGG#"
+  - "P###B###N"
+items:
+  '#':
+    material: LIGHT_BLUE_STAINED_GLASS_PANE
+    name: " "
+  'G':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmVkNjY0OGNiYzYzZjVkM2I0ODNmNWUzOGQxMzJiNmYwY2JlZGUxMzU0YTQ0NWFmNTIyNWY1NmJkYzE3YTZhMyJ9fX0="
+    name: "<aqua><bold>%group_name%</bold></aqua>"
+    lore:
+      - "<gray>成员数量</gray> <white>%group_count%</white>"
+      - "<gray>显示规则</gray> <white>%group_pin_state%</white>"
+      - "<white>左键</white> <gray>成员</gray> <dark_gray>|</dark_gray> <white>右键</white> <gray>规则</gray>"
+      - "<white>中键</white> <gray>整组移动</gray>"
+    actions:
+      left:
+        - "[player] friend groupmembers %group_name%"
+      middle:
+        - "[player] friend groupmoveall %group_name% --"
+      right:
+        - "[player] friend grouprules -- %group_name%"
+  'P':
+    material: BLUE_STAINED_GLASS_PANE
+    name: "<aqua><bold>上一页</bold></aqua>"
+    actions:
+      left:
+        - "[prev_page]"
+  'N':
+    material: BLUE_STAINED_GLASS_PANE
+    name: "<aqua><bold>下一页</bold></aqua>"
+    actions:
+      left:
+        - "[next_page]"
+  'B':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzQ1YTExMmNmMTdlNWJmMTNiOTkzYzNkYTdmNTdmZDJhYjNhOTU1YTlhZGE2MGJiYzg5MTJmN2MwZGVhN2NjMyJ9fX0="
+    name: "<white><bold>返回好友列表</bold></white>"
+    actions:
+      left:
+        - "[player] friend list"

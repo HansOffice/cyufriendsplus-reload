@@ -1,0 +1,85 @@
+title: "<gradient:#5FD9FF:#82E6D2><bold>留言墙</bold></gradient> <dark_gray>|</dark_gray> <gray>%target_name%</gray>"
+layout:
+  - "#########"
+  - "#WWWWWWW#"
+  - "#WWWWWWW#"
+  - "#WWWWWWW#"
+  - "#WWWWWWW#"
+  - "P#R#BIS#N"
+items:
+  '#':
+    material: LIGHT_BLUE_STAINED_GLASS_PANE
+    name: " "
+  'W':
+    material: PLAYER_HEAD
+    head: "%author%"
+    name: "<aqua><bold>%author% 的留言</bold></aqua>"
+    lore:
+      - "<gray>%time%</gray> <dark_gray>|</dark_gray> <aqua>%visibility%</aqua>"
+      - "<gray>阅读</gray> <white>%unread_state%</white>"
+      - "<gray>审核</gray> <white>%approve_state%</white> <dark_gray>|</dark_gray> <gray>置顶</gray> <white>%pin_state%</white>"
+      - "<gray>互动</gray> <white>%like_count%</white> 赞 <dark_gray>|</dark_gray> <white>%comment_count%</white> 评 <dark_gray>|</dark_gray> <white>%like_state%</white>"
+      - "%wall_pending_comment_mm%"
+      - " "
+      - "<white>%content%</white>"
+      - " "
+      - "%wall_like_hint_mm% <dark_gray>|</dark_gray> %wall_comment_hint_mm%"
+      - "%wall_review_hint_mm% <dark_gray>|</dark_gray> %wall_contact_hint_mm%"
+      - "%wall_pin_hint_mm%"
+      - "%wall_delete_hint_mm%"
+  'R':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTlhNDFkYjA5MDBkYTk4MzE3NmI4Mjc5MTNhZGQ5NWM4ZjgzYmVjYmFmMWNjOThiN2NmZDAyYzE5ZGQ2NDRmOSJ9fX0="
+    name: "<aqua><bold>待审队列</bold></aqua>"
+    lore:
+      - "<gray>待审留言</gray> <white>%pending_count%</white> <dark_gray>|</dark_gray> <gray>待审评论</gray> <white>%pending_reply_count%</white>"
+      - "<gray>%pending_hint%</gray>"
+      - "<gray>%pending_reply_hint%</gray>"
+      - "<white>左键</white> <gray>打开待审列表</gray>"
+    actions:
+      left:
+        - "[player] wall pending %owner%"
+  'I':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODY3MjA4NWZmNWRmMGVlODUyMTM2ZTJkNDFhNzY5MjI5MjkxZDY2NmIyOGU5ZmIwNGQ2YzkyZjE1OGU0MmJiIn19fQ=="
+    name: "<aqua><bold>发布留言</bold></aqua>"
+    lore:
+      - "<gray>当前可见留言</gray> <white>%visible_count%</white>"
+      - "<white>左键</white> <gray>打开聊天输入</gray>"
+      - "<gray>需要好友可见或私密时可用 /wall post 命令</gray>"
+      - "<gray>更多命令说明可查看 /friend help</gray>"
+    actions:
+      left:
+        - "[wall_input] %owner%"
+        - "[close]"
+  'B':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzQ1YTExMmNmMTdlNWJmMTNiOTkzYzNkYTdmNTdmZDJhYjNhOTU1YTlhZGE2MGJiYzg5MTJmN2MwZGVhN2NjMyJ9fX0="
+    name: "<white><bold>%wall_back_label%</bold></white>"
+    lore:
+      - "<gray>返回上一层社交入口</gray>"
+      - "<gray>%wall_unread_summary%</gray>"
+    actions:
+      left:
+        - "[player] %wall_back_command%"
+  'S':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjQxOTY2MjM1NzVkNmM2MzdlZTc3ZWIyODEwYzRkMDI1MTUzMDhjYmIxYTQ2ZGNjMDNlZDAyMjY5MmI1N2U0YiJ9fX0="
+    name: "<aqua><bold>%wall_status_label%</bold></aqua>"
+    lore:
+      - "<gray>切换查看同一位玩家的动态</gray>"
+    actions:
+      left:
+        - "[player] %wall_status_command%"
+  'P':
+    material: BLUE_STAINED_GLASS_PANE
+    name: "<aqua><bold>上一页</bold></aqua>"
+    actions:
+      left:
+        - "[prev_page]"
+  'N':
+    material: BLUE_STAINED_GLASS_PANE
+    name: "<aqua><bold>下一页</bold></aqua>"
+    actions:
+      left:
+        - "[next_page]"

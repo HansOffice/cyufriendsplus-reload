@@ -1,0 +1,167 @@
+title: "<gradient:#5FD9FF:#82E6D2><bold>个人主页</bold></gradient> <dark_gray>|</dark_gray> <gray>%player_name%</gray>"
+layout:
+  - "#########"
+  - "#H#     #"
+  - "# # RSWT#"
+  - "#F# MGBD#"
+  - "#O# ACQY#"
+  - "#########"
+items:
+  '#':
+    material: LIGHT_BLUE_STAINED_GLASS_PANE
+    name: " "
+  'H':
+    material: PLAYER_HEAD
+    head: "%player_name%"
+    name: "<aqua><bold>%player_name%</bold></aqua>"
+    lore:
+      - "<gray>%player_uid_label%</gray> <white>%player_uid_display%</white>"
+      - "<gray>签名</gray> <white>%bio%</white>"
+      - "<gray>好友</gray> <white>%friend_count%</white> <dark_gray>|</dark_gray> <gray>在线</gray> <aqua>%friend_online_count%</aqua> <dark_gray>|</dark_gray> <gray>分组</gray> <white>%group_count%</white>"
+      - "<gray>申请</gray> <yellow>%request_count%</yellow>/<white>%sent_request_count%</white> <dark_gray>|</dark_gray> <gray>消息</gray> <aqua>%unread_count%</aqua> <dark_gray>|</dark_gray> <gray>通知</gray> <yellow>%notification_count%</yellow>"
+      - "<gray>生日</gray> <white>%birthday%</white> <dark_gray>|</dark_gray> <gray>黑名单</gray> <white>%blacklist_count%</white>"
+  'R':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjM2OTZlNjYwZDMxMWFlOWQwYzQ1Nzc1ZTk3MjBkYWUzYjMxMGZlZjYzNjBmNTMzMTBjOWJjOTcwYmI3ZjI1In19fQ=="
+    name: "<yellow><bold>好友申请</bold></yellow>"
+    lore:
+      - "<gray>待处理申请</gray> <white>%request_count%</white>"
+      - "<gray>查看收到的好友申请，支持直接同意或拒绝</gray>"
+      - "<gray>当前已发出</gray> <white>%sent_request_count%</white> <gray>条申请</gray>"
+    actions:
+      left:
+        - "[player] friend requests"
+  'Q':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDZiY2EwZjg3MmQ1NmY2MDk2ZTg4YTVkMmUzM2VjOTE1ZmU3NDQ0Y2M1M2U0MDYzZjNhYTNiNjFjMDI2ZjA3MSJ9fX0="
+    name: "<yellow><bold>通知中心</bold></yellow>"
+    lore:
+      - "<gray>综合通知</gray> <white>%notification_count%</white>"
+      - "<gray>未读消息</gray> <aqua>%unread_count%</aqua> <dark_gray>|</dark_gray> <gray>待审</gray> <white>%pending_wall_count%</white>/<white>%pending_reply_count%</white>"
+      - "<gray>今日生日</gray> <white>%birthday_today_count%</white> <dark_gray>|</dark_gray> <gray>近期生日</gray> <white>%birthday_upcoming_count%</white>"
+    actions:
+      left:
+        - "[player] friend notifications"
+  'Y':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZGU0ODU4ZWUyMzI2MmEzMTRhMGQwZGExN2Q4NzEzOWI5MzhlMzBlZjk2MmQwNDE3N2E4NjVhNGIwZDM4MTA2ZSJ9fX0="
+    name: "<green><bold>推荐好友</bold></green>"
+    lore:
+      - "<gray>推荐数量</gray> <white>%recommend_count%</white>"
+      - "<gray>根据共同好友发现更值得添加的人</gray>"
+    actions:
+      left:
+        - "[player] friend recommend"
+  'S':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjQxOTY2MjM1NzVkNmM2MzdlZTc3ZWIyODEwYzRkMDI1MTUzMDhjYmIxYTQ2ZGNjMDNlZDAyMjY5MmI1N2U0YiJ9fX0="
+    name: "<gradient:#5FD9FF:#82E6D2><bold>我的动态</bold></gradient>"
+    lore:
+      - "<gray>动态数量</gray> <white>%status_count%</white>"
+      - "<gray>查看或发布自己的动态</gray>"
+    actions:
+      left:
+        - "[player] status view %player_name%"
+  'W':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDMxYmRiOWQ0MmJmNTVlYjYwN2QzOTQ4Yjk0MjdmNzAxMGQ4MmFhODQyMTRjNDI1ZmYzNDVhMzNjZDJiOCJ9fX0="
+    name: "<gradient:#5FD9FF:#82E6D2><bold>我的留言墙</bold></gradient>"
+    lore:
+      - "<gray>留言数量</gray> <white>%wall_count%</white>"
+      - "<gray>查看好友给你留下的内容</gray>"
+    actions:
+      left:
+        - "[player] wall %player_name%"
+  'T':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmUzZjQ2ZmNjMThjN2VmMGEyZmVmMmY4OTYzZDFlNDc2MWYyMDUxZmRiMGM4YjE5YjdmODkyMzJjZWNlNTg3ZSJ9fX0="
+    name: "<yellow><bold>设置中心</bold></yellow>"
+    lore:
+      - "<gray>好友提醒</gray> <white>%notify_state%</white>"
+      - "<gray>上线广播</gray> <white>%notifyme_state%</white>"
+      - "<gray>好友传送</gray> <white>%tp_state%</white>"
+    actions:
+      left:
+        - "[player] friend settings"
+  'F':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvM2I5NDg0M2QzNDBhYmFkYmQ2NDAxZWY0ZWM3NGRjZWM0YjY2OTY2MTA2NWJkMWEwMWY5YTU5MDVhODkxOWM3MiJ9fX0="
+    name: "<gradient:#5FD9FF:#82E6D2><bold>好友列表</bold></gradient>"
+    lore:
+      - "<gray>好友总数</gray> <white>%friend_count%</white>"
+      - "<gray>在线好友</gray> <aqua>%friend_online_count%</aqua>"
+      - "<gray>打开好友列表，查看资料和快捷操作</gray>"
+    actions:
+      left:
+        - "[player] friend list"
+  'M':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvY2QwMDA3MzExZjY1ODk0NTg2Nzg4NDk0NTcyMmE0MzBjNTI3ZjMyMjNiOTA5NjEyZTQ1ZDAzMjA4OTZlYWU5YSJ9fX0="
+    name: "<aqua><bold>未读消息</bold></aqua>"
+    lore:
+      - "<gray>未读数量</gray> <white>%unread_count%</white>"
+      - "<gray>打开私聊和离线留言界面</gray>"
+    actions:
+      left:
+        - "[player] friend messages"
+  'G':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzczZThiZDNjNDNjNDUxNGM3NjQ4MWNhMWRhZjU1MTQ5ZGZjOTNiZDFiY2ZhOGFiOTQzN2I5ZjdlYjMzOTJkOSJ9fX0="
+    name: "<aqua><bold>好友分组</bold></aqua>"
+    lore:
+      - "<gray>当前分组数</gray> <white>%group_count%</white>"
+      - "<gray>整理不同类型的好友</gray>"
+    actions:
+      left:
+        - "[player] friend grouplist"
+  'B':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzY4MzQ2NWY3ZDBkYTJkZDA1NGQwNGViOTc0ZDdkYjkyOTA0NzgxMTc3ZmQwODAzODViNmJjOGFjMDEyN2IwOSJ9fX0="
+    name: "<red><bold>黑名单</bold></red>"
+    lore:
+      - "<gray>已屏蔽玩家</gray> <white>%blacklist_count%</white>"
+      - "<gray>查看或解除屏蔽玩家</gray>"
+    actions:
+      left:
+        - "[player] friend blacklist"
+  'D':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGVmY2FlZDVlY2YxMTczMzQ5MGIxMGQwZTdjZjA0MDVkNWYzM2U5YjQ2N2MyYWIyYmVkMTYxYTVjOTcwNDk5ZSJ9fX0="
+    name: "<yellow><bold>设置生日</bold></yellow>"
+    lore:
+      - "<gray>当前生日</gray> <white>%birthday%</white>"
+      - "<gray>点击后在聊天栏输入 yyyy-MM-dd</gray>"
+    actions:
+      left:
+        - "[birthday_input]"
+  'O':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2E1MTRiY2NhOGEwNDlhYWRlY2QxNDhhZTA0MzU3YWQwZDUzMzVkYjMwMDMzYTdiM2RkYjU3MWZkNjBkMTc1OCJ9fX0="
+    name: "<green><bold>在线玩家</bold></green>"
+    lore:
+      - "<gray>当前在线</gray> <white>%online_count%</white>"
+      - "<gray>快速查看还能添加谁为好友</gray>"
+    actions:
+      left:
+        - "[player] friend online"
+  'A':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTAzNWM1MjgwMzZiMzg0YzUzYzljOGExYTEyNTY4NWUxNmJmYjM2OWMxOTdjYzlmMDNkZmEzYjgzNWIxYWE1NSJ9fX0="
+    name: "<aqua><bold>添加好友</bold></aqua>"
+    lore:
+      - "<gray>打开在线玩家列表并发起申请</gray>"
+      - "<gray>适合快速找到想添加的人</gray>"
+    actions:
+      left:
+        - "[player] friend online"
+  'C':
+    material: PLAYER_HEAD
+    head: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODY3MjA4NWZmNWRmMGVlODUyMTM2ZTJkNDFhNzY5MjI5MjkxZDY2NmIyOGU5ZmIwNGQ2YzkyZjE1OGU0MmJiIn19fQ=="
+    name: "<aqua><bold>修改签名</bold></aqua>"
+    lore:
+      - "<gray>当前签名预览</gray> <white>%bio%</white>"
+      - "<gray>最多 <white>%bio_limit%</white> 个字符，主页会自动省略超长部分</gray>"
+      - "<gray>点击后在聊天栏输入新的个人签名</gray>"
+    actions:
+      left:
+        - "[bio_input]"
