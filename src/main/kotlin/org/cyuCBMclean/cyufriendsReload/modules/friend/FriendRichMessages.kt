@@ -3,13 +3,10 @@ package org.cyuCBMclean.cyufriendsReload.modules.friend
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.ClickEvent
 import net.kyori.adventure.text.event.HoverEvent
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
-import net.md_5.bungee.api.chat.BaseComponent
-import net.md_5.bungee.api.chat.TextComponent
-import net.md_5.bungee.api.chat.ClickEvent as BungeeClickEvent
-import net.md_5.bungee.api.chat.HoverEvent as BungeeHoverEvent
+import net.kyori.adventure.text.serializer.bungeecord.BungeeComponentSerializer
 import org.bukkit.entity.Player
 import org.cyuCBMclean.cyufriendsReload.CyufriendsReload
+import org.cyuCBMclean.cyufriendsReload.core.config.ColorCompat
 import org.cyuCBMclean.cyufriendsReload.modules.chat.ChatConversationSummary
 import org.cyuCBMclean.cyufriendsReload.modules.social.PendingWallReplyEntry
 import org.cyuCBMclean.cyufriendsReload.modules.social.WallEntry
@@ -21,14 +18,11 @@ import org.cyuCBMclean.cyufriendsReload.extension.sendLang
 object FriendRichMessages {
 
     private val lineTimeFormatter = DateTimeFormatter.ofPattern("MM-dd HH:mm")
-    private val spigotLegacy = LegacyComponentSerializer.legacySection()
+    private val bungeeSerializer: BungeeComponentSerializer
+        get() = if (ColorCompat.rgbSupported) BungeeComponentSerializer.get() else BungeeComponentSerializer.legacy()
 
     private fun message(key: String, placeholders: Map<String, String> = emptyMap()): Component {
         return CyufriendsReload.instance.langEngine.component(key, placeholders) ?: Component.empty()
-    }
-
-    private fun legacyMessage(key: String, placeholders: Map<String, String> = emptyMap()): String {
-        return spigotLegacy.serialize(message(key, placeholders))
     }
 
     private fun clickable(
@@ -40,27 +34,6 @@ object FriendRichMessages {
         return message(buttonKey, placeholders)
             .clickEvent(ClickEvent.runCommand(command))
             .hoverEvent(HoverEvent.showText(message(hoverKey, placeholders)))
-    }
-
-    private fun spigotClickable(
-        buttonKey: String,
-        hoverKey: String,
-        command: String,
-        placeholders: Map<String, String> = emptyMap()
-    ): Array<BaseComponent> {
-        val button = TextComponent.fromLegacyText(legacyMessage(buttonKey, placeholders))
-        val hover = TextComponent.fromLegacyText(legacyMessage(hoverKey, placeholders))
-        val clickEvent = BungeeClickEvent(BungeeClickEvent.Action.RUN_COMMAND, command)
-        val hoverEvent = BungeeHoverEvent(BungeeHoverEvent.Action.SHOW_TEXT, hover)
-        button.forEach {
-            it.clickEvent = clickEvent
-            it.hoverEvent = hoverEvent
-        }
-        return button
-    }
-
-    private fun append(target: MutableList<BaseComponent>, components: Array<BaseComponent>) {
-        components.forEach(target::add)
     }
 
     private fun preview(content: String, limit: Int = 24): String {
@@ -79,21 +52,13 @@ object FriendRichMessages {
     fun sendHelpPager(player: Player, currentPage: Int, totalPages: Int) {
         val previousPage = if (currentPage <= 1) totalPages else currentPage - 1
         val nextPage = if (currentPage >= totalPages) 1 else currentPage + 1
-        val line = mutableListOf<BaseComponent>()
-        append(line, spigotClickable("help-json-button-prev", "help-json-hover-prev", "/friend help $previousPage"))
-        append(line, TextComponent.fromLegacyText(" "))
-        append(
-            line,
-            TextComponent.fromLegacyText(
-                legacyMessage(
-                    "help-json-page-info",
-                    mapOf("current_page" to currentPage.toString(), "total_pages" to totalPages.toString())
-                )
-            )
-        )
-        append(line, TextComponent.fromLegacyText(" "))
-        append(line, spigotClickable("help-json-button-next", "help-json-hover-next", "/friend help $nextPage"))
-        player.spigot().sendMessage(*line.toTypedArray())
+        val line = Component.empty()
+            .append(clickable("help-json-button-prev", "help-json-hover-prev", "/friend help $previousPage"))
+            .append(Component.text(" "))
+            .append(message("help-json-page-info", mapOf("current_page" to currentPage.toString(), "total_pages" to totalPages.toString())))
+            .append(Component.text(" "))
+            .append(clickable("help-json-button-next", "help-json-hover-next", "/friend help $nextPage"))
+        player.spigot().sendMessage(*bungeeSerializer.serialize(line))
     }
 
     fun sendFriendRequestPrompt(player: Player, requesterName: String, requesterUid: String, note: String? = null) {
