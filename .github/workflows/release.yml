@@ -37,6 +37,7 @@ jobs:
           version="${GITHUB_REF_NAME#v}"
           mkdir -p release
           cp "target/cyufriends-reload-${version}.jar" "release/cyufriends-reload-${version}.jar"
+          cp "target/cyufriends-reload-${version}-legacy-all.jar" "release/cyufriends-reload-${version}-legacy-all.jar"
           cp "target/cyufriends-reload-${version}-api.jar" "release/cyufriends-reload-${version}-api.jar"
 
       - name: Create GitHub release
@@ -46,9 +47,10 @@ jobs:
           body: |
             CyuFriends Reload ${{ github.ref_name }}
 
-            - 插件本体见 release 附件
-            - API 依赖见 release 附件
-            - 当前公开版按单服发布，跨服代理端暂不随本版本发布
+            - 普通服主下载不带 `legacy-all` 的插件本体 jar
+            - 需要完整依赖包时下载带 `legacy-all` 的 jar
+            - 附属插件开发者可使用带 `api` 的 API jar
+            - 跨服同步需要另行安装配套代理端插件；代理端源码不包含在本开源仓库中
           files: |
             release/*.jar
 
