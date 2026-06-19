@@ -11,6 +11,7 @@ import org.cyuCBMclean.cyufriendsReload.extension.isRemoteOnline
 import org.cyuCBMclean.cyufriendsReload.extension.onlineScope
 import org.cyuCBMclean.cyufriendsReload.extension.onlineServerName
 import org.cyuCBMclean.cyufriendsReload.extension.playAudio
+import org.cyuCBMclean.cyufriendsReload.extension.resolvePlayerName
 import org.cyuCBMclean.cyufriendsReload.extension.sendLang
 import org.cyuCBMclean.cyufriendsReload.extension.uid
 import org.cyuCBMclean.cyufriendsReload.integration.hook.CyuIdHook
@@ -81,11 +82,11 @@ class FriendsListView(
     }
 
     override fun onElementClick(element: String, clickType: CyuClickType) {
+        val template = itemsMap['F'] ?: return
         if (clickType == CyuClickType.MIDDLE) {
             cyclePrimaryTag(element)
             return
         }
-        val template = itemsMap['F'] ?: return
         val nodes = template.actions[clickType] ?: template.actions[CyuClickType.ALL] ?: return
         val replacements = replacements(element)
         ActionRegistry.execute(
@@ -179,7 +180,7 @@ class FriendsListView(
     }
 
     private fun replacements(friendUid: String): Map<String, String> {
-        val rawName = CyuIdHook.getName(friendUid) ?: "未知玩家"
+        val rawName = CyufriendsReload.instance.resolvePlayerName(friendUid) ?: friendUid
         val friendData = module.friendManager.getFriendData(player.uid, friendUid)
         val displayName = friendData?.noteName ?: rawName
         val noteName = friendData?.noteName ?: "未设置"
@@ -227,7 +228,7 @@ class FriendsListView(
     private fun cyclePrimaryTag(friendUid: String) {
         val friendData = module.friendManager.getFriendData(player.uid, friendUid) ?: return
         val orderedTags = friendData.orderedTags()
-        val targetName = CyuIdHook.getName(friendUid) ?: friendUid
+        val targetName = CyufriendsReload.instance.resolvePlayerName(friendUid) ?: friendUid
         if (orderedTags.size <= 1) {
             player.sendLang("tag-cycle-unavailable", mapOf("target" to targetName))
             return

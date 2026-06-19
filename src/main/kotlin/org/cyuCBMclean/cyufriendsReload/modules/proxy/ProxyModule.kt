@@ -67,6 +67,7 @@ class ProxyModule(
     private val pendingDirectMessages = ConcurrentHashMap<String, PendingDirectDelivery>()
     private val pendingTeleportPrechecks = ConcurrentHashMap<String, PendingTeleportPrecheck>()
 
+    private var presenceRefreshTask: CyuTask? = null
     private var snapshotRequested = false
     private var lastSendAt = 0L
     private var lastSendFailureAt = 0L
@@ -86,6 +87,7 @@ class ProxyModule(
         if (settings!!.enabled && settings!!.hasSecureSecret()) {
             registerChannels(settings!!.channel)
             publishLocalPresence()
+            startPresenceRefresh(settings!!)
         } else if (settings!!.enabled) {
             plugin.logger.severe("cyufriends-reload proxy 已阻止启动：proxy.secret 仍为默认值，请先修改配置。")
             settings = settings!!.copy(enabled = false)
@@ -94,6 +96,8 @@ class ProxyModule(
 
     override fun onDisable() {
         settings?.takeIf { it.enabled }?.let { unregisterChannels(it.channel) }
+        presenceRefreshTask?.cancel()
+        presenceRefreshTask = null
         pendingDirectMessages.values.forEach { it.timeoutTask.cancel() }
         pendingDirectMessages.clear()
         pendingTeleportPrechecks.values.forEach { it.timeoutTask.cancel() }
@@ -106,6 +110,8 @@ class ProxyModule(
 
     override fun reloadConfig() {
         settings?.takeIf { it.enabled }?.let { unregisterChannels(it.channel) }
+        presenceRefreshTask?.cancel()
+        presenceRefreshTask = null
         pendingDirectMessages.values.forEach { it.timeoutTask.cancel() }
         pendingDirectMessages.clear()
         pendingTeleportPrechecks.values.forEach { it.timeoutTask.cancel() }
@@ -121,6 +127,7 @@ class ProxyModule(
         if (settings!!.enabled && settings!!.hasSecureSecret()) {
             registerChannels(settings!!.channel)
             publishLocalPresence()
+            startPresenceRefresh(settings!!)
         } else if (settings!!.enabled) {
             plugin.logger.severe("cyufriends-reload proxy 已阻止重载启用：proxy.secret 仍为默认值，请先修改配置。")
             settings = settings!!.copy(enabled = false)
@@ -144,11 +151,13 @@ class ProxyModule(
 
     @EventHandler(priority = EventPriority.MONITOR)
     fun onQuit(event: PlayerQuitEvent) {
-        localPlayers.remove(event.player.uid)
-        val current = settings ?: return
-        if (!current.enabled) return
-        DebugLogger.debug(2) { "Proxy 跟踪玩家离开: ${event.player.name}(${event.player.uid})" }
-        gateway.publishQuit(event.player.uid)
+        val uid = event.player.uid
+        val current = settings
+        if (current?.enabled == true) {
+            DebugLogger.debug(2) { "Proxy 跟踪玩家离开: ${event.player.name}($uid)" }
+            gateway.publishQuit(uid, event.player)
+        }
+        localPlayers.remove(uid)
     }
 
     override fun onPluginMessageReceived(channel: String, player: Player, message: ByteArray) {
@@ -764,6 +773,20 @@ class ProxyModule(
         }
     }
 
+    private fun startPresenceRefresh(current: ProxySettings) {
+        presenceRefreshTask?.cancel()
+        val periodTicks = current.presenceRefreshSeconds * 20L
+        presenceRefreshTask = CyuConcurrency.scheduler.runTimerAsync(plugin, periodTicks, periodTicks) {
+            if (settings?.enabled != true) return@runTimerAsync
+            Bukkit.getOnlinePlayers().forEach { player ->
+                localPlayers[player.uid] = player
+                val headSource = resolveHeadSource(player)
+                gateway.publishJoin(player.uid, player.name, headSource)
+            }
+        }
+        DebugLogger.debug(1) { "Proxy 在线刷新已启动，间隔=${current.presenceRefreshSeconds}s" }
+    }
+
     fun localPlayerCarrier(): Player? = localPlayers.values.firstOrNull()
 
     fun sendPluginMessage(carrier: Player, payload: ByteArray) {
@@ -771,6 +794,16 @@ class ProxyModule(
             DebugLogger.debug(2) { "通过玩家 ${carrier.name} 发送插件消息，bytes=${payload.size}" }
             carrier.sendPluginMessage(plugin, settings?.channel ?: return@runEntity, payload)
         }
+    }
+
+    fun sendPluginMessageNow(carrier: Player, payload: ByteArray): Boolean {
+        val channel = settings?.channel ?: return false
+        return runCatching {
+            DebugLogger.debug(2) { "立即通过玩家 ${carrier.name} 发送插件消息，bytes=${payload.size}" }
+            carrier.sendPluginMessage(plugin, channel, payload)
+        }.onFailure { exception ->
+            recordProxySendFailure("插件消息立即发送失败: ${exception.message ?: exception.javaClass.simpleName}")
+        }.isSuccess
     }
 
     private fun resolveHeadSource(player: Player): String? {

@@ -25,7 +25,7 @@ items:
       - "<gray>解除与 <white>%friend_name%</white> 的好友关系</gray>"
     actions:
       left:
-        - "[player] friend remove %raw_name%"
+        - "[player] friend remove %uid%"
         - "[close]"
   'X':
     material: PLAYER_HEAD

@@ -21,11 +21,11 @@ items:
       - "<gray>左键打开添加好友确认界面</gray>"
   'O':
     material: PLAYER_HEAD
-    head: "%target_name%"
     name: "<green><bold>%target_name%</bold></green>"
     lore:
       - " "
-      - "<gray>当前在线玩家</gray>"
+      - "<gray>在线来源</gray> <white>%target_online_source%</white>"
+      - "<gray>所在服务器</gray> <white>%target_server_name%</white>"
       - " "
       - "<white>左键</white> <gray>打开添加好友确认</gray>"
     actions:

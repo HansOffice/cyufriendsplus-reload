@@ -41,6 +41,34 @@ fun CyufriendsReload.onlineCountGlobally(uids: Iterable<String>): Int {
     return uids.count(::isPlayerOnlineGlobally)
 }
 
+data class GlobalOnlineEntry(
+    val uid: String,
+    val name: String,
+    val serverId: String?,
+    val remote: Boolean
+)
+
+fun CyufriendsReload.globalOnlineEntries(): List<GlobalOnlineEntry> {
+    val localServerId = proxyModule()?.settings?.serverId ?: "local"
+    val local = CyuIdHook.onlineEntriesSnapshot().map { (uid, name) ->
+        GlobalOnlineEntry(uid = uid, name = name, serverId = localServerId, remote = false)
+    }
+    val localUids = local.mapTo(hashSetOf()) { it.uid }
+    val remote = proxyModule()
+        ?.remotePresence
+        ?.all()
+        ?.asSequence()
+        ?.filter { it.uid !in localUids }
+        ?.map { GlobalOnlineEntry(uid = it.uid, name = it.name, serverId = it.serverId, remote = true) }
+        ?.toList()
+        ?: emptyList()
+    return local + remote
+}
+
+fun CyufriendsReload.globalOnlineCount(): Int {
+    return globalOnlineEntries().size
+}
+
 fun CyufriendsReload.onlineServerId(uid: String): String? {
     return if (CyuIdHook.isOnlineLocally(uid)) {
         proxyModule()?.settings?.serverId ?: "local"

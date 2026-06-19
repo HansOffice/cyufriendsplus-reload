@@ -6,12 +6,12 @@
 
     <groupId>org.cyuCBMclean</groupId>
     <artifactId>cyufriends-reload</artifactId>
-    <version>1.0</version>
+    <version>1.0.4</version>
     <packaging>jar</packaging>
 
     <properties>
         <java.version>1.8</java.version>
-        <kotlin.version>2.3.20</kotlin.version>
+        <kotlin.version>2.2.21</kotlin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <adventure.version>4.14.0</adventure.version>
     </properties>
@@ -161,6 +161,8 @@
                         <goals><goal>shade</goal></goals>
                         <configuration>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
+                            <shadedArtifactAttached>true</shadedArtifactAttached>
+                            <shadedClassifierName>legacy-all</shadedClassifierName>
                             <artifactSet>
                                 <excludes>
                                     <exclude>me.clip:placeholderapi</exclude>

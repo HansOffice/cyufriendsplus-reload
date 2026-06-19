@@ -4,6 +4,7 @@ import com.github.benmanes.caffeine.cache.Caffeine
 import me.clip.placeholderapi.expansion.PlaceholderExpansion
 import org.bukkit.OfflinePlayer
 import org.cyuCBMclean.cyufriendsReload.CyufriendsReload
+import org.cyuCBMclean.cyufriendsReload.extension.globalOnlineEntries
 import org.cyuCBMclean.cyufriendsReload.extension.isPlayerOnlineGlobally
 import org.cyuCBMclean.cyufriendsReload.extension.isRemoteOnline
 import org.cyuCBMclean.cyufriendsReload.extension.onlineScope
@@ -389,7 +390,9 @@ class CyuFriendsPlaceholderExpansion(
     }
 
     private fun sortedOnlineEntries(): List<Pair<String, String>> {
-        return CyuIdHook.onlineEntriesSnapshot().sortedBy { it.second.lowercase() }
+        return plugin.globalOnlineEntries()
+            .sortedWith(compareBy({ it.remote }, { it.name.lowercase() }))
+            .map { it.uid to it.name }
     }
 
     private fun canUseLivePlayerPermissions(): Boolean {

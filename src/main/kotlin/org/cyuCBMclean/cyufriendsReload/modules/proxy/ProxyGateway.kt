@@ -2,6 +2,7 @@ package org.cyuCBMclean.cyufriendsReload.modules.proxy
 
 import org.cyuCBMclean.cyufriendsReload.core.debug.DebugLogger
 import org.cyuCBMclean.cyufriendsReload.modules.friend.FriendTeleportMode
+import org.bukkit.entity.Player
 
 import java.io.ByteArrayOutputStream
 import java.io.DataOutputStream
@@ -20,8 +21,8 @@ class ProxyGateway(
         send(ProxyMessageType.PRESENCE_JOIN, subjectUid = uid, payloadJson = JsonPayloads.join(name, headSource))
     }
 
-    fun publishQuit(uid: String) {
-        send(ProxyMessageType.PRESENCE_QUIT, subjectUid = uid)
+    fun publishQuit(uid: String, carrier: Player? = null) {
+        send(ProxyMessageType.PRESENCE_QUIT, subjectUid = uid, carrier = carrier, immediate = carrier != null)
     }
 
     fun invalidateRelation(vararg uids: String) {
@@ -210,7 +211,9 @@ class ProxyGateway(
         targetServer: String? = null,
         payloadJson: String = "{}",
         correlationId: String? = null,
-        timestamp: Long = System.currentTimeMillis()
+        timestamp: Long = System.currentTimeMillis(),
+        carrier: Player? = null,
+        immediate: Boolean = false
     ): String? {
         val settings = module.settings ?: run {
             module.recordProxySendFailure("proxy settings 未加载")
@@ -236,15 +239,20 @@ class ProxyGateway(
         )
         val canonical = canonical(envelope)
         val signed = envelope.copy(signature = module.signer.sign(canonical))
-        val carrier = module.localPlayerCarrier() ?: run {
+        val resolvedCarrier = carrier ?: module.localPlayerCarrier() ?: run {
             module.recordProxySendFailure("没有可用的在线玩家承载插件消息")
             return null
         }
         DebugLogger.debug(2) {
-            "跨服发包: ${envelopeSummary(signed)} | carrier=${carrier.name}"
+            "跨服发包: ${envelopeSummary(signed)} | carrier=${resolvedCarrier.name}"
         }
         module.recordProxySend()
-        module.sendPluginMessage(carrier, encode(signed))
+        val payload = encode(signed)
+        if (immediate) {
+            if (!module.sendPluginMessageNow(resolvedCarrier, payload)) return null
+        } else {
+            module.sendPluginMessage(resolvedCarrier, payload)
+        }
         return messageId
     }
 

@@ -16,25 +16,24 @@ class FriendRemoveConfirmView(
     pattern: GuiPattern,
     private val itemsMap: Map<Char, ItemTemplate>,
     private val module: FriendModule,
-    private val friendName: String,
+    private val friendUid: String,
     title: String
 ) : CyuView(player, title, pattern, itemsMap) {
 
     private val dynamicTemplates = mutableMapOf<Int, ItemTemplate>()
 
     override fun onRender() {
-        val targetUid = CyuIdHook.getUidByName(friendName) ?: return
-        val rawName = CyuIdHook.getName(targetUid) ?: friendName
-        val data = module.friendManager.getFriendData(player.uid, targetUid)
+        val rawName = CyuIdHook.getName(friendUid) ?: friendUid
+        val data = module.friendManager.getFriendData(player.uid, friendUid)
         val displayName = data?.noteName ?: rawName
         val groupName = data?.groupName ?: "未分组"
-        val offlinePlayer = CyuIdHook.getOfflinePlayer(targetUid)
+        val offlinePlayer = CyuIdHook.getOfflinePlayer(friendUid)
 
         val replacements = mapOf(
             "%friend_name%" to displayName,
             "%raw_name%" to rawName,
             "%group_name%" to groupName,
-            "%uid%" to targetUid
+            "%uid%" to friendUid
         )
 
         layoutActions.keys.toList().forEach { slot ->
@@ -53,9 +52,8 @@ class FriendRemoveConfirmView(
     override fun onDynamicClick(slot: Int, clickType: CyuClickType) {
         val template = dynamicTemplates[slot] ?: return
         val nodes = template.actions[clickType] ?: template.actions[CyuClickType.ALL] ?: return
-        val targetUid = CyuIdHook.getUidByName(friendName) ?: return
-        val rawName = CyuIdHook.getName(targetUid) ?: friendName
-        val data = module.friendManager.getFriendData(player.uid, targetUid)
+        val rawName = CyuIdHook.getName(friendUid) ?: friendUid
+        val data = module.friendManager.getFriendData(player.uid, friendUid)
         val displayName = data?.noteName ?: rawName
         val groupName = data?.groupName ?: "未分组"
         val processed = nodes.map {
@@ -63,7 +61,7 @@ class FriendRemoveConfirmView(
                 .replace("%friend_name%", displayName)
                 .replace("%raw_name%", rawName)
                 .replace("%group_name%", groupName)
-                .replace("%uid%", targetUid))
+                .replace("%uid%", friendUid))
         }
         ActionRegistry.execute(player, processed)
     }

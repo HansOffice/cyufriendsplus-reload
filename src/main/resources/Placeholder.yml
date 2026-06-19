@@ -18,7 +18,7 @@
 # <index>       = 好友索引，从 1 开始
 # <statusIndex> = 某位好友的第几条动态，从 1 开始
 # <wallIndex>   = 某位好友的第几条留言，从 1 开始
-# <slot>        = 在线玩家槽位，从 1 开始
+# <slot>        = 在线玩家槽位，从 1 开始；启用代理同步后包含跨服在线玩家
 
 # ---------------------------------------------------
 # Placeholder 标识符
@@ -142,6 +142,7 @@ target:
 # 6. 在线玩家槽位
 # ---------------------------------------------------
 # 适合在排行榜、TAB 或在线玩家面板里按槽位读取玩家信息
+# 本服玩家会排在前面，跨服玩家会接在后面并按名称排序
 online_slots:
   player_name: "%cyufriends_online_player_name_by_slot_<slot>%"  # 第 <slot> 个在线玩家名称
   is_friend: "%cyufriends_is_friend_by_slot_<slot>%"             # 第 <slot> 个在线玩家是否是我的好友

@@ -36,6 +36,10 @@ object FriendRichMessages {
             .hoverEvent(HoverEvent.showText(message(hoverKey, placeholders)))
     }
 
+    private fun sendRich(player: Player, component: Component) {
+        player.spigot().sendMessage(*bungeeSerializer.serialize(component))
+    }
+
     private fun preview(content: String, limit: Int = 24): String {
         val clean = content.trim()
         if (clean.isEmpty()) return "暂无内容"
@@ -58,7 +62,7 @@ object FriendRichMessages {
             .append(message("help-json-page-info", mapOf("current_page" to currentPage.toString(), "total_pages" to totalPages.toString())))
             .append(Component.text(" "))
             .append(clickable("help-json-button-next", "help-json-hover-next", "/friend help $nextPage"))
-        player.spigot().sendMessage(*bungeeSerializer.serialize(line))
+        sendRich(player, line)
     }
 
     fun sendFriendRequestPrompt(player: Player, requesterName: String, requesterUid: String, note: String? = null) {
@@ -86,7 +90,7 @@ object FriendRichMessages {
                     placeholders
                 )
             )
-        CyufriendsReload.instance.langEngine.audiences.player(player).sendMessage(line)
+        sendRich(player, line)
     }
 
     fun sendTeleportRequestPrompt(player: Player, requesterName: String, timeoutSeconds: Long) {
@@ -114,7 +118,7 @@ object FriendRichMessages {
                     placeholders
                 )
             )
-        CyufriendsReload.instance.langEngine.audiences.player(player).sendMessage(line)
+        sendRich(player, line)
     }
 
     fun sendRequestEntry(player: Player, requesterName: String, requesterUid: String, createdAt: Long, notePreview: String) {
@@ -143,7 +147,7 @@ object FriendRichMessages {
                     placeholders
                 )
             )
-        CyufriendsReload.instance.langEngine.audiences.player(player).sendMessage(line)
+        sendRich(player, line)
     }
 
     fun sendSentRequestEntry(player: Player, targetName: String, targetUid: String, createdAt: Long, notePreview: String) {
@@ -163,7 +167,7 @@ object FriendRichMessages {
                     placeholders
                 )
             )
-        CyufriendsReload.instance.langEngine.audiences.player(player).sendMessage(line)
+        sendRich(player, line)
     }
 
     fun sendConversationEntry(player: Player, summary: ChatConversationSummary, partnerName: String) {
@@ -202,7 +206,7 @@ object FriendRichMessages {
                     placeholders
                 )
             )
-        CyufriendsReload.instance.langEngine.audiences.player(player).sendMessage(line)
+        sendRich(player, line)
     }
 
     fun sendPendingWallEntry(player: Player, entry: WallEntry, authorName: String) {
@@ -233,7 +237,7 @@ object FriendRichMessages {
                     placeholders
                 )
             )
-        CyufriendsReload.instance.langEngine.audiences.player(player).sendMessage(line)
+        sendRich(player, line)
     }
 
     fun sendPendingReplyEntry(player: Player, entry: PendingWallReplyEntry, authorName: String) {
@@ -273,6 +277,6 @@ object FriendRichMessages {
                     placeholders
                 )
             )
-        CyufriendsReload.instance.langEngine.audiences.player(player).sendMessage(line)
+        sendRich(player, line)
     }
 }

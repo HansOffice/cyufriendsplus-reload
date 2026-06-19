@@ -1,8 +1,8 @@
 package org.cyuCBMclean.cyufriendsReload.modules.profile.gui
 
-import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.cyuCBMclean.cyufriendsReload.CyufriendsReload
+import org.cyuCBMclean.cyufriendsReload.extension.globalOnlineCount
 import org.cyuCBMclean.cyufriendsReload.extension.onlineCountGlobally
 import org.cyuCBMclean.cyufriendsReload.extension.uid
 import org.cyuCBMclean.cyufriendsReload.integration.hook.CyuIdHook
@@ -89,7 +89,7 @@ class ProfileHomeView(
             "%recommend_count%" to recommends.toString(),
             "%birthday_today_count%" to todayBirthdays.toString(),
             "%birthday_upcoming_count%" to upcomingBirthdays.toString(),
-            "%online_count%" to Bukkit.getOnlinePlayers().size.toString(),
+            "%online_count%" to plugin.globalOnlineCount().toString(),
             "%birthday%" to birthday,
             "%bio%" to bio,
             "%bio_limit%" to profileModule.manager.bioMaxLength().toString(),

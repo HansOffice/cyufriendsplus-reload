@@ -325,3 +325,4 @@ proxy:
   max-clock-skew-seconds: 15         # 允许的时钟偏差（秒）
   direct-message-timeout-seconds: 8  # 跨服私聊回执超时（秒）
   teleport-precheck-timeout-seconds: 6  # 跨服传送预检超时（秒）
+  presence-refresh-seconds: 60       # 在线状态低频刷新；代理端重启后会自动恢复在线表

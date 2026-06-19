@@ -92,12 +92,12 @@ items:
       - "<gray>最近互动</gray> <white>%last_interaction%</white>"
       - " "
       - "<white>左键</white> <gray>资料</gray> <dark_gray>|</dark_gray> <white>中键</white> <gray>切主标签</gray>"
-      - "<white>Shift + 右键</white> <gray>解除好友</gray>"
+      - "<white>右键</white> <gray>解除好友</gray>"
     actions:
       left:
         - "[player] friend profile %raw_name%"
-      shift_right:
-        - "[player] friend removeconfirm %raw_name%"
+      right:
+        - "[player] friend removeconfirm %uid%"
   'P':
     material: BLUE_STAINED_GLASS_PANE
     name: "<aqua><bold>上一页</bold></aqua>"

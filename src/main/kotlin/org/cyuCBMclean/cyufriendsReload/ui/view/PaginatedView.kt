@@ -7,6 +7,7 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
 import org.cyuCBMclean.cyufriendsReload.core.config.ColorCompat
 import org.cyuCBMclean.cyufriendsReload.core.config.Settings
+import org.cyuCBMclean.cyufriendsReload.core.debug.DebugLogger
 import org.cyuCBMclean.cyufriendsReload.ui.action.CyuClickType
 import org.cyuCBMclean.cyufriendsReload.ui.layout.GuiPattern
 import org.cyuCBMclean.cyufriendsReload.ui.layout.ItemTemplate
@@ -113,7 +114,11 @@ abstract class PaginatedView<T>(
     }
 
     override fun onDynamicClick(slot: Int, clickType: CyuClickType) {
-        currentItems[slot]?.let { onElementClick(it, clickType) }
+        val element = currentItems[slot]
+        DebugLogger.debug(2) {
+            "GUI动态点击: player=${player.name}, view=${javaClass.simpleName}, slot=$slot, click=$clickType, matched=${element != null}"
+        }
+        element?.let { onElementClick(it, clickType) }
     }
 
     fun jumpTo(targetPage: Int) {

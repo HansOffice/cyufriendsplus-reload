@@ -9,6 +9,7 @@ import org.cyuCBMclean.cyufriendsReload.command.CommandDispatcher
 import org.cyuCBMclean.cyufriendsReload.core.debug.DebugLogger
 import org.cyuCBMclean.cyufriendsReload.core.scheduler.CyuConcurrency
 import org.cyuCBMclean.cyufriendsReload.extension.displayServerName
+import org.cyuCBMclean.cyufriendsReload.extension.globalOnlineEntries
 import org.cyuCBMclean.cyufriendsReload.extension.onlineScope
 import org.cyuCBMclean.cyufriendsReload.extension.playAudio
 import org.cyuCBMclean.cyufriendsReload.extension.sendLang
@@ -319,7 +320,7 @@ object FriendCommands {
                                 args[0].equals("cache", ignoreCase = true) ||
                                 args[0].equals("health", ignoreCase = true)
                             ) return@tabComplete emptyList()
-                            val online = Bukkit.getOnlinePlayers().map { it.name }
+                            val online = globalOnlineNames(plugin)
                             val values = if (isPlayer) {
                                 sequenceOf(friendNames(module, player).asSequence(), online.asSequence()).flatten().toList()
                             } else {
@@ -601,10 +602,11 @@ object FriendCommands {
                     val targetName = getArg(0) ?: return@executes player.sendLang("usage-accept")
 
                     val receiverUid = player.uid
-                    val senderUid = CyuIdHook.getUidByName(targetName) ?: return@executes player.sendLang("player-not-found")
+                    val senderUid = resolveRequestSenderUid(module, targetName, receiverUid)
+                        ?: return@executes player.sendLang("player-not-found")
                     val displayName = CyuIdHook.getName(senderUid) ?: targetName
 
-                    if (!module.requestManager.hasRequest(senderUid, receiverUid)) return@executes player.sendLang("no-request")
+                    if (!module.requestManager.hasRequestStable(senderUid, receiverUid)) return@executes player.sendLang("no-request")
                     val proxyGateway = proxyGateway(plugin)
 
                     CyuConcurrency.scheduler.runAsync(plugin) {
@@ -645,10 +647,11 @@ object FriendCommands {
                 executes {
                     val targetName = getArg(0) ?: return@executes player.sendLang("usage-deny")
                     val receiverUid = player.uid
-                    val senderUid = CyuIdHook.getUidByName(targetName) ?: return@executes player.sendLang("player-not-found")
+                    val senderUid = resolveRequestSenderUid(module, targetName, receiverUid)
+                        ?: return@executes player.sendLang("player-not-found")
                     val displayName = CyuIdHook.getName(senderUid) ?: targetName
 
-                    if (!module.requestManager.hasRequest(senderUid, receiverUid)) return@executes player.sendLang("no-request")
+                    if (!module.requestManager.hasRequestStable(senderUid, receiverUid)) return@executes player.sendLang("no-request")
                     val proxyGateway = proxyGateway(plugin)
 
                     CyuConcurrency.scheduler.runAsync(plugin) {
@@ -686,10 +689,10 @@ object FriendCommands {
                     val targetName = getArg(0) ?: return@executes player.sendLang("usage-remove")
 
                     val uid1 = player.uid
-                    val uid2 = CyuIdHook.getUidByName(targetName) ?: return@executes player.sendLang("player-not-found")
+                    val uid2 = resolveFriendUid(module, uid1, targetName) ?: return@executes player.sendLang("player-not-found")
                     val displayName = CyuIdHook.getName(uid2) ?: targetName
 
-                    if (!module.friendManager.isFriend(uid1, uid2)) return@executes player.sendLang("not-friend")
+                    if (!module.friendManager.isFriendStable(uid1, uid2)) return@executes player.sendLang("not-friend")
                     val proxyGateway = proxyGateway(plugin)
 
                     CyuConcurrency.scheduler.runAsync(plugin) {
@@ -719,7 +722,8 @@ object FriendCommands {
                 executes {
                     val targetName = getArg(0) ?: return@executes player.sendLang("usage-revoke")
                     val senderUid = player.uid
-                    val targetUid = CyuIdHook.getUidByName(targetName) ?: return@executes player.sendLang("player-not-found")
+                    val targetUid = resolveRequestReceiverUid(module, senderUid, targetName)
+                        ?: return@executes player.sendLang("player-not-found")
                     val displayName = CyuIdHook.getName(targetUid) ?: targetName
                     if (!module.requestManager.hasRequestStable(senderUid, targetUid)) {
                         return@executes player.sendLang("request-revoke-missing")
@@ -788,9 +792,7 @@ object FriendCommands {
 
                 tabComplete {
                     if (!isPlayer) return@tabComplete emptyList()
-                    onlinePlayerCompletions(player, args.getOrElse(0) { "" }) { target ->
-                        target.uniqueId != player.uniqueId && !module.blockManager.isBlocked(player.uid, target.uid)
-                    }
+                    blockTargetCompletions(plugin, module, player, args.getOrElse(0) { "" })
                 }
             }
 
@@ -2149,11 +2151,11 @@ object FriendCommands {
 
                 executes {
                     val targetName = getArg(0) ?: return@executes player.sendLang("usage-remove")
-                    val targetUid = CyuIdHook.getUidByName(targetName) ?: return@executes player.sendLang("player-not-found")
+                    val targetUid = resolveFriendUid(module, player.uid, targetName) ?: return@executes player.sendLang("player-not-found")
                     if (!module.friendManager.isFriendStable(player.uid, targetUid)) return@executes player.sendLang("not-friend")
                     val displayName = CyuIdHook.getName(targetUid) ?: targetName
                     openGui(player, plugin, "friend_remove_confirm.yml", ViewTitles.friendRemoveConfirm(displayName), targetTitleReplacements(displayName)) { pattern, items, title ->
-                        FriendRemoveConfirmView(player, pattern, items, module, displayName, title).open()
+                        FriendRemoveConfirmView(player, pattern, items, module, targetUid, title).open()
                     }
                 }
 
@@ -2492,9 +2494,7 @@ object FriendCommands {
 
                 tabComplete {
                     if (!isPlayer) return@tabComplete emptyList()
-                    onlinePlayerCompletions(player, args.getOrElse(0) { "" }) { target ->
-                        target.uniqueId != player.uniqueId && !module.friendManager.isFriend(player.uid, target.uid)
-                    }
+                    addTargetCompletions(plugin, module, player, args.getOrElse(0) { "" })
                 }
             }
 
@@ -2680,7 +2680,7 @@ object FriendCommands {
         return sequenceOf(
             sequenceOf(player.name),
             friendNames(module, player).asSequence(),
-            Bukkit.getOnlinePlayers().asSequence().map { it.name }
+            CyufriendsReload.instance.globalOnlineEntries().asSequence().map { it.name }
         ).flatten()
             .filter { it.isNotBlank() }
             .distinct()
@@ -2688,36 +2688,38 @@ object FriendCommands {
             .toList()
     }
 
-    private fun onlinePlayerCompletions(player: Player, prefix: String, predicate: (Player) -> Boolean): List<String> {
-        return filterCompletions(Bukkit.getOnlinePlayers().filter(predicate).map { it.name }, prefix)
+    private fun globalOnlineNames(plugin: CyufriendsReload): List<String> {
+        return plugin.globalOnlineEntries()
+            .sortedWith(compareBy({ it.remote }, { it.name.lowercase() }))
+            .map { it.name }
+            .distinct()
+    }
+
+    private fun blockTargetCompletions(plugin: CyufriendsReload, module: FriendModule, player: Player, prefix: String): List<String> {
+        val values = plugin.globalOnlineEntries()
+            .asSequence()
+            .filter { it.uid != player.uid && !module.blockManager.isBlocked(player.uid, it.uid) }
+            .map { it.name }
+            .toList()
+        return filterCompletions(values, prefix)
     }
 
     private fun addTargetCompletions(plugin: CyufriendsReload, module: FriendModule, player: Player, prefix: String): List<String> {
-        val local = Bukkit.getOnlinePlayers().asSequence()
-            .filter { it.uniqueId != player.uniqueId && !module.friendManager.isFriendStable(player.uid, it.uid) }
+        val values = plugin.globalOnlineEntries()
+            .asSequence()
+            .filter { it.uid != player.uid && !module.friendManager.isFriendStable(player.uid, it.uid) }
             .map { it.name }
-        val remote = plugin.moduleManager.getModule<ProxyModule>("proxy")
-            ?.remotePresence
-            ?.all()
-            ?.asSequence()
-            ?.filter { it.uid != player.uid && !module.friendManager.isFriendStable(player.uid, it.uid) }
-            ?.map { it.name }
-            ?: emptySequence()
-        return filterCompletions(sequenceOf(local, remote).flatten().toList(), prefix)
+            .toList()
+        return filterCompletions(values, prefix)
     }
 
     private fun tpTargetCompletions(plugin: CyufriendsReload, module: FriendModule, player: Player, prefix: String): List<String> {
-        val local = Bukkit.getOnlinePlayers().asSequence()
+        val values = plugin.globalOnlineEntries()
+            .asSequence()
             .filter { it.uid != player.uid && module.friendManager.isFriendStable(player.uid, it.uid) }
             .map { it.name }
-        val remote = plugin.moduleManager.getModule<ProxyModule>("proxy")
-            ?.remotePresence
-            ?.all()
-            ?.asSequence()
-            ?.filter { it.uid != player.uid && module.friendManager.isFriendStable(player.uid, it.uid) }
-            ?.map { it.name }
-            ?: emptySequence()
-        return filterCompletions(sequenceOf(local, remote).flatten().toList(), prefix)
+            .toList()
+        return filterCompletions(values, prefix)
     }
 
     private fun moduleUnavailable(sender: CommandSender, moduleId: String) {
@@ -3343,6 +3345,13 @@ object FriendCommands {
             ?: value.takeIf { CyuIdHook.getName(it) != null }
     }
 
+    private fun resolveFriendUid(module: FriendModule, ownerUid: String, value: String): String? {
+        val input = value.trim()
+        if (input.isEmpty()) return null
+        return CyuIdHook.getUidByName(input)
+            ?: input.takeIf { module.friendManager.isFriendStable(ownerUid, it) }
+    }
+
     private fun buildBirthdaySummary(uid: String, friendModule: FriendModule, profileModule: ProfileModule): List<String> {
         val friends = friendModule.friendManager.getFriendEntriesStoredSync(uid).mapTo(linkedSetOf(), org.cyuCBMclean.cyufriendsReload.modules.friend.FriendData::friendUid)
         val offsets = profileModule.manager.birthdayReminderOffsets()
@@ -3392,6 +3401,18 @@ object FriendCommands {
 
     private fun proxyGateway(plugin: CyufriendsReload): ProxyGateway? {
         return plugin.moduleManager.getModule<ProxyModule>("proxy")?.gateway
+    }
+
+    private fun resolveRequestSenderUid(module: FriendModule, input: String, receiverUid: String): String? {
+        val resolved = CyuIdHook.getUidByName(input)
+        if (resolved != null) return resolved
+        return input.trim().takeIf { it.isNotEmpty() && module.requestManager.hasRequestStable(it, receiverUid) }
+    }
+
+    private fun resolveRequestReceiverUid(module: FriendModule, senderUid: String, input: String): String? {
+        val resolved = CyuIdHook.getUidByName(input)
+        if (resolved != null) return resolved
+        return input.trim().takeIf { it.isNotEmpty() && module.requestManager.hasRequestStable(senderUid, it) }
     }
 
     private fun permissionInt(plugin: CyufriendsReload, player: org.bukkit.entity.Player, sectionName: String, key: String, prefix: String, fallback: Int): Int {

@@ -8,6 +8,7 @@ import org.bukkit.event.inventory.InventoryDragEvent
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.InventoryHolder
 import org.bukkit.inventory.ItemStack
+import org.cyuCBMclean.cyufriendsReload.core.debug.DebugLogger
 import org.cyuCBMclean.cyufriendsReload.extension.uid
 import org.cyuCBMclean.cyufriendsReload.extension.playAudio
 import org.cyuCBMclean.cyufriendsReload.integration.hook.CyuIdHook
@@ -71,8 +72,11 @@ abstract class CyuView(
         val slot = event.rawSlot
         if (slot < 0 || slot >= inv.size) return
 
-        val clickType = CyuClickType.fromBukkit(event.click)
+        val clickType = CyuClickType.fromBukkit(event)
         val binding = layoutActions[slot]
+        DebugLogger.debug(2) {
+            "GUI点击: player=${player.name}, view=${javaClass.simpleName}, rawSlot=${event.rawSlot}, slot=${event.slot}, size=${inv.size}, click=${event.click}, normalized=$clickType, action=${event.action}, hotbar=${event.hotbarButton}, shift=${event.isShiftClick}, right=${event.isRightClick}, left=${event.isLeftClick}, binding=${binding != null}, current=${event.currentItem?.type ?: "null"}"
+        }
 
         if (binding != null) {
             val nodes = binding.template.actions[clickType] ?: binding.template.actions[CyuClickType.ALL] ?: return

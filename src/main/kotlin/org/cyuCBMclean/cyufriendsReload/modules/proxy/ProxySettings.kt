@@ -10,7 +10,8 @@ data class ProxySettings(
     val secret: String,
     val maxClockSkewSeconds: Long,
     val directMessageTimeoutSeconds: Long,
-    val teleportPrecheckTimeoutSeconds: Long
+    val teleportPrecheckTimeoutSeconds: Long,
+    val presenceRefreshSeconds: Long
 ) {
     companion object {
         const val DEFAULT_SECRET = "change-this-secret"
@@ -24,7 +25,8 @@ data class ProxySettings(
                 secret = config.getString("proxy.secret", DEFAULT_SECRET)!!.trim(),
                 maxClockSkewSeconds = config.getLong("proxy.max-clock-skew-seconds", 15L).coerceAtLeast(1L),
                 directMessageTimeoutSeconds = config.getLong("proxy.direct-message-timeout-seconds", 8L).coerceAtLeast(1L),
-                teleportPrecheckTimeoutSeconds = config.getLong("proxy.teleport-precheck-timeout-seconds", 6L).coerceAtLeast(1L)
+                teleportPrecheckTimeoutSeconds = config.getLong("proxy.teleport-precheck-timeout-seconds", 6L).coerceAtLeast(1L),
+                presenceRefreshSeconds = config.getLong("proxy.presence-refresh-seconds", 60L).coerceAtLeast(10L)
             )
         }
     }
