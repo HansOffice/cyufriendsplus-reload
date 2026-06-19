@@ -30,13 +30,13 @@ Reload 不是旧版换名。它把原本堆在一起的好友系统拆成了更�
 - `chat` 负责私聊、回复和离线留言
 - `social` 负责动态、留言墙、评论和审核
 - `profile` 负责个人资料、生日和隐私设置
-- `proxy` 代码保留但默认关闭，跨服代理端暂不随 1.0 首发发布
+- `proxy` 后端代码保留但默认关闭；代理端插件已发布但不开源，开源仓库不把跨服能力作为默认卖点
 
 配置、GUI、权限和 API 都尽量按服主能看懂、能改动的方式整理。你可以把它当成一个完整的好友系统，也可以把它当成服务器社交功能的底座
 
 ## 安装
 
-1. 从 GitHub Releases 下载 `cyufriends-reload-1.0.jar`
+1. 从 GitHub Releases 下载 `cyufriends-reload-1.0.4.jar`
 2. 将 jar 放入服务端 `plugins/`
 3. 推荐同时安装 `cyuid-reload`，让好友系统使用稳定 UID
 4. 可选安装 PlaceholderAPI，用于计分板、菜单或聊天变量
@@ -49,11 +49,11 @@ Reload 不是旧版换名。它把原本堆在一起的好友系统拆成了更�
 
 稳定版会放在 GitHub Releases 中。普通服主下载插件本体即可：
 
-- `cyufriends-reload-1.0.jar`
+- `cyufriends-reload-1.0.4.jar`
 
 附属插件开发者可以下载 API jar，或通过 GitHub Packages 引入：
 
-- `cyufriends-reload-1.0-api.jar`
+- `cyufriends-reload-1.0.4-api.jar`
 
 ## GitHub Packages
 
@@ -72,7 +72,7 @@ API 依赖：
 <dependency>
     <groupId>org.cyuCBMclean</groupId>
     <artifactId>cyufriends-reload</artifactId>
-    <version>1.0</version>
+    <version>1.0.4</version>
     <classifier>api</classifier>
 </dependency>
 ```
@@ -140,8 +140,8 @@ mvn -DskipTests package
 
 构建完成后：
 
-- `target/cyufriends-reload-1.0.jar` 是插件本体
-- `target/cyufriends-reload-1.0-api.jar` 是附属插件编译用 API
+- `target/cyufriends-reload-1.0.4.jar` 是插件本体
+- `target/cyufriends-reload-1.0.4-api.jar` 是附属插件编译用 API
 
 目前 `cyuid-reload` 仍作为本地 companion jar 参与编译，保留在 `libs/cyuid-reload-1.0.3.jar`。PlaceholderAPI 从 Maven 仓库解析
 
@@ -153,7 +153,7 @@ mvn -DskipTests package
 
 ## 发布口径
 
-CyuFriends Reload 1.0 面向单服发布。跨服相关后端代码仍在项目中，但默认关闭；代理端插件未随 1.0 发布，因此不要把跨服能力作为当前版本卖点或必备功能
+CyuFriends Reload 1.0.4 默认仍按单服体验发布。跨服相关后端代码保留在项目中，但默认关闭；代理端插件已发布但不开源，因此不要把跨服能力作为当前开源版本的卖点或必备功能
 
 ## 开源协作
 
