@@ -6,7 +6,13 @@ import org.bukkit.entity.Entity
 import org.bukkit.plugin.Plugin
 import org.bukkit.scheduler.BukkitTask
 
-class BukkitSchedulerImpl : CyuScheduler {
+object PlatformSchedulerFactory {
+    val isFolia: Boolean = false
+
+    fun create(): CyuScheduler = BukkitSchedulerImpl()
+}
+
+private class BukkitSchedulerImpl : CyuScheduler {
 
     private fun wrap(task: BukkitTask) = object : CyuTask {
         override fun cancel() = task.cancel()

@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.5
+
+- 拆分 Paper 与 Folia 构建目标，发布包名称明确区分运行平台
+- Paper 包不再声明 Folia 支持，Folia 包单独写入 `folia-supported: true`
+- Folia 调度实现改为平台源码目录内的原生实现，不再和 Paper 包混在一起
+- 保留 `paper-legacy-all` 作为完整依赖附加包，默认发布包继续走 `plugin.yml libraries`
+
 ## 1.0
 
 CyuFriends Reload 首个公开版本

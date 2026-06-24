@@ -19,7 +19,7 @@ CyuFriends Reload 是一个面向 Minecraft 服务器的好友与轻社交插件
 - 留言墙、回复、点赞、审核、置顶
 - PlaceholderAPI 变量与附属插件 API
 - SQLite / MySQL 数据存储
-- Folia 兼容调度封装
+- Paper / Folia 分离构建
 
 ## Reload 版有什么不同
 
@@ -36,7 +36,7 @@ Reload 不是旧版换名。它把原本堆在一起的好友系统拆成了更�
 
 ## 安装
 
-1. 从 GitHub Releases 下载 `cyufriends-reload-1.0.4.jar`
+1. 从 GitHub Releases 下载对应平台的 jar
 2. 将 jar 放入服务端 `plugins/`
 3. 推荐同时安装 `cyuid-reload`，让好友系统使用稳定 UID
 4. 可选安装 PlaceholderAPI，用于计分板、菜单或聊天变量
@@ -49,11 +49,13 @@ Reload 不是旧版换名。它把原本堆在一起的好友系统拆成了更�
 
 稳定版会放在 GitHub Releases 中。普通服主下载插件本体即可：
 
-- `cyufriends-reload-1.0.4.jar`
+- Paper / Purpur：`cyufriends-reload-paper-1.0.5.jar`
+- Folia：`cyufriends-reload-folia-1.0.5.jar`
+- 需要完整依赖包：`cyufriends-reload-paper-1.0.5-legacy-all.jar`
 
 附属插件开发者可以下载 API jar，或通过 GitHub Packages 引入：
 
-- `cyufriends-reload-1.0.4-api.jar`
+- `cyufriends-reload-paper-1.0.5-api.jar`
 
 ## GitHub Packages
 
@@ -72,7 +74,7 @@ API 依赖：
 <dependency>
     <groupId>org.cyuCBMclean</groupId>
     <artifactId>cyufriends-reload</artifactId>
-    <version>1.0.4</version>
+    <version>1.0.5</version>
     <classifier>api</classifier>
 </dependency>
 ```
@@ -135,13 +137,16 @@ GUI 菜单是数据驱动的，不需要重新编译插件就能调整大部分�
 ## 构建
 
 ```bash
-mvn -DskipTests package
+mvn -DskipTests -Ppaper package
+mvn -DskipTests -Pfolia package
 ```
 
 构建完成后：
 
-- `target/cyufriends-reload-1.0.4.jar` 是插件本体
-- `target/cyufriends-reload-1.0.4-api.jar` 是附属插件编译用 API
+- `target/cyufriends-reload-paper-1.0.5.jar` 是 Paper / Purpur 插件本体
+- `target/cyufriends-reload-folia-1.0.5.jar` 是 Folia 插件本体
+- `target/cyufriends-reload-paper-1.0.5-legacy-all.jar` 是完整依赖附加包
+- `target/cyufriends-reload-paper-1.0.5-api.jar` 是附属插件编译用 API
 
 目前 `cyuid-reload` 仍作为本地 companion jar 参与编译，保留在 `libs/cyuid-reload-1.0.3.jar`。PlaceholderAPI 从 Maven 仓库解析
 
@@ -153,7 +158,7 @@ mvn -DskipTests package
 
 ## 跨服说明
 
-CyuFriends Reload 1.0.4 默认安装即可用于单服。需要跨服同步时，请另行安装配套代理端插件，并在 `config.yml` 中开启 `modules.proxy` 与 `proxy.enabled`。代理端插件已发布，但源码不包含在本开源仓库中
+CyuFriends Reload 1.0.5 默认安装即可用于单服。需要跨服同步时，请另行安装配套代理端插件，并在 `config.yml` 中开启 `modules.proxy` 与 `proxy.enabled`。代理端插件已发布，但源码不包含在本开源仓库中
 
 ## 开源协作
 

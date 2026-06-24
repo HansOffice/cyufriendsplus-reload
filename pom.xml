@@ -6,14 +6,21 @@
 
     <groupId>org.cyuCBMclean</groupId>
     <artifactId>cyufriends-reload</artifactId>
-    <version>1.0.4</version>
+    <version>1.0.5</version>
     <packaging>jar</packaging>
 
     <properties>
         <java.version>1.8</java.version>
         <kotlin.version>2.2.21</kotlin.version>
+        <kotlin.jvmTarget>1.8</kotlin.jvmTarget>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <adventure.version>4.14.0</adventure.version>
+        <platform.name>paper</platform.name>
+        <platform.source.name>paper</platform.source.name>
+        <folia.supported>false</folia.supported>
+        <shade.skip>false</shade.skip>
+        <paper-api.version>1.13.2-R0.1-SNAPSHOT</paper-api.version>
+        <folia-api.version>1.20.1-R0.1-SNAPSHOT</folia-api.version>
     </properties>
 
     <repositories>
@@ -32,18 +39,6 @@
     </repositories>
 
     <dependencies>
-        <dependency>
-            <groupId>com.destroystokyo.paper</groupId>
-            <artifactId>paper-api</artifactId>
-            <version>1.13.2-R0.1-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>dev.folia</groupId>
-            <artifactId>folia-api</artifactId>
-            <version>1.20.1-R0.1-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
         <dependency>
             <groupId>me.clip</groupId>
             <artifactId>placeholderapi</artifactId>
@@ -109,6 +104,8 @@
 
     <build>
         <sourceDirectory>${project.basedir}/src/main/kotlin</sourceDirectory>
+        <finalName>${project.artifactId}-${platform.name}-${project.version}</finalName>
+        <outputDirectory>${project.build.directory}/classes-${platform.name}</outputDirectory>
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
@@ -127,7 +124,11 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <jvmTarget>1.8</jvmTarget>
+                    <jvmTarget>${kotlin.jvmTarget}</jvmTarget>
+                    <sourceDirs>
+                        <sourceDir>${project.basedir}/src/main/kotlin</sourceDir>
+                        <sourceDir>${project.basedir}/src/${platform.source.name}/kotlin</sourceDir>
+                    </sourceDirs>
                 </configuration>
             </plugin>
             <plugin>
@@ -160,9 +161,9 @@
                         <phase>package</phase>
                         <goals><goal>shade</goal></goals>
                         <configuration>
+                            <skip>${shade.skip}</skip>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
-                            <shadedArtifactAttached>true</shadedArtifactAttached>
-                            <shadedClassifierName>legacy-all</shadedClassifierName>
+                            <outputFile>${project.build.directory}/${project.build.finalName}-legacy-all.jar</outputFile>
                             <artifactSet>
                                 <excludes>
                                     <exclude>me.clip:placeholderapi</exclude>
@@ -207,4 +208,46 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>paper</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <platform.name>paper</platform.name>
+                <platform.source.name>paper</platform.source.name>
+                <folia.supported>false</folia.supported>
+                <kotlin.jvmTarget>1.8</kotlin.jvmTarget>
+                <shade.skip>false</shade.skip>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>com.destroystokyo.paper</groupId>
+                    <artifactId>paper-api</artifactId>
+                    <version>${paper-api.version}</version>
+                    <scope>provided</scope>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
+            <id>folia</id>
+            <properties>
+                <platform.name>folia</platform.name>
+                <platform.source.name>folia</platform.source.name>
+                <folia.supported>true</folia.supported>
+                <kotlin.jvmTarget>17</kotlin.jvmTarget>
+                <shade.skip>true</shade.skip>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>dev.folia</groupId>
+                    <artifactId>folia-api</artifactId>
+                    <version>${folia-api.version}</version>
+                    <scope>provided</scope>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
 </project>

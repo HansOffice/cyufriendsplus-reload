@@ -3,6 +3,7 @@ version: '${project.version}'
 main: org.cyuCBMclean.cyufriendsReload.CyufriendsReload
 api-version: '1.13'
 author: HansOffice
+folia-supported: ${folia.supported}
 softdepend: [cyuid-reload, PlaceholderAPI, CraftEngine]
 libraries:
   - org.jetbrains.kotlin:kotlin-stdlib:${kotlin.version}

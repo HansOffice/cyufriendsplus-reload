@@ -28,17 +28,21 @@ jobs:
           server-username: GITHUB_ACTOR
           server-password: GITHUB_TOKEN
 
-      - name: Build
-        run: mvn -B -DskipTests clean package
+      - name: Build Paper
+        run: mvn -B -DskipTests -Ppaper package
+
+      - name: Build Folia
+        run: mvn -B -DskipTests -Pfolia package
 
       - name: Prepare release files
         shell: bash
         run: |
           version="${GITHUB_REF_NAME#v}"
           mkdir -p release
-          cp "target/cyufriends-reload-${version}.jar" "release/cyufriends-reload-${version}.jar"
-          cp "target/cyufriends-reload-${version}-legacy-all.jar" "release/cyufriends-reload-${version}-legacy-all.jar"
-          cp "target/cyufriends-reload-${version}-api.jar" "release/cyufriends-reload-${version}-api.jar"
+          cp "target/cyufriends-reload-paper-${version}.jar" "release/cyufriends-reload-paper-${version}.jar"
+          cp "target/cyufriends-reload-paper-${version}-legacy-all.jar" "release/cyufriends-reload-paper-${version}-legacy-all.jar"
+          cp "target/cyufriends-reload-paper-${version}-api.jar" "release/cyufriends-reload-paper-${version}-api.jar"
+          cp "target/cyufriends-reload-folia-${version}.jar" "release/cyufriends-reload-folia-${version}.jar"
 
       - name: Create GitHub release
         uses: softprops/action-gh-release@v2
@@ -47,8 +51,9 @@ jobs:
           body: |
             CyuFriends Reload ${{ github.ref_name }}
 
-            - 普通服主下载不带 `legacy-all` 的插件本体 jar
-            - 需要完整依赖包时下载带 `legacy-all` 的 jar
+            - Paper / Purpur 服主下载 `paper` 包
+            - Folia 服主下载 `folia` 包
+            - 需要完整依赖包时下载 `paper-legacy-all` 包
             - 附属插件开发者可使用带 `api` 的 API jar
             - 跨服同步需要另行安装配套代理端插件；代理端源码不包含在本开源仓库中
           files: |
@@ -56,6 +61,6 @@ jobs:
 
       - name: Publish Maven package
         continue-on-error: true
-        run: mvn -B -DskipTests deploy
+        run: mvn -B -DskipTests -Ppaper deploy
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

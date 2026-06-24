@@ -5,13 +5,16 @@
 ## 发布前检查
 
 ```bash
-mvn -DskipTests clean package
+mvn -DskipTests -Ppaper package
+mvn -DskipTests -Pfolia package
 ```
 
 确认这些文件存在：
 
-- `target/cyufriends-reload-1.0.jar`
-- `target/cyufriends-reload-1.0-api.jar`
+- `target/cyufriends-reload-paper-1.0.5.jar`
+- `target/cyufriends-reload-paper-1.0.5-legacy-all.jar`
+- `target/cyufriends-reload-paper-1.0.5-api.jar`
+- `target/cyufriends-reload-folia-1.0.5.jar`
 
 确认 `src/main/resources/plugin.yml` 里的版本来自 `${project.version}`，实际版本以 `pom.xml` 为准
 
@@ -20,7 +23,7 @@ mvn -DskipTests clean package
 发布新版本时只改 `pom.xml` 的 `<version>`：
 
 ```xml
-<version>1.0.1</version>
+<version>1.0.5</version>
 ```
 
 然后同步更新：
@@ -31,21 +34,22 @@ mvn -DskipTests clean package
 ## 打 tag
 
 ```bash
-git tag v1.0
-git push origin v1.0
+git tag v1.0.5
+git push origin v1.0.5
 ```
 
 GitHub Actions 会在 tag 推送后重新构建 jar，创建 GitHub Release，并上传：
 
 - 插件本体 jar
+- Folia 专用 jar
 - API jar
 - Maven package 到 GitHub Packages
 
 如果需要重新发布一个还没有公开过的首发 tag，可以移动 tag 后强制推送：
 
 ```bash
-git tag -f v1.0
-git push origin v1.0 --force
+git tag -f v1.0.5
+git push origin v1.0.5 --force
 ```
 
 公开发布后不要强改已经公开的 tag，补丁请发新版本
@@ -59,7 +63,7 @@ git push origin v1.0 --force
 3. 代码侧从对应 tag 新建修复分支
 
 ```bash
-git checkout -b fix/v1.0-hotfix v1.0
+git checkout -b fix/v1.0.5-hotfix v1.0.5
 ```
 
 修复完成后发布新的补丁版本，不建议强改已经公开的 tag

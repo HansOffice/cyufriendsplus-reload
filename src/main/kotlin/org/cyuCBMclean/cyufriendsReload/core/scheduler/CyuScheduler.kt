@@ -22,11 +22,7 @@ interface CyuScheduler {
  * 统一调度入口，Paper 和 Folia 的差异别往业务里散
  */
 object CyuConcurrency {
-    val isFolia: Boolean = runCatching {
-        Class.forName("io.papermc.paper.threadedregions.RegionizedServer")
-    }.isSuccess
+    val isFolia: Boolean = PlatformSchedulerFactory.isFolia
 
-    val scheduler: CyuScheduler by lazy {
-        if (isFolia) FoliaSchedulerImpl() else BukkitSchedulerImpl()
-    }
+    val scheduler: CyuScheduler by lazy(PlatformSchedulerFactory::create)
 }

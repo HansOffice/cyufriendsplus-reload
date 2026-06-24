@@ -28,8 +28,11 @@ jobs:
           java-version: "17"
           cache: maven
 
-      - name: Build
-        run: mvn -B -DskipTests clean package
+      - name: Build Paper
+        run: mvn -B -DskipTests -Ppaper package
+
+      - name: Build Folia
+        run: mvn -B -DskipTests -Pfolia package
 
       - name: Upload plugin jar
         uses: actions/upload-artifact@v4
@@ -38,7 +41,6 @@ jobs:
           path: |
             target/cyufriends-reload-*.jar
             !target/cyufriends-reload-*-api.jar
-            !target/cyufriends-reload-*-shaded.jar
             !target/original-*.jar
 
       - name: Upload API jar
