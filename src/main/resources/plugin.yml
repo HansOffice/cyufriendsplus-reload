@@ -4,7 +4,7 @@ main: org.cyuCBMclean.cyufriendsReload.CyufriendsReload
 api-version: '1.13'
 author: HansOffice
 folia-supported: ${folia.supported}
-softdepend: [cyuid-reload, PlaceholderAPI, CraftEngine]
+softdepend: [cyuid-reload, PlaceholderAPI, CraftEngine, CE, ItemsAdder, Oraxen, Nexo]
 libraries:
   - org.jetbrains.kotlin:kotlin-stdlib:${kotlin.version}
   - org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1

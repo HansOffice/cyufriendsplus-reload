@@ -10,6 +10,7 @@ import org.cyuCBMclean.cyufriendsReload.ui.action.ActionNode
 import org.cyuCBMclean.cyufriendsReload.ui.action.CyuClickType
 import org.cyuCBMclean.cyufriendsReload.core.config.ColorCompat
 import org.cyuCBMclean.cyufriendsReload.ui.compat.CraftEngineItems
+import org.cyuCBMclean.cyufriendsReload.ui.compat.ExternalMenuItems
 import org.cyuCBMclean.cyufriendsReload.ui.compat.GuiHeads
 
 class ItemTemplate(private val section: ConfigurationSection) {
@@ -23,7 +24,10 @@ class ItemTemplate(private val section: ConfigurationSection) {
     private val craftEngineKey = section.getString("craftengine") ?: section.getString("craft_engine") ?: section.getString("ce")
     private val defaultSound = section.getString("sound") ?: section.getString("click_sound")
     private val amount = section.getInt("amount", 1)
-    private val customModelData = section.getInt("custom_model_data", 0)
+    private val customModelData = section.getInt(
+        "custom_model_data",
+        section.getInt("custom-model-data", section.getInt("model_data", 0))
+    )
     private var staticCache: ItemStack? = null
 
     val actions = mutableMapOf<CyuClickType, List<ActionNode>>()
@@ -80,7 +84,7 @@ class ItemTemplate(private val section: ConfigurationSection) {
             }
         }
 
-        applyCustomModelData(meta)
+        applyCustomModelData(meta, customModelDataFromMaterial(materialValue))
 
         item.itemMeta = meta
         val headValue = headSource?.let { replace(it, player, replacements) } ?: textureFromMaterial
@@ -90,7 +94,14 @@ class ItemTemplate(private val section: ConfigurationSection) {
     }
 
     private fun buildBaseItem(player: Player, materialValue: String, textureFromMaterial: String?, replacements: Map<String, String>): ItemStack {
-        val ceItem = craftEngineKey
+        val externalItem = ExternalMenuItems.build(materialValue)
+        if (externalItem != null) {
+            externalItem.amount = amount
+            return externalItem
+        }
+
+        val materialCraftEngineKey = craftEngineKeyFromMaterial(materialValue)
+        val ceItem = (craftEngineKey ?: materialCraftEngineKey)
             ?.let { replace(it, player, replacements) }
             ?.let { CraftEngineItems.build(it, player) }
 
@@ -99,16 +110,51 @@ class ItemTemplate(private val section: ConfigurationSection) {
             return ceItem
         }
 
-        val materialName = if (textureFromMaterial != null) "PLAYER_HEAD" else materialValue
+        val materialName = when {
+            textureFromMaterial != null -> "PLAYER_HEAD"
+            materialCraftEngineKey != null || ExternalMenuItems.isExternal(materialValue) -> "STONE"
+            else -> stripModelData(materialValue)
+        }
         val mat = Material.matchMaterial(materialName.uppercase()) ?: Material.STONE
         return ItemStack(mat, amount)
     }
 
-    private fun applyCustomModelData(meta: ItemMeta) {
-        if (customModelData <= 0) return
-        runCatching {
-            meta.javaClass.getMethod("setCustomModelData", Int::class.javaPrimitiveType).invoke(meta, customModelData)
+    private fun craftEngineKeyFromMaterial(materialValue: String): String? {
+        val lower = materialValue.lowercase()
+        return when {
+            lower.startsWith("craftengine:") -> materialValue.substringAfter(':').trim().takeIf { it.isNotEmpty() }
+            lower.startsWith("ce:") -> materialValue.substringAfter(':').trim().takeIf { it.isNotEmpty() }
+            else -> null
         }
+    }
+
+    private fun applyCustomModelData(meta: ItemMeta, inlineCustomModelData: Int?) {
+        val modelData = inlineCustomModelData ?: customModelData
+        if (modelData <= 0) return
+        runCatching {
+            meta.javaClass.getMethod("setCustomModelData", Int::class.javaPrimitiveType).invoke(meta, modelData)
+        }
+    }
+
+    private fun customModelDataFromMaterial(materialValue: String): Int? {
+        val trimmed = materialValue.trim()
+        val hashValue = trimmed.substringAfterLast('#', missingDelimiterValue = "").toIntOrNull()
+        if (hashValue != null) return hashValue
+        if (trimmed.count { it == ':' } == 1) {
+            return trimmed.substringAfter(':').toIntOrNull()
+        }
+        return null
+    }
+
+    private fun stripModelData(materialValue: String): String {
+        val trimmed = materialValue.trim()
+        if (trimmed.substringAfterLast('#', missingDelimiterValue = "").toIntOrNull() != null) {
+            return trimmed.substringBeforeLast('#')
+        }
+        if (trimmed.count { it == ':' } == 1 && trimmed.substringAfter(':').toIntOrNull() != null) {
+            return trimmed.substringBefore(':')
+        }
+        return trimmed
     }
 
     private fun replace(value: String, player: Player, replacements: Map<String, String>): String {
