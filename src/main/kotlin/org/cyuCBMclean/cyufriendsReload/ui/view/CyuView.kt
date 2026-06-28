@@ -48,6 +48,12 @@ abstract class CyuView(
         player.openInventory(inv)
     }
 
+    fun refreshOpenView() {
+        if (player.openInventory.topInventory.holder !== this) return
+        onRender()
+        player.updateInventory()
+    }
+
     protected open fun viewReplacements(): Map<String, String> = emptyMap()
 
     protected open fun layoutReplacements(symbol: Char, slot: Int): Map<String, String> = emptyMap()

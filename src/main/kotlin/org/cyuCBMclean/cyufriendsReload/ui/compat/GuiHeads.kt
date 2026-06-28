@@ -9,8 +9,10 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.SkullMeta
 import org.cyuCBMclean.cyufriendsReload.CyufriendsReload
 import org.cyuCBMclean.cyufriendsReload.core.config.Settings
+import org.cyuCBMclean.cyufriendsReload.core.scheduler.CyuConcurrency
 import org.cyuCBMclean.cyufriendsReload.extension.proxyModule
 import org.cyuCBMclean.cyufriendsReload.integration.hook.CyuIdHook
+import org.cyuCBMclean.cyufriendsReload.ui.view.CyuView
 import java.lang.reflect.Field
 import java.lang.reflect.Method
 import java.net.URL
@@ -18,6 +20,7 @@ import java.nio.charset.StandardCharsets
 import java.time.Duration
 import java.util.Base64
 import java.util.UUID
+import java.util.concurrent.ConcurrentHashMap
 
 object GuiHeads {
 
@@ -33,6 +36,7 @@ object GuiHeads {
     private val setProfileMethodCache: Cache<String, Method?> = Caffeine.newBuilder().maximumSize(64).build()
     private val texturesMethodCache: Cache<Class<*>, Method?> = Caffeine.newBuilder().maximumSize(32).build()
     private val skinMethodCache: Cache<Class<*>, Method?> = Caffeine.newBuilder().maximumSize(32).build()
+    private val pendingSkinLookups = ConcurrentHashMap.newKeySet<String>()
 
     fun reload() {
         val size = Settings.guiHeadCacheSize
@@ -70,7 +74,7 @@ object GuiHeads {
         if (player != null) {
             when {
                 applyProfileFrom(meta, player) -> Unit
-                applySkinPluginProfile(meta, player.uniqueId, player.name) -> Unit
+                applySkinPluginProfile(meta, player.uniqueId, player.name, viewer) -> Unit
                 else -> meta.owningPlayer = player
             }
         } else {
@@ -78,11 +82,11 @@ object GuiHeads {
             if (offlinePlayer != null && (offlinePlayer.hasPlayedBefore() || offlinePlayer.isOnline)) {
                 when {
                     applyProfileFrom(meta, offlinePlayer) -> Unit
-                    applySkinPluginProfile(meta, offlinePlayer.uniqueId, offlinePlayer.name ?: resolved) -> Unit
+                    applySkinPluginProfile(meta, offlinePlayer.uniqueId, offlinePlayer.name ?: resolved, viewer) -> Unit
                     else -> meta.owningPlayer = offlinePlayer
                 }
             } else {
-                if (!applySkinPluginProfile(meta, null, resolved)) {
+                if (!applySkinPluginProfile(meta, null, resolved, viewer)) {
                     val fallback = resolveAlias(Settings.guiOfflineHeadSource, viewer)
                     if (!fallback.isNullOrBlank() && fallback != resolved) {
                         return apply(item, fallback, viewer)
@@ -208,23 +212,46 @@ object GuiHeads {
         }
     }
 
-    private fun applySkinPluginProfile(meta: SkullMeta, uuid: UUID?, name: String): Boolean {
-        val value = skinPluginSource(uuid, name) ?: return false
+    private fun applySkinPluginProfile(meta: SkullMeta, uuid: UUID?, name: String, viewer: Player?): Boolean {
+        val value = skinPluginSource(uuid, name, viewer) ?: return false
         applyBase64(meta, value)
         return true
     }
 
-    private fun skinPluginSource(uuid: UUID?, name: String): String? {
+    private fun skinPluginSource(uuid: UUID?, name: String, viewer: Player?): String? {
         val cleanName = name.trim().takeIf { it.isNotEmpty() } ?: return null
         val cacheKey = "${uuid ?: "none"}:$cleanName"
-        val cached = skinPluginCache.get(cacheKey) {
-            resolveSkinsRestorerTexture(uuid, cleanName).orEmpty()
-        }
+        val cached = skinPluginCache.getIfPresent(cacheKey)
+        if (cached == null) preloadSkinPluginSource(cacheKey, uuid, cleanName, viewer)
         return cached?.takeIf { it.isNotBlank() }
     }
 
+    private fun preloadSkinPluginSource(cacheKey: String, uuid: UUID?, name: String, viewer: Player?) {
+        if (!Bukkit.getPluginManager().isPluginEnabled("SkinsRestorer")) {
+            skinPluginCache.put(cacheKey, "")
+            return
+        }
+        if (!pendingSkinLookups.add(cacheKey)) return
+
+        val plugin = CyufriendsReload.instance
+        CyuConcurrency.scheduler.runAsync(plugin) {
+            try {
+                val value = resolveSkinsRestorerTexture(uuid, name).orEmpty()
+                skinPluginCache.put(cacheKey, value)
+                if (value.isNotBlank() && viewer != null) {
+                    CyuConcurrency.scheduler.runEntity(plugin, viewer) {
+                        if (!viewer.isOnline) return@runEntity
+                        val holder = viewer.openInventory.topInventory.holder
+                        if (holder is CyuView) holder.refreshOpenView()
+                    }
+                }
+            } finally {
+                pendingSkinLookups.remove(cacheKey)
+            }
+        }
+    }
+
     private fun resolveSkinsRestorerTexture(uuid: UUID?, name: String): String? {
-        if (!Bukkit.getPluginManager().isPluginEnabled("SkinsRestorer")) return null
         return runCatching {
             val provider = Class.forName("net.skinsrestorer.api.SkinsRestorerProvider")
             val api = provider.getMethod("get").invoke(null)

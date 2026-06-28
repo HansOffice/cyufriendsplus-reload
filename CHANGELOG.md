@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.8
+
+- 修复 GUI 在线玩家头像在 Folia 区域线程里同步调用 SkinsRestorer 的风险
+- SkinsRestorer 头像改为异步预热，菜单首次打开先显示可用缓存或默认头像，解析完成后自动刷新当前菜单
+- 保留 Paper / Folia 双构建口径，避免头像缓存未命中时触发区域线程 Watchdog
+
 ## 1.0.7
 
 - 分页禁用态按钮改为完整 GUI 按钮模板，支持 CraftEngine、ItemsAdder、Oraxen、Nexo 和资源包 CustomModelData
