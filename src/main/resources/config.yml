@@ -62,12 +62,16 @@ gui:
   pagination:
     disabled:
       enabled: true
-      material: GRAY_STAINED_GLASS_PANE  
-      custom_model_data: 0
-      previous-name: "<#3A4352>已是第一页</#3A4352>"
-      next-name: "<#3A4352>已是最后一页</#3A4352>"
-      lore:
-        - "<#8A96A8>当前页</#8A96A8> <#D7DEE8>%page%</#D7DEE8><#8A96A8>/</#8A96A8><#D7DEE8>%total_pages%</#D7DEE8>"
+      previous:
+        material: GRAY_STAINED_GLASS_PANE
+        name: "<#3A4352>已是第一页</#3A4352>"
+        lore:
+          - "<#8A96A8>当前页</#8A96A8> <#D7DEE8>%page%</#D7DEE8><#8A96A8>/</#8A96A8><#D7DEE8>%total_pages%</#D7DEE8>"
+      next:
+        material: GRAY_STAINED_GLASS_PANE
+        name: "<#3A4352>已是最后一页</#3A4352>"
+        lore:
+          - "<#8A96A8>当前页</#8A96A8> <#D7DEE8>%page%</#D7DEE8><#8A96A8>/</#8A96A8><#D7DEE8>%total_pages%</#D7DEE8>"
 
 # ---------------------------------------------------
 # 进服摘要

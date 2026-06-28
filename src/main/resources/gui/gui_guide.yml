@@ -128,6 +128,13 @@
 #
 # craftengine: "命名空间:物品ID"
 #
+# 分页按钮到第一页 / 最后一页时会使用 config.yml:
+#
+# gui.pagination.disabled.previous
+# gui.pagination.disabled.next
+#
+# 这两处同样支持 material、craftengine、name、lore、custom_model_data
+#
 # head
 # 头颅来源，material 通常保持 PLAYER_HEAD
 #

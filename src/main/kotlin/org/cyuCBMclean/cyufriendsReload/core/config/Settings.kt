@@ -1,6 +1,8 @@
 package org.cyuCBMclean.cyufriendsReload.core.config
 
+import org.bukkit.configuration.MemoryConfiguration
 import org.bukkit.configuration.file.FileConfiguration
+import org.cyuCBMclean.cyufriendsReload.ui.layout.ItemTemplate
 
 object Settings {
     var databaseType: String = "SQLite"
@@ -28,6 +30,10 @@ object Settings {
     var guiPageDisabledLore: List<String> = listOf("<gray>当前页 <white>%page%</white>/<white>%total_pages%</white></gray>")
         private set
     var guiPageDisabledCustomModelData: Int = 0
+        private set
+    var guiPageDisabledPreviousTemplate: ItemTemplate? = null
+        private set
+    var guiPageDisabledNextTemplate: ItemTemplate? = null
         private set
 
     fun reload(config: FileConfiguration) {
@@ -58,5 +64,20 @@ object Settings {
             .takeIf { it.isNotEmpty() }
             ?: guiPageDisabledLore
         guiPageDisabledCustomModelData = config.getInt("gui.pagination.disabled.custom_model_data", 0).coerceAtLeast(0)
+        guiPageDisabledPreviousTemplate = loadDisabledTemplate(config, "previous", guiPageDisabledPreviousName)
+        guiPageDisabledNextTemplate = loadDisabledTemplate(config, "next", guiPageDisabledNextName)
+    }
+
+    private fun loadDisabledTemplate(config: FileConfiguration, key: String, fallbackName: String): ItemTemplate {
+        val custom = config.getConfigurationSection("gui.pagination.disabled.$key")
+        if (custom != null) return ItemTemplate(custom)
+
+        val memory = MemoryConfiguration()
+        val section = memory.createSection("item")
+        section.set("material", guiPageDisabledMaterial)
+        section.set("custom_model_data", guiPageDisabledCustomModelData)
+        section.set("name", fallbackName)
+        section.set("lore", guiPageDisabledLore)
+        return ItemTemplate(section)
     }
 }

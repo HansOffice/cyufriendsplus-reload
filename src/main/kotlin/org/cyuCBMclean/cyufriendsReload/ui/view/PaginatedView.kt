@@ -1,11 +1,7 @@
 package org.cyuCBMclean.cyufriendsReload.ui.view
 
-import net.kyori.adventure.text.minimessage.MiniMessage
-import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
-import org.bukkit.inventory.meta.ItemMeta
-import org.cyuCBMclean.cyufriendsReload.core.config.ColorCompat
 import org.cyuCBMclean.cyufriendsReload.core.config.Settings
 import org.cyuCBMclean.cyufriendsReload.core.debug.DebugLogger
 import org.cyuCBMclean.cyufriendsReload.ui.action.CyuClickType
@@ -25,10 +21,6 @@ abstract class PaginatedView<T>(
     private val prevChar: Char,
     private val nextChar: Char
 ) : CyuView(player, title, pattern, viewItems) {
-
-    companion object {
-        private val miniMessage = MiniMessage.miniMessage()
-    }
 
     var page = 1
         private set
@@ -137,72 +129,8 @@ abstract class PaginatedView<T>(
     private fun renderDisabledPageSlots(slots: List<Int>, previous: Boolean) {
         if (!Settings.guiPageDisabledEnabled || slots.isEmpty()) return
         slots.forEach { slot ->
-            setItem(slot, disabledPageItem(previous, resolvedReplacements(if (previous) prevChar else nextChar, slot)))
+            val template = if (previous) Settings.guiPageDisabledPreviousTemplate else Settings.guiPageDisabledNextTemplate
+            setItem(slot, template?.render(player, resolvedReplacements(if (previous) prevChar else nextChar, slot)))
         }
-    }
-
-    private fun disabledPageItem(previous: Boolean, replacements: Map<String, String>): ItemStack {
-        val material = parseMaterial(Settings.guiPageDisabledMaterial)
-        val item = ItemStack(material.first, 1)
-        if (material.second > 0) item.durability = material.second
-        val meta = item.itemMeta ?: return item
-        val name = if (previous) Settings.guiPageDisabledPreviousName else Settings.guiPageDisabledNextName
-        applyText(meta, name, replacements)
-        Settings.guiPageDisabledLore.takeIf { it.isNotEmpty() }?.let { lore ->
-            applyLore(meta, lore, replacements)
-        }
-        applyCustomModelData(meta)
-        item.itemMeta = meta
-        return item
-    }
-
-    private fun applyText(meta: ItemMeta, value: String, replacements: Map<String, String>) {
-        val rendered = replaceText(value, replacements)
-        val component = ColorCompat.parseMiniMessage(miniMessage, rendered)
-        if (component == null || !ColorCompat.applyGuiDisplayName(meta, component)) {
-            meta.setDisplayName(ColorCompat.renderGuiMiniMessage(miniMessage, rendered))
-        }
-    }
-
-    private fun applyLore(meta: ItemMeta, values: List<String>, replacements: Map<String, String>) {
-        val rendered = values.map { replaceText(it, replacements) }
-        val components = rendered.mapNotNull { ColorCompat.parseMiniMessage(miniMessage, it) }
-        if (components.size != rendered.size || !ColorCompat.applyGuiLore(meta, components)) {
-            meta.lore = rendered.map { ColorCompat.renderGuiMiniMessage(miniMessage, it) }
-        }
-    }
-
-    private fun renderText(value: String, replacements: Map<String, String>): String {
-        val rendered = replaceText(value, replacements)
-        return ColorCompat.renderGuiMiniMessage(miniMessage, rendered)
-    }
-
-    private fun replaceText(value: String, replacements: Map<String, String>): String {
-        var rendered = value
-        replacements.forEach { (key, replacement) -> rendered = rendered.replace(key, replacement) }
-        return rendered
-    }
-
-    private fun applyCustomModelData(meta: ItemMeta) {
-        val customModelData = Settings.guiPageDisabledCustomModelData
-        if (customModelData <= 0) return
-        runCatching {
-            meta.javaClass.getMethod("setCustomModelData", Int::class.javaPrimitiveType).invoke(meta, customModelData)
-        }
-    }
-
-    private fun parseMaterial(value: String): Pair<Material, Short> {
-        val raw = value.trim()
-        val name = raw.substringBefore(':').trim()
-        val data = raw.substringAfter(':', "").toShortOrNull() ?: 0
-        val material = Material.matchMaterial(name.uppercase())
-            ?: if (name.equals("GRAY_STAINED_GLASS_PANE", ignoreCase = true)) {
-                Material.matchMaterial("STAINED_GLASS_PANE")
-            } else {
-                null
-            }
-            ?: Material.GRAY_STAINED_GLASS_PANE
-        val durability = if (raw.contains(':')) data else if (material.name == "STAINED_GLASS_PANE") 7 else 0
-        return material to durability.toShort()
     }
 }
