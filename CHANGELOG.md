@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.7
+
+- 分页禁用态按钮改为完整 GUI 按钮模板，支持 CraftEngine、ItemsAdder、Oraxen、Nexo 和资源包 CustomModelData
+- 优化 CraftEngine 菜单图标桥接，首次绑定后复用方法缓存，减少菜单渲染时的反射开销
+- 更新 GUI 速查说明，补充分页禁用态按钮的自定义入口
+
 ## 1.0.5
 
 - 拆分 Paper 与 Folia 构建目标，发布包名称明确区分运行平台
