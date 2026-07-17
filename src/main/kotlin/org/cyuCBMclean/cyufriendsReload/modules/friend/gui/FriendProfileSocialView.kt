@@ -61,8 +61,8 @@ class FriendProfileSocialView(
     override fun viewReplacements(): Map<String, String> {
         val targetUid = CyuIdHook.getUidByName(targetName) ?: return emptyMap()
         val rawName = CyuIdHook.getName(targetUid) ?: targetName
-        val displayName = module.friendManager.getFriendDataStoredSync(player.uid, targetUid)?.noteName ?: rawName
-        val preferences = module.preferencesManager.snapshotPersonalStoredSync(player.uid, targetUid)
+        val displayName = module.friendManager.getFriendDataCached(player.uid, targetUid)?.noteName ?: rawName
+        val preferences = module.preferencesManager.snapshotPersonalCached(player.uid, targetUid)
         return mapOf(
             "%raw_name%" to rawName,
             "%friend_name%" to displayName,

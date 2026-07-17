@@ -38,4 +38,8 @@ object PendingTextInput {
     fun clear(playerId: UUID) {
         requests.remove(playerId)
     }
+
+    fun clearAll() {
+        requests.clear()
+    }
 }

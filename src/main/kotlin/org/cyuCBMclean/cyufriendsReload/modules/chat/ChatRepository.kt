@@ -35,9 +35,31 @@ class ChatRepository(private val db: DatabaseManager) : BaseRepository {
                 "CREATE TABLE IF NOT EXISTS $tableName (id INT AUTO_INCREMENT PRIMARY KEY, sender_uid VARCHAR(36), receiver_uid VARCHAR(36), content TEXT, created_at BIGINT, is_read BOOLEAN)"
             }
             update(sql)
-            update("CREATE INDEX IF NOT EXISTS idx_${tableName}_receiver_read_created ON $tableName (receiver_uid, is_read, created_at)")
-            update("CREATE INDEX IF NOT EXISTS idx_${tableName}_sender_receiver_created ON $tableName (sender_uid, receiver_uid, created_at)")
-            update("CREATE INDEX IF NOT EXISTS idx_${tableName}_created ON $tableName (created_at)")
+            if (Settings.databaseType.equals("SQLite", ignoreCase = true)) {
+                runCatching {
+                    update("CREATE INDEX IF NOT EXISTS idx_${tableName}_receiver_read_created ON $tableName (receiver_uid, is_read, created_at)")
+                }
+
+                runCatching {
+                    update("CREATE INDEX IF NOT EXISTS idx_${tableName}_sender_receiver_created ON $tableName (sender_uid, receiver_uid, created_at)")
+                }
+
+                runCatching {
+                    update("CREATE INDEX IF NOT EXISTS idx_${tableName}_created ON $tableName (created_at)")
+                }
+            } else {
+                runCatching {
+                    update("ALTER TABLE $tableName ADD INDEX idx_${tableName}_receiver_read_created (receiver_uid, is_read, created_at)")
+                }
+
+                runCatching {
+                    update("ALTER TABLE $tableName ADD INDEX idx_${tableName}_sender_receiver_created (sender_uid, receiver_uid, created_at)")
+                }
+
+                runCatching {
+                    update("ALTER TABLE $tableName ADD INDEX idx_${tableName}_created (created_at)")
+                }
+            }
         }
     }
 
@@ -49,9 +71,31 @@ class ChatRepository(private val db: DatabaseManager) : BaseRepository {
                 "CREATE TABLE IF NOT EXISTS $tableName (id INT AUTO_INCREMENT PRIMARY KEY, sender_uid VARCHAR(36), receiver_uid VARCHAR(36), content TEXT, created_at BIGINT, is_read BOOLEAN)"
             }
             update(sql)
-            update("CREATE INDEX IF NOT EXISTS idx_${tableName}_receiver_read_created ON $tableName (receiver_uid, is_read, created_at)")
-            update("CREATE INDEX IF NOT EXISTS idx_${tableName}_sender_receiver_created ON $tableName (sender_uid, receiver_uid, created_at)")
-            update("CREATE INDEX IF NOT EXISTS idx_${tableName}_created ON $tableName (created_at)")
+            if (Settings.databaseType.equals("SQLite", ignoreCase = true)) {
+                runCatching {
+                    update("CREATE INDEX IF NOT EXISTS idx_${tableName}_receiver_read_created ON $tableName (receiver_uid, is_read, created_at)")
+                }
+
+                runCatching {
+                    update("CREATE INDEX IF NOT EXISTS idx_${tableName}_sender_receiver_created ON $tableName (sender_uid, receiver_uid, created_at)")
+                }
+
+                runCatching {
+                    update("CREATE INDEX IF NOT EXISTS idx_${tableName}_created ON $tableName (created_at)")
+                }
+            } else {
+                runCatching {
+                    update("ALTER TABLE $tableName ADD INDEX idx_${tableName}_receiver_read_created (receiver_uid, is_read, created_at)")
+                }
+
+                runCatching {
+                    update("ALTER TABLE $tableName ADD INDEX idx_${tableName}_sender_receiver_created (sender_uid, receiver_uid, created_at)")
+                }
+
+                runCatching {
+                    update("ALTER TABLE $tableName ADD INDEX idx_${tableName}_created (created_at)")
+                }
+            }
         }
     }
 

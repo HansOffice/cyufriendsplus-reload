@@ -1,5 +1,6 @@
 package org.cyuCBMclean.cyufriendsReload.modules.friend
 
+import org.cyuCBMclean.cyufriendsReload.core.config.Settings
 import org.cyuCBMclean.cyufriendsReload.core.database.BaseRepository
 import org.cyuCBMclean.cyufriendsReload.core.database.DatabaseManager
 import org.cyuCBMclean.cyufriendsReload.core.database.query
@@ -17,7 +18,15 @@ class BlockRepository(private val db: DatabaseManager) : BaseRepository {
                     "blocked_uid VARCHAR(36) NOT NULL, " +
                     "PRIMARY KEY (user_uid, blocked_uid))"
             )
-            update("CREATE INDEX IF NOT EXISTS idx_${tableName}_blocked ON $tableName (blocked_uid)")
+            if (Settings.databaseType.equals("SQLite", ignoreCase = true)) {
+                runCatching {
+                    update("CREATE INDEX IF NOT EXISTS idx_${tableName}_blocked ON $tableName (blocked_uid)")
+                }
+            } else {
+                runCatching {
+                    update("ALTER TABLE $tableName ADD INDEX idx_${tableName}_blocked (blocked_uid)")
+                }
+            }
         }
     }
 

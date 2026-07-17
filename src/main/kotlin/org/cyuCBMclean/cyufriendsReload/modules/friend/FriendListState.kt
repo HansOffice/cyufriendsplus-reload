@@ -51,4 +51,8 @@ object FriendListStateStore {
     fun clear(uid: String) {
         states.remove(uid)
     }
+
+    fun clearAll() {
+        states.clear()
+    }
 }

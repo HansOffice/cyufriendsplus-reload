@@ -1,10 +1,9 @@
 package org.cyuCBMclean.cyufriendsReload.modules.group.gui
 
-import kotlinx.coroutines.runBlocking
 import org.bukkit.entity.Player
-import org.cyuCBMclean.cyufriendsReload.core.scheduler.CyuConcurrency
 import org.cyuCBMclean.cyufriendsReload.extension.playAudio
 import org.cyuCBMclean.cyufriendsReload.extension.uid
+import org.cyuCBMclean.cyufriendsReload.modules.friend.FriendGroupPreferences
 import org.cyuCBMclean.cyufriendsReload.modules.friend.FriendModule
 import org.cyuCBMclean.cyufriendsReload.modules.friend.FriendPersonalType
 import org.cyuCBMclean.cyufriendsReload.modules.group.GroupModule
@@ -26,6 +25,12 @@ class GroupRulesView(
 
     private val dynamicSlots = mutableMapOf<Int, LayoutBinding>()
     private val toggleSymbols = setOf('T', 'N', 'O', 'P')
+    private lateinit var cachedSettings: FriendGroupPreferences
+
+    override suspend fun prepareData() {
+        friendModule.preferencesManager.loadPlayer(player.uid)
+        cachedSettings = friendModule.preferencesManager.snapshotGroupCached(player.uid, groupName)
+    }
 
     override fun onRender() {
         bindDynamicSlots()
@@ -40,31 +45,34 @@ class GroupRulesView(
         val binding = dynamicSlots[slot] ?: return
         val proxyGateway = groupModule.plugin.moduleManager.getModule<ProxyModule>("proxy")?.gateway
         val ownerUid = player.uid
-        CyuConcurrency.scheduler.runAsync(groupModule.plugin) {
-            when (binding.symbol) {
-                'T' -> runBlocking { friendModule.preferencesManager.toggleGroup(ownerUid, groupName, FriendPersonalType.TELEPORT) }
-                'N' -> runBlocking { friendModule.preferencesManager.toggleGroup(ownerUid, groupName, FriendPersonalType.NOTIFY_RECEIVE) }
-                'O' -> runBlocking { friendModule.preferencesManager.toggleGroup(ownerUid, groupName, FriendPersonalType.NOTIFY_BROADCAST) }
-                'P' -> runBlocking { friendModule.preferencesManager.toggleGroupPinned(ownerUid, groupName) }
-            }
-            proxyGateway?.invalidateSettings(ownerUid)
-            CyuConcurrency.scheduler.runEntity(groupModule.plugin, player) {
+        runAsyncOperation(
+            operation = {
+                when (binding.symbol) {
+                    'T' -> friendModule.preferencesManager.toggleGroup(ownerUid, groupName, FriendPersonalType.TELEPORT)
+                    'N' -> friendModule.preferencesManager.toggleGroup(ownerUid, groupName, FriendPersonalType.NOTIFY_RECEIVE)
+                    'O' -> friendModule.preferencesManager.toggleGroup(ownerUid, groupName, FriendPersonalType.NOTIFY_BROADCAST)
+                    'P' -> friendModule.preferencesManager.toggleGroupPinned(ownerUid, groupName)
+                }
+                friendModule.preferencesManager.snapshotGroupCached(ownerUid, groupName)
+            },
+            onSuccess = {
+                cachedSettings = it
+                proxyGateway?.invalidateSettings(ownerUid)
                 player.playAudio("success")
-                onRender()
+                refreshOpenView()
             }
-        }
+        )
     }
 
     override fun viewReplacements(): Map<String, String> {
-        val settings = friendModule.preferencesManager.snapshotGroupStoredSync(player.uid, groupName)
         val memberCount = groupModule.manager.friendsInGroup(player.uid, groupName).size
         return mapOf(
             "%group_name%" to groupName,
             "%group_count%" to memberCount.toString(),
-            "%state_tp%" to settings.teleport.displayName(FriendPersonalType.TELEPORT),
-            "%state_notify%" to settings.notifyReceive.displayName(FriendPersonalType.NOTIFY_RECEIVE),
-            "%state_notifyme%" to settings.notifyBroadcast.displayName(FriendPersonalType.NOTIFY_BROADCAST),
-            "%state_pin%" to if (settings.pinned) "置顶显示" else "普通显示"
+            "%state_tp%" to cachedSettings.teleport.displayName(FriendPersonalType.TELEPORT),
+            "%state_notify%" to cachedSettings.notifyReceive.displayName(FriendPersonalType.NOTIFY_RECEIVE),
+            "%state_notifyme%" to cachedSettings.notifyBroadcast.displayName(FriendPersonalType.NOTIFY_BROADCAST),
+            "%state_pin%" to if (cachedSettings.pinned) "置顶显示" else "普通显示"
         )
     }
 

@@ -51,11 +51,11 @@ class FriendTimelineView(
     override fun mapElement(element: RelationshipTimelineEntry): ItemStack {
         val template = itemsMap['E'] ?: return ItemStack(Material.PAPER)
         val rawName = targetUid?.let { CyuIdHook.getName(it) } ?: targetName
-        val friendName = module.friendManager.getFriendDataStoredSync(player.uid, targetUid ?: return ItemStack(Material.PAPER))?.noteName ?: rawName
+        val friendName = module.friendManager.getFriendDataCached(player.uid, targetUid ?: return ItemStack(Material.PAPER))?.noteName ?: rawName
         val actorName = if (element.actorUid == player.uid) {
             "你"
         } else {
-            module.friendManager.getFriendDataStoredSync(player.uid, element.actorUid)?.noteName
+            module.friendManager.getFriendDataCached(player.uid, element.actorUid)?.noteName
                 ?: (CyuIdHook.getName(element.actorUid) ?: rawName)
         }
         val replacements = mapOf(

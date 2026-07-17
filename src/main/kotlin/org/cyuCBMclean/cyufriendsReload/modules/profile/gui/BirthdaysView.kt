@@ -28,15 +28,14 @@ class BirthdaysView(
 
     private var cachedEntries: List<BirthdayReminderEntry> = emptyList()
 
-    override fun getSource(): List<BirthdayReminderEntry> {
-        val friendModule = plugin.moduleManager.getModule<FriendModule>("friend") ?: return emptyList()
-        val friendUids = friendModule.friendManager.getFriendEntriesStoredSync(player.uid)
+    override suspend fun prepareData() {
+        val friendModule = plugin.moduleManager.getModule<FriendModule>("friend") ?: return
+        val friendUids = friendModule.friendManager.getFriendEntriesCached(player.uid)
             .mapTo(linkedSetOf(), org.cyuCBMclean.cyufriendsReload.modules.friend.FriendData::friendUid)
-        val entries = profileModule.manager.birthdayEntriesSync(friendUids)
-        cachedEntries = entries
-        return entries
+        cachedEntries = profileModule.manager.birthdayEntriesSync(friendUids)
     }
 
+    override fun getSource(): List<BirthdayReminderEntry> = cachedEntries
     override fun viewReplacements(): Map<String, String> {
         val today = cachedEntries.count { it.daysAhead == 0 }
         val upcoming = cachedEntries.count { it.daysAhead > 0 }
@@ -52,7 +51,7 @@ class BirthdaysView(
         val template = itemsMap['Y'] ?: return ItemStack(Material.PLAYER_HEAD)
         val friendModule = plugin.moduleManager.getModule<FriendModule>("friend")
         val rawName = CyuIdHook.getName(element.uid) ?: element.uid
-        val displayName = friendModule?.friendManager?.getFriendDataStoredSync(player.uid, element.uid)?.noteName ?: rawName
+        val displayName = friendModule?.friendManager?.getFriendDataCached(player.uid, element.uid)?.noteName ?: rawName
         val replacements = mapOf(
             "%friend_name%" to displayName,
             "%raw_name%" to rawName,
@@ -71,7 +70,7 @@ class BirthdaysView(
     override fun onElementClick(element: BirthdayReminderEntry, clickType: CyuClickType) {
         val rawName = CyuIdHook.getName(element.uid) ?: element.uid
         val friendModule = plugin.moduleManager.getModule<FriendModule>("friend")
-        val displayName = friendModule?.friendManager?.getFriendDataStoredSync(player.uid, element.uid)?.noteName ?: rawName
+        val displayName = friendModule?.friendManager?.getFriendDataCached(player.uid, element.uid)?.noteName ?: rawName
         when (clickType) {
             CyuClickType.LEFT -> player.performCommand("friend profile $rawName")
             CyuClickType.RIGHT -> player.performCommand("friend contact ${element.uid} $displayName")

@@ -1,11 +1,10 @@
 package org.cyuCBMclean.cyufriendsReload.modules.profile.gui
 
-import kotlinx.coroutines.runBlocking
 import org.bukkit.entity.Player
-import org.cyuCBMclean.cyufriendsReload.core.scheduler.CyuConcurrency
 import org.cyuCBMclean.cyufriendsReload.extension.playAudio
 import org.cyuCBMclean.cyufriendsReload.extension.uid
 import org.cyuCBMclean.cyufriendsReload.modules.friend.FriendModule
+import org.cyuCBMclean.cyufriendsReload.modules.friend.FriendPreferences
 import org.cyuCBMclean.cyufriendsReload.modules.friend.FriendTeleportMode
 import org.cyuCBMclean.cyufriendsReload.modules.profile.ProfileData
 import org.cyuCBMclean.cyufriendsReload.modules.profile.ProfileModule
@@ -25,6 +24,16 @@ class SettingsView(
 
     private val dynamicSlots = mutableMapOf<Int, LayoutBinding>()
     private val toggleSymbols = setOf('R', 'M', 'N', 'O', 'T')
+    private lateinit var cachedProfile: ProfileData
+    private var cachedPreferences: FriendPreferences? = null
+
+    override suspend fun prepareData() {
+        val uid = player.uid
+        cachedProfile = module.manager.loadProfile(uid)
+        val friendModule = module.plugin.moduleManager.getModule<FriendModule>("friend")
+        friendModule?.preferencesManager?.loadPlayer(uid)
+        cachedPreferences = friendModule?.preferencesManager?.snapshotCached(uid)
+    }
 
     override fun onRender() {
         bindDynamicSlots()
@@ -41,44 +50,43 @@ class SettingsView(
     override fun onDynamicClick(slot: Int, clickType: CyuClickType) {
         val binding = dynamicSlots[slot] ?: return
         val uid = player.uid
-        val profile = module.manager.getProfileStoredSync(uid)
 
         if (binding.symbol == 'R') {
-            profile.allowRequests = !profile.allowRequests
-            updateProfile(profile, invalidateProfile = true)
+            cachedProfile.allowRequests = !cachedProfile.allowRequests
+            updateProfile(cachedProfile, invalidateProfile = true)
             return
         }
 
         if (binding.symbol == 'M') {
-            profile.allowPrivateMsg = !profile.allowPrivateMsg
-            updateProfile(profile, invalidateProfile = true)
+            cachedProfile.allowPrivateMsg = !cachedProfile.allowPrivateMsg
+            updateProfile(cachedProfile, invalidateProfile = true)
             return
         }
 
         val friendModule = module.plugin.moduleManager.getModule<FriendModule>("friend") ?: return
         val proxyGateway = module.plugin.moduleManager.getModule<ProxyModule>("proxy")?.gateway
-        CyuConcurrency.scheduler.runAsync(module.plugin) {
-            val sound = runBlocking {
-                when (binding.symbol) {
+        runAsyncOperation(
+            operation = {
+                val sound = when (binding.symbol) {
                     'N' -> if (friendModule.preferencesManager.toggleNotifyOnJoin(uid)) "notify-enabled" else "notify-disabled"
                     'O' -> if (friendModule.preferencesManager.toggleNotifyOwnFriends(uid)) "notifyme-enabled" else "notifyme-disabled"
                     'T' -> teleportModeSound(friendModule.preferencesManager.cycleTeleportMode(uid))
                     else -> null
                 }
-            }
-            if (sound != null) {
-                proxyGateway?.invalidateSettings(uid)
-            }
-            CyuConcurrency.scheduler.runEntity(module.plugin, player) {
+                sound to friendModule.preferencesManager.snapshotCached(uid)
+            },
+            onSuccess = { (sound, preferences) ->
+                cachedPreferences = preferences
+                if (sound != null) proxyGateway?.invalidateSettings(uid)
                 sound?.let(player::playAudio)
-                onRender()
+                refreshOpenView()
             }
-        }
+        )
     }
 
     override fun viewReplacements(): Map<String, String> {
-        val profile = module.manager.getProfileStoredSync(player.uid)
-        val preferences = module.plugin.moduleManager.getModule<FriendModule>("friend")?.preferencesManager?.snapshotStoredSync(player.uid)
+        val profile = cachedProfile
+        val preferences = cachedPreferences
         val socialSummary = if (module.plugin.moduleManager.isEnabled("social")) {
             val socialEnabledCount = listOf(
                 profile.notifyStatusLike,
@@ -113,16 +121,18 @@ class SettingsView(
 
     private fun updateProfile(profile: ProfileData, invalidateProfile: Boolean) {
         val proxyGateway = module.plugin.moduleManager.getModule<ProxyModule>("proxy")?.gateway
-        CyuConcurrency.scheduler.runAsync(module.plugin) {
-            runBlocking { module.manager.updateProfile(profile) }
-            if (invalidateProfile) {
-                proxyGateway?.invalidateProfile(profile.uid)
-            }
-            CyuConcurrency.scheduler.runEntity(module.plugin, player) {
+        runAsyncOperation(
+            operation = {
+                module.manager.updateProfile(profile)
+                profile
+            },
+            onSuccess = {
+                cachedProfile = it
+                if (invalidateProfile) proxyGateway?.invalidateProfile(it.uid)
                 player.playAudio("success")
-                onRender()
+                refreshOpenView()
             }
-        }
+        )
     }
 
     private fun state(enabled: Boolean): String {

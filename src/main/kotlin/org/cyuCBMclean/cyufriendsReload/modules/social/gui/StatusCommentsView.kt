@@ -1,10 +1,8 @@
 package org.cyuCBMclean.cyufriendsReload.modules.social.gui
 
-import kotlinx.coroutines.runBlocking
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
-import org.cyuCBMclean.cyufriendsReload.core.scheduler.CyuConcurrency
 import org.cyuCBMclean.cyufriendsReload.extension.uid
 import org.cyuCBMclean.cyufriendsReload.integration.hook.CyuIdHook
 import org.cyuCBMclean.cyufriendsReload.modules.social.SocialModule
@@ -35,24 +33,11 @@ class StatusCommentsView(
     private var loading = false
     private var cachedComments: List<StatusComment> = emptyList()
 
-    override fun getSource(): List<StatusComment> {
-        val cached = module.manager.getStatusCommentsSync(statusId, 40)
-        cachedComments = cached
-        if (cached.isNotEmpty()) return cached
-        if (!loading) {
-            loading = true
-            CyuConcurrency.scheduler.runAsync(module.plugin) {
-                val loaded = runCatching { runBlocking { module.manager.getStatusComments(statusId, 40) } }.getOrDefault(emptyList())
-                CyuConcurrency.scheduler.runEntity(module.plugin, player) {
-                    cachedComments = loaded
-                    loading = false
-                    onRender()
-                }
-            }
-        }
-        return cachedComments
+    override suspend fun prepareData() {
+        cachedComments = module.manager.getStatusComments(statusId, 40)
     }
 
+    override fun getSource(): List<StatusComment> = cachedComments
     override fun viewReplacements(): Map<String, String> {
         return mapOf(
             "%status_id%" to statusId.toString(),

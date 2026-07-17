@@ -902,7 +902,7 @@ class SocialManager(
     fun getStatusCountCached(uid: String): Int {
         return statusCountCache.getIfPresent(uid)
             ?: statusCache.getIfPresent(uid)?.size
-            ?: statusRepo.countByUidSync(uid).also { statusCountCache.put(uid, it) }
+            ?: 0
     }
 
     fun getLatestStatusCached(uid: String, viewerUid: String = uid): String? {

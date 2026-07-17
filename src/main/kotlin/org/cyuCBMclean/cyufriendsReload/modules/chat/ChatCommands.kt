@@ -2,7 +2,7 @@ package org.cyuCBMclean.cyufriendsReload.modules.chat
 
 import kotlinx.coroutines.runBlocking
 import org.cyuCBMclean.cyufriendsReload.CyufriendsReload
-import org.cyuCBMclean.cyufriendsReload.command.CommandDispatcher
+import org.cyuCBMclean.cyufriendsReload.command.CyuCommandNode
 import org.cyuCBMclean.cyufriendsReload.core.debug.DebugLogger
 import org.cyuCBMclean.cyufriendsReload.core.scheduler.CyuConcurrency
 import org.cyuCBMclean.cyufriendsReload.extension.displayServerName
@@ -22,9 +22,9 @@ import org.cyuCBMclean.cyufriendsReload.ui.view.ViewTitles
 
 object ChatCommands {
 
-    fun register(plugin: CyufriendsReload, module: ChatModule) {
+    fun registerSubCommands(plugin: CyufriendsReload, module: ChatModule, root: CyuCommandNode) {
 
-        CommandDispatcher(plugin, "msg") {
+        root.subCommand("msg") {
             alias("m", "tell", "w")
             requirePlayer = true
             permission = "cyufriends.command.msg"
@@ -173,9 +173,9 @@ object ChatCommands {
                 val friendModule = plugin.moduleManager.getModule<FriendModule>("friend") ?: return@tabComplete emptyList()
                 filterCompletions(friendModule.friendManager.getFriendEntriesStoredSync(player.uid).map { CyuIdHook.getName(it.friendUid) ?: it.friendUid }, args.getOrElse(0) { "" })
             }
-        }.register()
+        }
 
-        CommandDispatcher(plugin, "reply") {
+        root.subCommand("reply") {
             alias("r")
             requirePlayer = true
             permission = "cyufriends.command.reply"
@@ -314,9 +314,9 @@ object ChatCommands {
                     }
                 }
             }
-        }.register()
+        }
 
-        CommandDispatcher(plugin, "messages") {
+        root.subCommand("messages") {
             requirePlayer = true
             permission = "cyufriends.command.messages"
 
@@ -374,7 +374,7 @@ object ChatCommands {
                     else -> emptyList()
                 }
             }
-        }.register()
+        }
     }
 
     private fun showConversationsInChat(plugin: CyufriendsReload, module: ChatModule, player: org.bukkit.entity.Player) {

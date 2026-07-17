@@ -1,6 +1,5 @@
 package org.cyuCBMclean.cyufriendsReload.modules.social.gui
 
-import kotlinx.coroutines.runBlocking
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
@@ -17,8 +16,9 @@ import org.cyuCBMclean.cyufriendsReload.ui.layout.GuiPattern
 import org.cyuCBMclean.cyufriendsReload.ui.layout.GuiTextFormatter
 import org.cyuCBMclean.cyufriendsReload.ui.layout.ItemTemplate
 import org.cyuCBMclean.cyufriendsReload.ui.view.PaginatedView
-import java.text.SimpleDateFormat
-import java.util.Date
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 class StatusView(
     player: Player,
@@ -33,11 +33,10 @@ class StatusView(
         private const val HIDDEN_LINE = "__cyu_hidden__"
     }
 
-    private val dateFormat = SimpleDateFormat("MM-dd HH:mm")
+    private val dateFormat = DateTimeFormatter.ofPattern("MM-dd HH:mm").withZone(ZoneId.systemDefault())
     private val viewerUid = player.uid
     private val viewerIsAdmin = player.hasPermission("cyufriends.admin")
-    @Volatile
-    private var loading = false
+    private var cachedStatuses: List<StatusEntry> = emptyList()
     @Volatile
     private var likedStatusIds: Set<Int> = emptySet()
     @Volatile
@@ -60,43 +59,34 @@ class StatusView(
         )
     }
 
-    override fun getSource(): List<StatusEntry> {
-        if (targetUid != null) {
-            val cached = module.manager.getStatusesCached(targetUid, viewerUid)
-            if (cached.isNotEmpty()) return cached.also(::refreshState)
+    override suspend fun prepareData() {
+        cachedStatuses = if (targetUid == null) {
+            module.manager.getGlobalStatuses(viewerUid)
         } else {
-            val cached = module.manager.getGlobalStatusesCachedSync(viewerUid)
-            if (cached.isNotEmpty()) return cached.also(::refreshState)
+            module.manager.getStatuses(targetUid, viewerUid)
         }
-        if (!loading) {
-            loading = true
-            CyuConcurrency.scheduler.runAsync(module.plugin) {
-                runCatching {
-                    runBlocking {
-                        if (targetUid == null) {
-                            module.manager.getGlobalStatuses(viewerUid)
-                        } else {
-                            module.manager.getStatuses(targetUid, viewerUid)
-                        }
-                    }
-                }
-                CyuConcurrency.scheduler.runEntity(module.plugin, player) {
-                    loading = false
-                    onRender()
-                }
-            }
-        }
-        return if (targetUid == null) {
-            module.manager.getGlobalStatusesCachedSync(viewerUid).also(::refreshState)
+        likedStatusIds = if (cachedStatuses.isEmpty()) {
+            emptySet()
         } else {
-            module.manager.getStatusesCached(targetUid, viewerUid).also(::refreshState)
+            module.manager.getLikedStatusIdsSync(viewerUid, cachedStatuses.map(StatusEntry::id))
+        }
+        unreadStatusIds = if (targetUid == null || cachedStatuses.isEmpty()) {
+            emptySet()
+        } else {
+            module.manager.unreadStatusIdsSync(targetUid, viewerUid, cachedStatuses)
+        }
+        val ownerUid = targetUid
+        if (ownerUid != null && ownerUid != viewerUid && cachedStatuses.isNotEmpty()) {
+            module.manager.markStatusSeenSync(ownerUid, viewerUid, cachedStatuses)
+            submittedSeenAt = cachedStatuses.maxOfOrNull(StatusEntry::timestamp) ?: 0L
         }
     }
 
+    override fun getSource(): List<StatusEntry> = cachedStatuses
     override fun mapElement(element: StatusEntry): ItemStack {
         val template = itemsMap['S'] ?: return ItemStack(Material.PAPER)
         val authorName = CyuIdHook.getName(element.uid) ?: "未知玩家"
-        val timeString = dateFormat.format(Date(element.timestamp))
+        val timeString = dateFormat.format(Instant.ofEpochMilli(element.timestamp))
         val replacements = mapOf(
             "%author%" to authorName,
             "%author_uid%" to element.uid,
@@ -174,39 +164,6 @@ class StatusView(
 
     private fun canManageStatus(element: StatusEntry): Boolean {
         return viewerUid == element.uid || viewerIsAdmin
-    }
-
-    private fun refreshLikedStatusIds(entries: List<StatusEntry>) {
-        likedStatusIds = if (entries.isEmpty()) {
-            emptySet()
-        } else {
-            module.manager.getLikedStatusIdsSync(viewerUid, entries.map(StatusEntry::id))
-        }
-    }
-
-    private fun refreshUnreadStatusIds(entries: List<StatusEntry>) {
-        unreadStatusIds = if (targetUid == null || entries.isEmpty()) {
-            emptySet()
-        } else {
-            module.manager.unreadStatusIdsSync(targetUid, viewerUid, entries)
-        }
-    }
-
-    private fun scheduleSeenMark(entries: List<StatusEntry>) {
-        val ownerUid = targetUid ?: return
-        if (ownerUid == viewerUid) return
-        val latestSeen = entries.maxOfOrNull(StatusEntry::timestamp) ?: return
-        if (latestSeen <= submittedSeenAt) return
-        submittedSeenAt = latestSeen
-        CyuConcurrency.scheduler.runAsync(module.plugin) {
-            module.manager.markStatusSeenSync(ownerUid, viewerUid, entries)
-        }
-    }
-
-    private fun refreshState(entries: List<StatusEntry>) {
-        refreshLikedStatusIds(entries)
-        refreshUnreadStatusIds(entries)
-        scheduleSeenMark(entries)
     }
 
     private fun conditionalLine(condition: Boolean, line: String): String {

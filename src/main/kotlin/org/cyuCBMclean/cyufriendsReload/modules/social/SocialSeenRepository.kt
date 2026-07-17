@@ -1,5 +1,6 @@
 package org.cyuCBMclean.cyufriendsReload.modules.social
 
+import org.cyuCBMclean.cyufriendsReload.core.config.Settings
 import org.cyuCBMclean.cyufriendsReload.core.database.BaseRepository
 import org.cyuCBMclean.cyufriendsReload.core.database.DatabaseManager
 import org.cyuCBMclean.cyufriendsReload.core.database.query
@@ -26,8 +27,23 @@ class SocialSeenRepository(private val db: DatabaseManager) : BaseRepository {
                     "seen_at BIGINT NOT NULL, " +
                     "PRIMARY KEY(owner_uid, viewer_uid))"
             )
-            update("CREATE INDEX IF NOT EXISTS idx_${tableName}_viewer ON $tableName (viewer_uid)")
-            update("CREATE INDEX IF NOT EXISTS idx_${wallSeenTable}_viewer ON $wallSeenTable (viewer_uid)")
+            if (Settings.databaseType.equals("SQLite", ignoreCase = true)) {
+                runCatching {
+                    update("CREATE INDEX IF NOT EXISTS idx_${tableName}_viewer ON $tableName (viewer_uid)")
+                }
+
+                runCatching {
+                    update("CREATE INDEX IF NOT EXISTS idx_${wallSeenTable}_viewer ON $wallSeenTable (viewer_uid)")
+                }
+            } else {
+                runCatching {
+                    update("ALTER TABLE $tableName ADD INDEX idx_${tableName}_viewer (viewer_uid)")
+                }
+
+                runCatching {
+                    update("ALTER TABLE $wallSeenTable ADD INDEX idx_${wallSeenTable}_viewer (viewer_uid)")
+                }
+            }
         }
     }
 

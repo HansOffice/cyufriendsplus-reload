@@ -24,6 +24,12 @@ class ProfileHomeView(
     title: String
 ) : CyuView(player, title, pattern, itemsMap) {
 
+    private var cachedReplacements: Map<String, String> = emptyMap()
+
+    override suspend fun prepareData() {
+        cachedReplacements = buildReplacements()
+    }
+
     override fun onRender() {
         rerenderLayoutBindings()
         if (!plugin.moduleManager.isEnabled("chat")) {
@@ -37,14 +43,16 @@ class ProfileHomeView(
         }
     }
 
-    override fun viewReplacements(): Map<String, String> {
+    override fun viewReplacements(): Map<String, String> = cachedReplacements
+
+    private fun buildReplacements(): Map<String, String> {
         val uid = player.uid
         val profile = profileModule.manager.getProfileStoredSync(uid)
         val friendModule = plugin.moduleManager.getModule<FriendModule>("friend")
         val chatModule = plugin.moduleManager.getModule<ChatModule>("chat")
         val socialModule = plugin.moduleManager.getModule<SocialModule>("social")
         val groupEnabled = plugin.moduleManager.isEnabled("group")
-        val friendEntries = friendModule?.friendManager?.getFriendEntriesStoredSync(uid) ?: emptyList()
+        val friendEntries = friendModule?.friendManager?.getFriendEntriesCached(uid) ?: emptyList()
         val friends = friendEntries.map { it.friendUid }.toSet()
         val onlineFriends = plugin.onlineCountGlobally(friends)
         val groups = if (groupEnabled) {
@@ -54,14 +62,14 @@ class ProfileHomeView(
         }
         val requests = friendModule?.requestManager?.countReceivedSync(uid) ?: 0
         val sentRequests = friendModule?.requestManager?.countSentSync(uid) ?: 0
-        val blacklist = friendModule?.blockManager?.getBlocksStoredSync(uid)?.size ?: 0
+        val blacklist = friendModule?.blockManager?.getBlocksCached(uid)?.size ?: 0
         val unread = chatModule?.manager?.unreadCountSync(uid) ?: 0
         val statuses = socialModule?.manager?.getStatusCountSync(uid) ?: 0
         val wall = socialModule?.manager?.getVisibleWallCountSync(uid) ?: 0
         val pendingWalls = socialModule?.manager?.pendingWallCountSync(uid) ?: 0
         val pendingReplies = socialModule?.manager?.pendingWallReplyCountSync(uid) ?: 0
         val recommends = friendModule?.friendManager?.recommendationsStoredSync(uid, 8)?.size ?: 0
-        val preferences = friendModule?.preferencesManager?.snapshotStoredSync(uid)
+        val preferences = friendModule?.preferencesManager?.snapshotCached(uid)
         val birthday = profile.birthday.takeUnless { it == "0000-00-00" } ?: "未设置"
         val bio = profileModule.manager.previewBio(profile.bio)
         val birthdayCounts = profileModule.manager.birthdayReminderCountsSync(friends)

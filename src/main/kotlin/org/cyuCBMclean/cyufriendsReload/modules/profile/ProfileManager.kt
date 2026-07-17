@@ -68,6 +68,10 @@ class ProfileManager(
         return getProfile(uid) ?: loadProfileSync(uid)
     }
 
+    fun getProfileCached(uid: String): ProfileData? {
+        return profileCache.getIfPresent(uid)
+    }
+
     fun unloadProfile(uid: String) {
         profileCache.invalidate(uid)
         DebugLogger.debug(2) { "资料缓存已清理: uid=$uid reason=unload" }

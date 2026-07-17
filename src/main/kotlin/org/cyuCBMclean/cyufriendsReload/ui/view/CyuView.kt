@@ -1,5 +1,6 @@
 package org.cyuCBMclean.cyufriendsReload.ui.view
 
+import kotlinx.coroutines.runBlocking
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.InventoryClickEvent
@@ -8,7 +9,9 @@ import org.bukkit.event.inventory.InventoryDragEvent
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.InventoryHolder
 import org.bukkit.inventory.ItemStack
+import org.cyuCBMclean.cyufriendsReload.CyufriendsReload
 import org.cyuCBMclean.cyufriendsReload.core.debug.DebugLogger
+import org.cyuCBMclean.cyufriendsReload.core.scheduler.CyuConcurrency
 import org.cyuCBMclean.cyufriendsReload.extension.uid
 import org.cyuCBMclean.cyufriendsReload.extension.playAudio
 import org.cyuCBMclean.cyufriendsReload.integration.hook.CyuIdHook
@@ -33,8 +36,28 @@ abstract class CyuView(
 
     private val inv = Bukkit.createInventory(this, pattern.size, title)
     protected val layoutActions = mutableMapOf<Int, LayoutBinding>()
+    @Volatile
+    private var opening = false
 
     fun open() {
+        if (opening) return
+        opening = true
+        val plugin = CyufriendsReload.instance
+        CyuConcurrency.scheduler.runAsync(plugin) {
+            val prepared = runCatching { runBlocking { prepareData() } }
+            CyuConcurrency.scheduler.runEntity(plugin, player) {
+                opening = false
+                if (!player.isOnline) return@runEntity
+                prepared.exceptionOrNull()?.let {
+                    plugin.logger.severe("GUI data preparation failed: ${javaClass.simpleName}: ${it.message}")
+                    return@runEntity
+                }
+                renderAndOpen()
+            }
+        }
+    }
+
+    private fun renderAndOpen() {
         pattern.mapLayout().forEach { (char, slots) ->
             val template = items[char] ?: return@forEach
             slots.forEach { slot ->
@@ -52,6 +75,39 @@ abstract class CyuView(
         if (player.openInventory.topInventory.holder !== this) return
         onRender()
         player.updateInventory()
+    }
+
+    protected open suspend fun prepareData() {}
+
+    protected fun refreshDataAsync() {
+        val plugin = CyufriendsReload.instance
+        CyuConcurrency.scheduler.runAsync(plugin) {
+            val prepared = runCatching { runBlocking { prepareData() } }
+            CyuConcurrency.scheduler.runEntity(plugin, player) {
+                if (!player.isOnline || player.openInventory.topInventory.holder !== this@CyuView) return@runEntity
+                prepared.exceptionOrNull()?.let {
+                    plugin.logger.severe("GUI data refresh failed: ${javaClass.simpleName}: ${it.message}")
+                    return@runEntity
+                }
+                refreshOpenView()
+            }
+        }
+    }
+
+    protected fun <T> runAsyncOperation(
+        operation: suspend () -> T,
+        onSuccess: (T) -> Unit = {}
+    ) {
+        val plugin = CyufriendsReload.instance
+        CyuConcurrency.scheduler.runAsync(plugin) {
+            val result = runCatching { runBlocking { operation() } }
+            CyuConcurrency.scheduler.runEntity(plugin, player) {
+                if (!player.isOnline) return@runEntity
+                result.onSuccess(onSuccess).onFailure {
+                    plugin.logger.severe("GUI operation failed: ${javaClass.simpleName}: ${it.message}")
+                }
+            }
+        }
     }
 
     protected open fun viewReplacements(): Map<String, String> = emptyMap()

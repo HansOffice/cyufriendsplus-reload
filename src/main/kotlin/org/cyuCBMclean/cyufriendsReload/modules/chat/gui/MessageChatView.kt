@@ -1,11 +1,9 @@
 package org.cyuCBMclean.cyufriendsReload.modules.chat.gui
 
-import kotlinx.coroutines.runBlocking
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.cyuCBMclean.cyufriendsReload.CyufriendsReload
-import org.cyuCBMclean.cyufriendsReload.core.scheduler.CyuConcurrency
 import org.cyuCBMclean.cyufriendsReload.extension.onlineScope
 import org.cyuCBMclean.cyufriendsReload.extension.onlineServerName
 import org.cyuCBMclean.cyufriendsReload.extension.uid
@@ -19,8 +17,9 @@ import org.cyuCBMclean.cyufriendsReload.ui.layout.GuiPattern
 import org.cyuCBMclean.cyufriendsReload.ui.layout.GuiTextFormatter
 import org.cyuCBMclean.cyufriendsReload.ui.layout.ItemTemplate
 import org.cyuCBMclean.cyufriendsReload.ui.view.PaginatedView
-import java.text.SimpleDateFormat
-import java.util.Date
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 class MessageChatView(
     player: Player,
@@ -31,39 +30,27 @@ class MessageChatView(
     title: String
 ) : PaginatedView<ChatMessage>(player, title, pattern, itemsMap, 'M', 'P', 'N') {
 
-    private val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+    private val dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withZone(ZoneId.systemDefault())
     private val targetUid = CyuIdHook.getUidByName(friendName)
     private val ownerUid = player.uid
     private val staticTemplates = mutableMapOf<Int, ItemTemplate>()
 
-    @Volatile
-    private var loading = false
-    @Volatile
-    private var readSyncing = false
+    private var cachedMessages: List<ChatMessage> = emptyList()
 
-    override fun getSource(): List<ChatMessage> {
-        val uid = targetUid ?: return emptyList()
-        val cached = module.manager.conversationCached(ownerUid, uid)
-        if (cached.isNotEmpty()) return cached
-        if (!loading) {
-            loading = true
-            CyuConcurrency.scheduler.runAsync(module.plugin) {
-                runCatching { runBlocking { module.manager.getConversation(ownerUid, uid, 90) } }
-                CyuConcurrency.scheduler.runEntity(module.plugin, player) {
-                    loading = false
-                    onRender()
-                }
-            }
-        }
-        return emptyList()
+    override suspend fun prepareData() {
+        val uid = targetUid ?: return
+        cachedMessages = module.manager.getConversation(ownerUid, uid, 90)
+        module.manager.clearUnreadFromSenderSync(ownerUid, uid)
     }
+
+    override fun getSource(): List<ChatMessage> = cachedMessages
 
     override fun mapElement(element: ChatMessage): ItemStack {
         val template = itemsMap['M'] ?: return ItemStack(Material.PAPER)
         val senderName = CyuIdHook.getName(element.senderUid) ?: "未知玩家"
         val receiverName = CyuIdHook.getName(element.receiverUid) ?: "未知玩家"
         val direction = if (element.senderUid == ownerUid) "我 -> $receiverName" else "$senderName -> 我"
-        val time = dateFormat.format(Date(element.timestamp))
+        val time = dateFormat.format(Instant.ofEpochMilli(element.timestamp))
         val replacements = mapOf(
             "%direction%" to direction,
             "%sender_name%" to senderName,
@@ -81,7 +68,6 @@ class MessageChatView(
 
     override fun onRender() {
         super.onRender()
-        syncConversationReadState()
         val rawName = targetUid?.let { CyuIdHook.getName(it) } ?: friendName
         val serverName = targetUid?.let { CyufriendsReload.instance.onlineServerName(it) } ?: "未知服务器"
         val onlineScope = targetUid?.let { CyufriendsReload.instance.onlineScope(it) } ?: "离线"
@@ -123,15 +109,4 @@ class MessageChatView(
         ActionRegistry.execute(player, processed)
     }
 
-    private fun syncConversationReadState() {
-        val uid = targetUid ?: return
-        if (readSyncing) return
-        readSyncing = true
-        CyuConcurrency.scheduler.runAsync(module.plugin) {
-            module.manager.clearUnreadFromSenderSync(ownerUid, uid)
-            CyuConcurrency.scheduler.runEntity(module.plugin, player) {
-                readSyncing = false
-            }
-        }
-    }
 }

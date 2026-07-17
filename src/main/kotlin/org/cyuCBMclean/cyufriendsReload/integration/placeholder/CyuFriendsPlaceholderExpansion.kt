@@ -62,9 +62,9 @@ class CyuFriendsPlaceholderExpansion(
         val lower = params.lowercase()
 
         return when (lower) {
-            "total_count" -> friendModule?.friendManager?.getFriendCountSync(uid)?.toString() ?: "0"
-            "request_count" -> friendModule?.requestManager?.countReceivedSync(uid)?.toString() ?: "0"
-            "offline_messages_count" -> chatModule?.manager?.unreadCountSync(uid)?.toString() ?: "0"
+            "total_count" -> friendModule?.friendManager?.getFriendCountCached(uid)?.toString() ?: "0"
+            "request_count" -> friendModule?.requestManager?.countReceivedCached(uid)?.toString() ?: "0"
+            "offline_messages_count" -> chatModule?.manager?.unreadCountCached(uid)?.toString() ?: "0"
             "daily_requests_remaining" -> dailyRequestsRemaining(player, uid, friendModule)
             else -> resolveDynamic(uid, params, lower, friendModule, profileModule, socialModule)
         }
@@ -88,7 +88,7 @@ class CyuFriendsPlaceholderExpansion(
         if (lower.startsWith("is_friend_by_slot_")) {
             val index = slotIndex(lower.removePrefix("is_friend_by_slot_")) ?: return "无效槽位"
             val target = sortedOnlineEntries().getOrNull(index) ?: return "无玩家"
-            return if (friendModule.friendManager.isFriendStable(uid, target.first)) "已添加" else "未添加"
+            return if (friendModule.friendManager.isFriendCached(uid, target.first)) "已添加" else "未添加"
         }
 
         if (lower.startsWith("friendlist_")) {
@@ -119,27 +119,27 @@ class CyuFriendsPlaceholderExpansion(
             "server" -> plugin.onlineServerName(targetUid)
             "online_scope" -> plugin.onlineScope(targetUid)
             "is_remote" -> plugin.isRemoteOnline(targetUid).toString()
-            "note" -> friendModule.friendManager.getFriendDataStoredSync(uid, targetUid)?.noteName ?: "无备注"
-            "note_detail" -> friendModule.friendManager.getFriendDataStoredSync(uid, targetUid)?.noteDetail ?: "未设置"
-            "group" -> friendModule.friendManager.getFriendDataStoredSync(uid, targetUid)?.groupName ?: "未分组"
-            "primary_tag" -> friendModule.friendManager.getFriendDataStoredSync(uid, targetUid)?.primaryTag() ?: "未设置"
-            "tag" -> friendModule.friendManager.getFriendDataStoredSync(uid, targetUid)?.primaryTag() ?: "未设置"
-            "primary_tag_color" -> friendModule.friendManager.getFriendDataStoredSync(uid, targetUid)?.primaryTagColor() ?: ""
-            "tag_color" -> friendModule.friendManager.getFriendDataStoredSync(uid, targetUid)?.primaryTagColor() ?: ""
-            "tags" -> friendModule.friendManager.getFriendDataStoredSync(uid, targetUid)?.joinedTags().takeUnless { it.isNullOrBlank() } ?: "未设置"
-            "tag_count" -> friendModule.friendManager.getFriendDataStoredSync(uid, targetUid)?.tagNames?.size?.toString() ?: "0"
-            "is_pinned" -> if (friendModule.friendManager.getFriendDataStoredSync(uid, targetUid)?.pinned == true) "是" else "否"
-            "is_blocked" -> if (friendModule.blockManager.isBlockedStable(uid, targetUid)) "已屏蔽" else "未屏蔽"
-            "first_added" -> formatTime(friendModule.friendManager.getFriendDataStoredSync(uid, targetUid)?.createdAt ?: 0L)
-            "last_interaction" -> formatTime(friendModule.friendManager.getFriendDataStoredSync(uid, targetUid)?.lastInteractionAt ?: 0L)
-            "is_friend" -> if (friendModule.friendManager.isFriendStable(uid, targetUid)) "是" else "否"
+            "note" -> friendModule.friendManager.getFriendDataCached(uid, targetUid)?.noteName ?: "无备注"
+            "note_detail" -> friendModule.friendManager.getFriendDataCached(uid, targetUid)?.noteDetail ?: "未设置"
+            "group" -> friendModule.friendManager.getFriendDataCached(uid, targetUid)?.groupName ?: "未分组"
+            "primary_tag" -> friendModule.friendManager.getFriendDataCached(uid, targetUid)?.primaryTag() ?: "未设置"
+            "tag" -> friendModule.friendManager.getFriendDataCached(uid, targetUid)?.primaryTag() ?: "未设置"
+            "primary_tag_color" -> friendModule.friendManager.getFriendDataCached(uid, targetUid)?.primaryTagColor() ?: ""
+            "tag_color" -> friendModule.friendManager.getFriendDataCached(uid, targetUid)?.primaryTagColor() ?: ""
+            "tags" -> friendModule.friendManager.getFriendDataCached(uid, targetUid)?.joinedTags().takeUnless { it.isNullOrBlank() } ?: "未设置"
+            "tag_count" -> friendModule.friendManager.getFriendDataCached(uid, targetUid)?.tagNames?.size?.toString() ?: "0"
+            "is_pinned" -> if (friendModule.friendManager.getFriendDataCached(uid, targetUid)?.pinned == true) "是" else "否"
+            "is_blocked" -> if (friendModule.blockManager.isBlockedCached(uid, targetUid)) "已屏蔽" else "未屏蔽"
+            "first_added" -> formatTime(friendModule.friendManager.getFriendDataCached(uid, targetUid)?.createdAt ?: 0L)
+            "last_interaction" -> formatTime(friendModule.friendManager.getFriendDataCached(uid, targetUid)?.lastInteractionAt ?: 0L)
+            "is_friend" -> if (friendModule.friendManager.isFriendCached(uid, targetUid)) "是" else "否"
             "birthday" -> birthday(profileModule, targetUid)
-            "is_tp_allowed" -> if (friendModule.preferencesManager.canReceiveTeleportStoredSync(targetUid)) "是" else "否"
-            "tp_mode" -> teleportModeName(friendModule.preferencesManager.teleportModeStoredSync(targetUid))
-            "effective_tp_mode" -> teleportModeName(friendModule.preferencesManager.resolveTeleportModeStoredSync(targetUid, uid))
-            "personal_tp" -> personalStateName(friendModule.preferencesManager.snapshotPersonalStoredSync(uid, targetUid).teleport, FriendPersonalType.TELEPORT)
-            "personal_notify" -> personalStateName(friendModule.preferencesManager.snapshotPersonalStoredSync(uid, targetUid).notifyReceive, FriendPersonalType.NOTIFY_RECEIVE)
-            "personal_notifyme" -> personalStateName(friendModule.preferencesManager.snapshotPersonalStoredSync(uid, targetUid).notifyBroadcast, FriendPersonalType.NOTIFY_BROADCAST)
+            "is_tp_allowed" -> if (friendModule.preferencesManager.canReceiveTeleportCached(targetUid)) "是" else "否"
+            "tp_mode" -> teleportModeName(friendModule.preferencesManager.teleportModeCached(targetUid))
+            "effective_tp_mode" -> teleportModeName(friendModule.preferencesManager.resolveTeleportModeCached(targetUid, uid))
+            "personal_tp" -> personalStateName(friendModule.preferencesManager.snapshotPersonalCached(uid, targetUid).teleport, FriendPersonalType.TELEPORT)
+            "personal_notify" -> personalStateName(friendModule.preferencesManager.snapshotPersonalCached(uid, targetUid).notifyReceive, FriendPersonalType.NOTIFY_RECEIVE)
+            "personal_notifyme" -> personalStateName(friendModule.preferencesManager.snapshotPersonalCached(uid, targetUid).notifyBroadcast, FriendPersonalType.NOTIFY_BROADCAST)
             else -> ""
         }
     }
@@ -154,7 +154,7 @@ class CyuFriendsPlaceholderExpansion(
     ): String {
         if (lower.startsWith("friendlist_friends_")) {
             val index = positionIndex(lower.removePrefix("friendlist_friends_")) ?: return "无效索引"
-            val friendUid = friendModule.friendManager.getFriendEntriesStoredSync(uid).getOrNull(index)?.friendUid ?: return "无数据"
+            val friendUid = friendModule.friendManager.getFriendEntriesCached(uid).getOrNull(index)?.friendUid ?: return "无数据"
             return CyuIdHook.getName(friendUid) ?: friendUid
         }
 
@@ -170,67 +170,67 @@ class CyuFriendsPlaceholderExpansion(
 
         if (lower.startsWith("friendlist_note_by_index_")) {
             val friendUid = friendByIndex(uid, lower.removePrefix("friendlist_note_by_index_"), friendModule) ?: return "无数据"
-            return friendModule.friendManager.getFriendDataStoredSync(uid, friendUid)?.noteName ?: "无备注"
+            return friendModule.friendManager.getFriendDataCached(uid, friendUid)?.noteName ?: "无备注"
         }
 
         if (lower.startsWith("friendlist_note_detail_by_index_")) {
             val friendUid = friendByIndex(uid, lower.removePrefix("friendlist_note_detail_by_index_"), friendModule) ?: return "无数据"
-            return friendModule.friendManager.getFriendDataStoredSync(uid, friendUid)?.noteDetail ?: "未设置"
+            return friendModule.friendManager.getFriendDataCached(uid, friendUid)?.noteDetail ?: "未设置"
         }
 
         if (lower.startsWith("friendlist_group_by_index_")) {
             val friendUid = friendByIndex(uid, lower.removePrefix("friendlist_group_by_index_"), friendModule) ?: return "无数据"
-            return friendModule.friendManager.getFriendDataStoredSync(uid, friendUid)?.groupName ?: "未分组"
+            return friendModule.friendManager.getFriendDataCached(uid, friendUid)?.groupName ?: "未分组"
         }
 
         if (lower.startsWith("friendlist_tag_by_index_")) {
             val friendUid = friendByIndex(uid, lower.removePrefix("friendlist_tag_by_index_"), friendModule) ?: return "无数据"
-            return friendModule.friendManager.getFriendDataStoredSync(uid, friendUid)?.primaryTag() ?: "未设置"
+            return friendModule.friendManager.getFriendDataCached(uid, friendUid)?.primaryTag() ?: "未设置"
         }
 
         if (lower.startsWith("friendlist_primary_tag_by_index_")) {
             val friendUid = friendByIndex(uid, lower.removePrefix("friendlist_primary_tag_by_index_"), friendModule) ?: return "无数据"
-            return friendModule.friendManager.getFriendDataStoredSync(uid, friendUid)?.primaryTag() ?: "未设置"
+            return friendModule.friendManager.getFriendDataCached(uid, friendUid)?.primaryTag() ?: "未设置"
         }
 
         if (lower.startsWith("friendlist_tag_color_by_index_")) {
             val friendUid = friendByIndex(uid, lower.removePrefix("friendlist_tag_color_by_index_"), friendModule) ?: return ""
-            return friendModule.friendManager.getFriendDataStoredSync(uid, friendUid)?.primaryTagColor() ?: ""
+            return friendModule.friendManager.getFriendDataCached(uid, friendUid)?.primaryTagColor() ?: ""
         }
 
         if (lower.startsWith("friendlist_primary_tag_color_by_index_")) {
             val friendUid = friendByIndex(uid, lower.removePrefix("friendlist_primary_tag_color_by_index_"), friendModule) ?: return ""
-            return friendModule.friendManager.getFriendDataStoredSync(uid, friendUid)?.primaryTagColor() ?: ""
+            return friendModule.friendManager.getFriendDataCached(uid, friendUid)?.primaryTagColor() ?: ""
         }
 
         if (lower.startsWith("friendlist_tags_by_index_")) {
             val friendUid = friendByIndex(uid, lower.removePrefix("friendlist_tags_by_index_"), friendModule) ?: return "无数据"
-            return friendModule.friendManager.getFriendDataStoredSync(uid, friendUid)?.joinedTags().takeUnless { it.isNullOrBlank() } ?: "未设置"
+            return friendModule.friendManager.getFriendDataCached(uid, friendUid)?.joinedTags().takeUnless { it.isNullOrBlank() } ?: "未设置"
         }
 
         if (lower.startsWith("friendlist_tag_count_by_index_")) {
             val friendUid = friendByIndex(uid, lower.removePrefix("friendlist_tag_count_by_index_"), friendModule) ?: return "0"
-            return friendModule.friendManager.getFriendDataStoredSync(uid, friendUid)?.tagNames?.size?.toString() ?: "0"
+            return friendModule.friendManager.getFriendDataCached(uid, friendUid)?.tagNames?.size?.toString() ?: "0"
         }
 
         if (lower.startsWith("friendlist_is_pinned_by_index_")) {
             val friendUid = friendByIndex(uid, lower.removePrefix("friendlist_is_pinned_by_index_"), friendModule) ?: return "无数据"
-            return if (friendModule.friendManager.getFriendDataStoredSync(uid, friendUid)?.pinned == true) "是" else "否"
+            return if (friendModule.friendManager.getFriendDataCached(uid, friendUid)?.pinned == true) "是" else "否"
         }
 
         if (lower.startsWith("friendlist_first_added_by_index_")) {
             val friendUid = friendByIndex(uid, lower.removePrefix("friendlist_first_added_by_index_"), friendModule) ?: return "无数据"
-            return formatTime(friendModule.friendManager.getFriendDataStoredSync(uid, friendUid)?.createdAt ?: 0L)
+            return formatTime(friendModule.friendManager.getFriendDataCached(uid, friendUid)?.createdAt ?: 0L)
         }
 
         if (lower.startsWith("friendlist_last_interaction_by_index_")) {
             val friendUid = friendByIndex(uid, lower.removePrefix("friendlist_last_interaction_by_index_"), friendModule) ?: return "无数据"
-            return formatTime(friendModule.friendManager.getFriendDataStoredSync(uid, friendUid)?.lastInteractionAt ?: 0L)
+            return formatTime(friendModule.friendManager.getFriendDataCached(uid, friendUid)?.lastInteractionAt ?: 0L)
         }
 
         if (lower.startsWith("friendlist_is_blocked_by_index_")) {
             val friendUid = friendByIndex(uid, lower.removePrefix("friendlist_is_blocked_by_index_"), friendModule) ?: return "无数据"
-            return if (friendModule.blockManager.isBlockedStable(uid, friendUid)) "已屏蔽" else "未屏蔽"
+            return if (friendModule.blockManager.isBlockedCached(uid, friendUid)) "已屏蔽" else "未屏蔽"
         }
 
         if (lower.startsWith("friendlist_birthday_by_index_")) {
@@ -240,17 +240,17 @@ class CyuFriendsPlaceholderExpansion(
 
         if (lower.startsWith("friendlist_is_tp_allowed_by_index_")) {
             val friendUid = friendByIndex(uid, lower.removePrefix("friendlist_is_tp_allowed_by_index_"), friendModule) ?: return "无数据"
-            return if (friendModule.preferencesManager.canReceiveTeleportStoredSync(friendUid)) "是" else "否"
+            return if (friendModule.preferencesManager.canReceiveTeleportCached(friendUid)) "是" else "否"
         }
 
         if (lower.startsWith("friendlist_tp_mode_by_index_")) {
             val friendUid = friendByIndex(uid, lower.removePrefix("friendlist_tp_mode_by_index_"), friendModule) ?: return "无数据"
-            return teleportModeName(friendModule.preferencesManager.teleportModeStoredSync(friendUid))
+            return teleportModeName(friendModule.preferencesManager.teleportModeCached(friendUid))
         }
 
         if (lower.startsWith("friendlist_effective_tp_mode_by_index_")) {
             val friendUid = friendByIndex(uid, lower.removePrefix("friendlist_effective_tp_mode_by_index_"), friendModule) ?: return "无数据"
-            return teleportModeName(friendModule.preferencesManager.resolveTeleportModeStoredSync(friendUid, uid))
+            return teleportModeName(friendModule.preferencesManager.resolveTeleportModeCached(friendUid, uid))
         }
 
         if (lower.startsWith("friendlist_status_count_by_index_")) {
@@ -260,45 +260,45 @@ class CyuFriendsPlaceholderExpansion(
 
         if (lower.startsWith("friendlist_status_by_index_")) {
             val pair = intPair(lower.removePrefix("friendlist_status_by_index_")) ?: return "无效索引"
-            val friendUid = friendModule.friendManager.getFriendEntriesStoredSync(uid).getOrNull(pair.first)?.friendUid ?: return "无数据"
-            return pair.second?.let { socialModule?.manager?.getStatusByIndexSync(friendUid, uid, it) }
-                ?: socialModule?.manager?.getLatestStatusSync(friendUid, uid)
+            val friendUid = friendModule.friendManager.getFriendEntriesCached(uid).getOrNull(pair.first)?.friendUid ?: return "无数据"
+            return pair.second?.let { socialModule?.manager?.getStatusByIndexCached(friendUid, uid, it) }
+                ?: socialModule?.manager?.getLatestStatusCached(friendUid, uid)
                 ?: "暂无动态"
         }
 
         if (lower.startsWith("friendlist_wall_count_by_index_")) {
             val friendUid = friendByIndex(uid, lower.removePrefix("friendlist_wall_count_by_index_"), friendModule) ?: return "0"
-            return socialModule?.manager?.getVisibleWallCountSync(friendUid, uid)?.toString() ?: "0"
+            return socialModule?.manager?.getWallCountCached(friendUid, uid)?.toString() ?: "0"
         }
 
         if (lower.startsWith("friendlist_wall_sender_by_index_")) {
             val pair = intPair(lower.removePrefix("friendlist_wall_sender_by_index_")) ?: return "无效索引"
-            val friendUid = friendModule.friendManager.getFriendEntriesStoredSync(uid).getOrNull(pair.first)?.friendUid ?: return "无数据"
-            val entry = (socialModule?.manager?.getWallCommentsSync(friendUid, uid) ?: emptyList()).getOrNull(pair.second ?: 0) ?: return "无数据"
+            val friendUid = friendModule.friendManager.getFriendEntriesCached(uid).getOrNull(pair.first)?.friendUid ?: return "无数据"
+            val entry = (socialModule?.manager?.getWallCommentsCached(friendUid, uid) ?: emptyList()).getOrNull(pair.second ?: 0) ?: return "无数据"
             return CyuIdHook.getName(entry.authorUid) ?: entry.authorUid
         }
 
         if (lower.startsWith("friendlist_wall_time_by_index_")) {
             val pair = intPair(lower.removePrefix("friendlist_wall_time_by_index_")) ?: return "无效索引"
-            val friendUid = friendModule.friendManager.getFriendEntriesStoredSync(uid).getOrNull(pair.first)?.friendUid ?: return "无数据"
-            val entry = (socialModule?.manager?.getWallCommentsSync(friendUid, uid) ?: emptyList()).getOrNull(pair.second ?: 0) ?: return "无数据"
+            val friendUid = friendModule.friendManager.getFriendEntriesCached(uid).getOrNull(pair.first)?.friendUid ?: return "无数据"
+            val entry = (socialModule?.manager?.getWallCommentsCached(friendUid, uid) ?: emptyList()).getOrNull(pair.second ?: 0) ?: return "无数据"
             return formatTime(entry.timestamp)
         }
 
         if (lower.startsWith("friendlist_wall_by_index_")) {
             val pair = intPair(lower.removePrefix("friendlist_wall_by_index_")) ?: return "无效索引"
-            val friendUid = friendModule.friendManager.getFriendEntriesStoredSync(uid).getOrNull(pair.first)?.friendUid ?: return "无数据"
-            return (socialModule?.manager?.getWallCommentsSync(friendUid, uid) ?: emptyList()).getOrNull(pair.second ?: 0)?.content ?: "暂无留言"
+            val friendUid = friendModule.friendManager.getFriendEntriesCached(uid).getOrNull(pair.first)?.friendUid ?: return "无数据"
+            return (socialModule?.manager?.getWallCommentsCached(friendUid, uid) ?: emptyList()).getOrNull(pair.second ?: 0)?.content ?: "暂无留言"
         }
 
         if (lower.startsWith("friendlist_request_sent_")) {
             val targetUid = resolveUid(params.substring("friendlist_request_sent_".length)) ?: return "0"
-            return friendModule.requestManager.countSentSync(targetUid).toString()
+            return friendModule.requestManager.countSentCached(targetUid).toString()
         }
 
         if (lower.startsWith("friendlist_request_received_")) {
             val targetUid = resolveUid(params.substring("friendlist_request_received_".length)) ?: return "0"
-            return friendModule.requestManager.countReceivedSync(targetUid).toString()
+            return friendModule.requestManager.countReceivedCached(targetUid).toString()
         }
 
         if (lower.startsWith("friendlist_request_status_")) {
@@ -308,22 +308,22 @@ class CyuFriendsPlaceholderExpansion(
 
         if (lower.startsWith("friendlist_friend_count_")) {
             val targetUid = resolveUid(params.substring("friendlist_friend_count_".length)) ?: return "0"
-            return friendModule.friendManager.getFriendCountSync(targetUid).toString()
+            return friendModule.friendManager.getFriendCountCached(targetUid).toString()
         }
 
         if (lower.startsWith("friendlist_status_count_")) {
             val targetUid = resolveUid(params.substring("friendlist_status_count_".length)) ?: return "0"
-            return socialModule?.manager?.getStatusCountSync(targetUid)?.toString() ?: "0"
+            return socialModule?.manager?.getStatusCountCached(targetUid)?.toString() ?: "0"
         }
 
         if (lower.startsWith("friendlist_status_")) {
             val targetUid = resolveUid(params.substring("friendlist_status_".length)) ?: return "无数据"
-            return socialModule?.manager?.getLatestStatusSync(targetUid, uid) ?: "暂无动态"
+            return socialModule?.manager?.getLatestStatusCached(targetUid, uid) ?: "暂无动态"
         }
 
         if (lower.startsWith("friendlist_wall_page_count_")) {
             val targetUid = resolveUid(params.substring("friendlist_wall_page_count_".length)) ?: return "0"
-            val count = socialModule?.manager?.getVisibleWallCountSync(targetUid, uid) ?: 0
+            val count = socialModule?.manager?.getWallCountCached(targetUid, uid) ?: 0
             return ((count + 8) / 9).coerceAtLeast(1).toString()
         }
 
@@ -333,27 +333,27 @@ class CyuFriendsPlaceholderExpansion(
 
         if (lower.startsWith("friendlist_wall_count_")) {
             val targetUid = resolveUid(params.substring("friendlist_wall_count_".length)) ?: return "0"
-            return socialModule?.manager?.getVisibleWallCountSync(targetUid, uid)?.toString() ?: "0"
+            return socialModule?.manager?.getWallCountCached(targetUid, uid)?.toString() ?: "0"
         }
 
         if (lower.startsWith("friendlist_wall_sender_")) {
             val target = trailingNameIndex(params.substring("friendlist_wall_sender_".length)) ?: return "无效索引"
             val targetUid = resolveUid(target.first) ?: return "无数据"
-            val entry = (socialModule?.manager?.getWallCommentsSync(targetUid, uid) ?: emptyList()).getOrNull(target.second) ?: return "无数据"
+            val entry = (socialModule?.manager?.getWallCommentsCached(targetUid, uid) ?: emptyList()).getOrNull(target.second) ?: return "无数据"
             return CyuIdHook.getName(entry.authorUid) ?: entry.authorUid
         }
 
         if (lower.startsWith("friendlist_wall_time_")) {
             val target = trailingNameIndex(params.substring("friendlist_wall_time_".length)) ?: return "无效索引"
             val targetUid = resolveUid(target.first) ?: return "无数据"
-            val entry = (socialModule?.manager?.getWallCommentsSync(targetUid, uid) ?: emptyList()).getOrNull(target.second) ?: return "无数据"
+            val entry = (socialModule?.manager?.getWallCommentsCached(targetUid, uid) ?: emptyList()).getOrNull(target.second) ?: return "无数据"
             return formatTime(entry.timestamp)
         }
 
         if (lower.startsWith("friendlist_wall_")) {
             val target = trailingNameIndex(params.substring("friendlist_wall_".length)) ?: return "无效索引"
             val targetUid = resolveUid(target.first) ?: return "无数据"
-            return (socialModule?.manager?.getWallCommentsSync(targetUid, uid) ?: emptyList()).getOrNull(target.second)?.content ?: "暂无留言"
+            return (socialModule?.manager?.getWallCommentsCached(targetUid, uid) ?: emptyList()).getOrNull(target.second)?.content ?: "暂无留言"
         }
 
         return ""
@@ -367,7 +367,7 @@ class CyuFriendsPlaceholderExpansion(
             .atStartOfDay(ZoneId.systemDefault())
             .toInstant()
             .toEpochMilli()
-        val used = friendModule.requestManager.countSentSinceSync(uid, todayStart)
+        val used = friendModule.requestManager.countSentSinceCached(uid, todayStart) ?: 0
         return (dailyLimit - used).coerceAtLeast(0).toString()
     }
 
@@ -406,7 +406,7 @@ class CyuFriendsPlaceholderExpansion(
     }
 
     private fun requestStatus(uid: String, targetUid: String, friendModule: FriendModule): String {
-        if (friendModule.friendManager.isFriendStable(uid, targetUid)) return "已是好友"
+        if (friendModule.friendManager.isFriendCached(uid, targetUid)) return "已是好友"
         if (friendModule.requestManager.hasRequestStable(uid, targetUid)) return "已发送"
         if (friendModule.requestManager.hasRequestStable(targetUid, uid)) return "待处理"
         return "未申请"
@@ -418,7 +418,7 @@ class CyuFriendsPlaceholderExpansion(
 
     private fun friendByIndex(uid: String, indexText: String, friendModule: FriendModule): String? {
         val index = positionIndex(indexText) ?: return null
-        return friendModule.friendManager.getFriendEntriesStoredSync(uid).getOrNull(index)?.friendUid
+        return friendModule.friendManager.getFriendEntriesCached(uid).getOrNull(index)?.friendUid
     }
 
     private fun namedPlaceholder(params: String, lower: String): NamedPlaceholder? {
@@ -488,11 +488,11 @@ class CyuFriendsPlaceholderExpansion(
 
     private fun lastOnline(uid: String, friendModule: FriendModule): String {
         if (plugin.isPlayerOnlineGlobally(uid)) return "在线"
-        return formatTime(friendModule.preferencesManager.lastOnlineSync(uid))
+        return formatTime(friendModule.preferencesManager.lastOnlineCached(uid))
     }
 
     private fun birthday(profileModule: ProfileModule?, uid: String): String {
-        val birthday = profileModule?.manager?.getProfileStoredSync(uid)?.birthday
+        val birthday = profileModule?.manager?.getProfileCached(uid)?.birthday
         return birthday?.takeIf { it != "0000-00-00" && it.isNotBlank() } ?: "未设置生日"
     }
 

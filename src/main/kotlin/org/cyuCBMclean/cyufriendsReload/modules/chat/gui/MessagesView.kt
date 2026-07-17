@@ -1,10 +1,8 @@
 package org.cyuCBMclean.cyufriendsReload.modules.chat.gui
 
-import kotlinx.coroutines.runBlocking
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
-import org.cyuCBMclean.cyufriendsReload.core.scheduler.CyuConcurrency
 import org.cyuCBMclean.cyufriendsReload.extension.onlineScope
 import org.cyuCBMclean.cyufriendsReload.extension.onlineServerName
 import org.cyuCBMclean.cyufriendsReload.extension.uid
@@ -18,8 +16,9 @@ import org.cyuCBMclean.cyufriendsReload.ui.layout.GuiPattern
 import org.cyuCBMclean.cyufriendsReload.ui.layout.GuiTextFormatter
 import org.cyuCBMclean.cyufriendsReload.ui.layout.ItemTemplate
 import org.cyuCBMclean.cyufriendsReload.ui.view.PaginatedView
-import java.text.SimpleDateFormat
-import java.util.Date
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 class MessagesView(
     player: Player,
@@ -29,34 +28,15 @@ class MessagesView(
     title: String = "Unread Messages"
 ) : PaginatedView<ChatConversationSummary>(player, title, pattern, itemsMap, 'M', 'P', 'N') {
 
-    private val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+    private val dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withZone(ZoneId.systemDefault())
     private val ownerUid = player.uid
-    @Volatile
-    private var loading = false
-    private var loadedOnce = false
     private var cachedConversations: List<ChatConversationSummary> = emptyList()
 
-    override fun getSource(): List<ChatConversationSummary> {
-        if (loadedOnce) {
-            return cachedConversations
-        }
-        val cached = module.manager.conversationSummariesCached(ownerUid)
-        cachedConversations = cached
-        loadedOnce = true
-        if (cached.isNotEmpty()) return cached
-        if (!loading) {
-            loading = true
-            CyuConcurrency.scheduler.runAsync(module.plugin) {
-                val loaded = runCatching { runBlocking { module.manager.getConversationSummaries(ownerUid, 56) } }.getOrDefault(emptyList())
-                CyuConcurrency.scheduler.runEntity(module.plugin, player) {
-                    cachedConversations = loaded
-                    loading = false
-                    onRender()
-                }
-            }
-        }
-        return cachedConversations
+    override suspend fun prepareData() {
+        cachedConversations = module.manager.getConversationSummaries(ownerUid, 56)
     }
+
+    override fun getSource(): List<ChatConversationSummary> = cachedConversations
 
     override fun viewReplacements(): Map<String, String> {
         val unreadTotal = cachedConversations.sumOf { it.unreadCount }
@@ -69,7 +49,7 @@ class MessagesView(
     override fun mapElement(element: ChatConversationSummary): ItemStack {
         val template = itemsMap['M'] ?: return ItemStack(Material.PAPER)
         val partnerName = CyuIdHook.getName(element.partnerUid) ?: "未知玩家"
-        val timeString = dateFormat.format(Date(element.latestAt))
+        val timeString = dateFormat.format(Instant.ofEpochMilli(element.latestAt))
         val preview = preview(element.latestContent)
         val direction = if (element.latestSenderUid == ownerUid) "我发出的最后一句" else "对方发来的最后一句"
         val replacements = mapOf(
@@ -103,12 +83,16 @@ class MessagesView(
 
         val partnerName = CyuIdHook.getName(element.partnerUid) ?: "未知玩家"
         if (clickType == CyuClickType.SHIFT_RIGHT) {
-            CyuConcurrency.scheduler.runAsync(module.plugin) {
-                module.manager.clearUnreadFromSenderSync(ownerUid, element.partnerUid)
-                CyuConcurrency.scheduler.runEntity(module.plugin, player) {
-                    onRender()
+            runAsyncOperation(
+                operation = {
+                    module.manager.clearUnreadFromSenderSync(ownerUid, element.partnerUid)
+                    module.manager.getConversationSummaries(ownerUid, 56)
+                },
+                onSuccess = {
+                    cachedConversations = it
+                    refreshOpenView()
                 }
-            }
+            )
             return
         }
 

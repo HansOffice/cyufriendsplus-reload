@@ -306,6 +306,10 @@ class ProxyGateway(
             DebugLogger.warning("跨服收包失败：$reason")
             return null
         }
+        if (!module.acceptMessageId(envelope.messageId)) {
+            DebugLogger.debug(2) { "跨服重复消息已忽略: messageId=${envelope.messageId}" }
+            return null
+        }
         module.recordProxyReceive()
         DebugLogger.debug(2) { "跨服收包成功: ${envelopeSummary(envelope)}" }
         return envelope

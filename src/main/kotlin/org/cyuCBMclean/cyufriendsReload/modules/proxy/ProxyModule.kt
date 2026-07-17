@@ -62,6 +62,7 @@ class ProxyModule(
         private set
     lateinit var gateway: ProxyGateway
         private set
+    private lateinit var messageDeduplicator: MessageDeduplicator
     val remotePresence = RemotePresenceDirectory()
     private val localPlayers = ConcurrentHashMap<String, Player>()
     private val pendingDirectMessages = ConcurrentHashMap<String, PendingDirectDelivery>()
@@ -79,6 +80,7 @@ class ProxyModule(
     override fun onEnable() {
         settings = ProxySettings.from(plugin.config)
         signer = ProxySigner(settings!!.secret)
+        messageDeduplicator = MessageDeduplicator(settings!!.maxClockSkewSeconds * 2_000L)
         gateway = ProxyGateway(this)
         DebugLogger.debug(1) {
             "Proxy 模块初始化: enabled=${settings!!.enabled}, server=${settings!!.serverId}, channel=${settings!!.channel}"
@@ -120,6 +122,7 @@ class ProxyModule(
         localPlayers.clear()
         settings = ProxySettings.from(plugin.config)
         signer = ProxySigner(settings!!.secret)
+        messageDeduplicator = MessageDeduplicator(settings!!.maxClockSkewSeconds * 2_000L)
         gateway = ProxyGateway(this)
         DebugLogger.debug(1) {
             "Proxy 模块重载: enabled=${settings!!.enabled}, server=${settings!!.serverId}, channel=${settings!!.channel}"
@@ -133,6 +136,8 @@ class ProxyModule(
             settings = settings!!.copy(enabled = false)
         }
     }
+    fun acceptMessageId(messageId: String): Boolean = messageDeduplicator.mark(messageId)
+
 
     @EventHandler(priority = EventPriority.MONITOR)
     fun onJoin(event: PlayerJoinEvent) {
@@ -638,7 +643,7 @@ class ProxyModule(
 
             val timeoutSeconds = friendModule.teleportManager.requestTimeoutSeconds()
             val request = friendModule.teleportManager.createRequest(requesterUid, requesterName, envelope.sourceServer)
-            friendModule.teleportManager.sendRequest(targetUid, request) { expired ->
+            val queued = friendModule.teleportManager.sendRequest(targetUid, request) { expired ->
                 gateway.sendTeleportFail(expired.senderUid, "expired", targetName)
                 val refreshedTarget = localPlayers[targetUid]
                 if (refreshedTarget != null) {
@@ -646,6 +651,10 @@ class ProxyModule(
                         refreshedTarget.sendLang("tp-request-expired-received", mapOf("sender" to expired.senderName))
                     }
                 }
+            }
+            if (!queued) {
+                gateway.sendTeleportFail(requesterUid, "pending", targetName)
+                return@runAsync
             }
 
             CyuConcurrency.scheduler.runEntity(plugin, targetPlayer) {
@@ -827,6 +836,7 @@ class ProxyModule(
             "denied" -> player.sendLang("tp-denied", mapOf("target" to (actorName ?: "对方")))
             "expired" -> player.sendLang("tp-request-expired", mapOf("target" to (actorName ?: "对方")))
             "world-disabled" -> player.sendLang("tp-world-disabled")
+            "pending" -> player.sendLang("tp-request-pending")
             "not-allowed" -> player.sendLang("tp-not-allowed")
             "not-friend" -> player.sendLang("tp-friend-only")
             "execute-timeout" -> player.sendLang("tp-execute-timeout")

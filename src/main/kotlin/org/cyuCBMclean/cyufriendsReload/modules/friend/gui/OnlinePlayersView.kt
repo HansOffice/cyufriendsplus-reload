@@ -26,7 +26,7 @@ class OnlinePlayersView(
 
     override fun getSource(): List<OnlineEntry> {
         val uid = player.uid
-        val friendUids = module.friendManager.getFriendEntriesStoredSync(uid)
+        val friendUids = module.friendManager.getFriendEntriesCached(uid)
             .mapTo(linkedSetOf()) { it.friendUid }
         val entries = module.plugin.globalOnlineEntries()
             .asSequence()

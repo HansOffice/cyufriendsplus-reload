@@ -4,7 +4,7 @@ main: org.cyuCBMclean.cyufriendsReload.CyufriendsReload
 api-version: '1.13'
 author: HansOffice
 folia-supported: ${folia.supported}
-softdepend: [cyuid-reload, PlaceholderAPI, CraftEngine, CE, ItemsAdder, Oraxen, Nexo]
+softdepend: [cyuid-reload, PlaceholderAPI, Citizens, CraftEngine, CE, ItemsAdder, Oraxen, Nexo]
 libraries:
   - org.jetbrains.kotlin:kotlin-stdlib:${kotlin.version}
   - org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1
@@ -19,14 +19,7 @@ commands:
   friend:
     description: 社交好友系统主指令
     aliases: [cf, cfs, cyuf]
-  msg:
-    description: 发送私聊消息
-    aliases: [m, tell, w]
-  reply:
-    description: 快速回复上一条私聊
-    aliases: [r]
-  messages:
-    description: 打开未读离线留言面板
+
   status:
     description: 打开全服朋友圈动态面板
   wall:
@@ -95,6 +88,11 @@ permissions:
       cyufriends.command.birthday: true
       cyufriends.birthday.default: true
   cyufriends.admin:
+    default: op
+    children:
+      cyufriends.bypass.chatfilter: true
+  cyufriends.bypass.chatfilter:
+    description: 无视黑名单聊天过滤
     default: op
   cyufriends.command.add:
     default: true

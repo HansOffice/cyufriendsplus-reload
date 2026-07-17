@@ -1,5 +1,7 @@
 package org.cyuCBMclean.cyufriendsReload.modules.friend
 
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import com.github.benmanes.caffeine.cache.Caffeine
 import org.bukkit.Bukkit
 import org.cyuCBMclean.cyufriendsReload.api.event.CyuFriendRequestAcceptEvent
@@ -14,6 +16,13 @@ import java.util.concurrent.TimeUnit
 
 enum class FriendRequestLimitResult {
     ALLOWED,
+    COOLDOWN,
+    DAILY_LIMIT
+}
+
+enum class FriendRequestSubmitResult {
+    SENT,
+    ALREADY_SENT,
     COOLDOWN,
     DAILY_LIMIT
 }
@@ -37,6 +46,7 @@ class RequestManager(private val repository: RequestRepository) {
         .build<String, TimedRequestCount>()
     private val lastSentAt = ConcurrentHashMap<String, Long>()
 
+    private val sendLocks = ConcurrentHashMap<String, Mutex>()
     suspend fun loadPlayer(uid: String) {
         val incoming = repository.getRequests(uid)
         val outgoing = repository.getSentRequests(uid)
@@ -45,6 +55,7 @@ class RequestManager(private val repository: RequestRepository) {
         sentCounts.put(uid, repository.countSent(uid))
         sentTodayCounts.put(uid, TimedRequestCount(todayStart(), repository.countSentSince(uid, todayStart())))
         DebugLogger.debug(1) { "好友申请缓存载入: uid=$uid incoming=${incoming.size} outgoing=${outgoing.size}" }
+        repository.latestSentAt(uid)?.let { lastSentAt[uid] = it } ?: lastSentAt.remove(uid)
     }
 
     fun loadPlayerSync(uid: String) {
@@ -56,6 +67,7 @@ class RequestManager(private val repository: RequestRepository) {
         val start = todayStart()
         sentTodayCounts.put(uid, TimedRequestCount(start, repository.countSentSinceSync(uid, start)))
         DebugLogger.debug(1) { "好友申请缓存载入: uid=$uid incoming=${incoming.size} outgoing=${outgoing.size} source=db-sync" }
+        repository.latestSentAtSync(uid)?.let { lastSentAt[uid] = it } ?: lastSentAt.remove(uid)
     }
 
     fun unloadPlayer(uid: String) {
@@ -64,6 +76,7 @@ class RequestManager(private val repository: RequestRepository) {
         sentCounts.invalidate(uid)
         sentTodayCounts.invalidate(uid)
         DebugLogger.debug(2) { "好友申请缓存已清理: uid=$uid reason=unload" }
+        lastSentAt.remove(uid)
     }
 
     fun hasRequest(sender: String, receiver: String): Boolean {
@@ -142,6 +155,28 @@ class RequestManager(private val repository: RequestRepository) {
         DebugLogger.debug(1) { "好友申请已创建: sender=$sender receiver=$receiver noteChars=${note.normalizedLength()} createdAt=$now" }
     }
 
+
+    suspend fun submitRequest(
+        sender: String,
+        receiver: String,
+        note: String?,
+        cooldownSeconds: Long,
+        dailyLimit: Int,
+        todayStart: Long
+    ): FriendRequestSubmitResult {
+        val lock = sendLocks.computeIfAbsent(sender) { Mutex() }
+        return lock.withLock {
+            if (hasRequestStored(sender, receiver)) return@withLock FriendRequestSubmitResult.ALREADY_SENT
+            when (checkLimit(sender, cooldownSeconds, dailyLimit, todayStart)) {
+                FriendRequestLimitResult.COOLDOWN -> FriendRequestSubmitResult.COOLDOWN
+                FriendRequestLimitResult.DAILY_LIMIT -> FriendRequestSubmitResult.DAILY_LIMIT
+                FriendRequestLimitResult.ALLOWED -> {
+                    addRequest(sender, receiver, note)
+                    FriendRequestSubmitResult.SENT
+                }
+            }
+        }
+    }
     suspend fun removeRequest(sender: String, receiver: String): FriendRequestEntry? {
         val removed = incomingRequests.getIfPresent(receiver)?.remove(sender)
             ?: outgoingRequests.getIfPresent(sender)?.get(receiver)
@@ -149,10 +184,6 @@ class RequestManager(private val repository: RequestRepository) {
         outgoingRequests.getIfPresent(sender)?.remove(receiver)
         repository.deleteRequest(sender, receiver)
         sentCounts.getIfPresent(sender)?.let { sentCounts.put(sender, (it - 1).coerceAtLeast(0)) }
-        val todayStart = todayStart()
-        sentTodayCounts.getIfPresent(sender)?.takeIf { it.since == todayStart }?.let {
-            sentTodayCounts.put(sender, it.copy(count = (it.count - 1).coerceAtLeast(0)))
-        }
         DebugLogger.debug(1) { "好友申请已移除: sender=$sender receiver=$receiver existed=${removed != null}" }
         return removed
     }
@@ -172,6 +203,18 @@ class RequestManager(private val repository: RequestRepository) {
     suspend fun clearExpiredCache(thresholdTime: Long) {
         repository.clearExpired(thresholdTime)
         DebugLogger.debug(1) { "好友申请过期清理已执行: threshold=$thresholdTime" }
+        incomingRequests.asMap().values.forEach { requests ->
+            requests.entries.removeIf { it.value.createdAt < thresholdTime }
+        }
+        outgoingRequests.asMap().forEach { (sender, requests) ->
+            val removed = requests.values.count { it.createdAt < thresholdTime }
+            requests.entries.removeIf { it.value.createdAt < thresholdTime }
+            if (removed > 0) {
+                sentCounts.getIfPresent(sender)?.let { current ->
+                    sentCounts.put(sender, (current - removed).coerceAtLeast(0))
+                }
+            }
+        }
     }
 
     suspend fun getRequestsFromDbForSync(receiver: String): List<FriendRequestEntry> {

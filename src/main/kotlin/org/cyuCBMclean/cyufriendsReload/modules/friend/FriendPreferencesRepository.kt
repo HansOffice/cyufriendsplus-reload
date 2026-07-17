@@ -1,5 +1,6 @@
 package org.cyuCBMclean.cyufriendsReload.modules.friend
 
+import org.cyuCBMclean.cyufriendsReload.core.config.Settings
 import org.cyuCBMclean.cyufriendsReload.core.database.BaseRepository
 import org.cyuCBMclean.cyufriendsReload.core.database.DatabaseManager
 import org.cyuCBMclean.cyufriendsReload.core.database.query
@@ -165,9 +166,31 @@ class FriendPreferencesRepository(private val db: DatabaseManager) : BaseReposit
             runCatching { update("ALTER TABLE $groupTable ADD COLUMN notify_receive_state INT DEFAULT 0") }
             runCatching { update("ALTER TABLE $groupTable ADD COLUMN notify_broadcast_state INT DEFAULT 0") }
             runCatching { update("ALTER TABLE $groupTable ADD COLUMN pinned INTEGER DEFAULT 0") }
-            update("CREATE INDEX IF NOT EXISTS idx_${tableName}_last_online ON $tableName (last_online)")
-            update("CREATE INDEX IF NOT EXISTS idx_${personalTable}_friend ON $personalTable (friend_uid)")
-            update("CREATE INDEX IF NOT EXISTS idx_${groupTable}_owner ON $groupTable (owner_uid)")
+            if (Settings.databaseType.equals("SQLite", ignoreCase = true)) {
+                runCatching {
+                    update("CREATE INDEX IF NOT EXISTS idx_${tableName}_last_online ON $tableName (last_online)")
+                }
+
+                runCatching {
+                    update("CREATE INDEX IF NOT EXISTS idx_${personalTable}_friend ON $personalTable (friend_uid)")
+                }
+
+                runCatching {
+                    update("CREATE INDEX IF NOT EXISTS idx_${groupTable}_owner ON $groupTable (owner_uid)")
+                }
+            } else {
+                runCatching {
+                    update("ALTER TABLE $tableName ADD INDEX idx_${tableName}_last_online (last_online)")
+                }
+
+                runCatching {
+                    update("ALTER TABLE $personalTable ADD INDEX idx_${personalTable}_friend (friend_uid)")
+                }
+
+                runCatching {
+                    update("ALTER TABLE $groupTable ADD INDEX idx_${groupTable}_owner (owner_uid)")
+                }
+            }
         }
     }
 

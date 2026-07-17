@@ -48,14 +48,15 @@ single:
   cyufriends.command.requests: "/friend requests / sentrequests / revoke"
   cyufriends.command.blacklist: "/friend blacklist"
   cyufriends.command.online: "/friend online"
-  cyufriends.command.msg: "/msg"
-  cyufriends.command.reply: "/reply"
-  cyufriends.command.messages: "/messages"
+  cyufriends.command.msg: "/friend msg"
+  cyufriends.command.reply: "/friend reply"
+  cyufriends.command.messages: "/friend messages"
   cyufriends.command.settings: "/settings"
   cyufriends.command.bio: "/bio"
   cyufriends.command.birthday: "/birthday"
   cyufriends.command.status: "/status"
   cyufriends.command.wall: "/wall"
+  cyufriends.bypass.chatfilter: "无视黑名单聊天过滤"
 
 # ---------------------------------------------------
 # 特殊权限

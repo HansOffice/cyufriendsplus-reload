@@ -30,7 +30,7 @@
 # online_players.yml            在线玩家                  /friend online
 # profile_home.yml              个人主页                  /friend gui
 # settings_panel.yml            个人设置                  /settings
-# messages_list.yml             未读留言                  /messages
+# messages_list.yml             未读留言                  /friend messages
 # message_chat.yml              私聊会话                  /friend chat <好友>
 # status_list.yml               动态列表                  /status
 # wall_view.yml                 留言墙                    /wall <玩家>

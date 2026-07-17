@@ -18,7 +18,7 @@ items:
       - "<gray>会话数量</gray> <white>%conversation_count%</white>"
       - "<gray>未读总数</gray> <aqua>%unread_count%</aqua>"
       - "<gray>左键打开会话，右键查看资料，Shift 右键单独已读</gray>"
-      - "<gray>命令也可用 /messages read [好友]</gray>"
+      - "<gray>命令也可用 /friend messages read [好友]</gray>"
   'M':
     material: PLAYER_HEAD
     head: "%sender_name%"
@@ -31,7 +31,7 @@ items:
       - "<gray>当前状态</gray> <white>%online_scope%</white> <dark_gray>|</dark_gray> <gray>服务器</gray> <white>%server_name%</white>"
       - "<white>左键</white> <gray>打开会话</gray> <dark_gray>|</dark_gray> <white>右键</white> <gray>查看资料</gray>"
       - "<white>中键</white> <gray>聊天输入</gray> <dark_gray>|</dark_gray> <white>Shift 右键</white> <gray>仅标记已读</gray>"
-      - "<gray>命令</gray> <white>/messages read %sender_name%</white>"
+      - "<gray>命令</gray> <white>/friend messages read %sender_name%</white>"
     actions:
       left:
         - "[player] friend chat %sender_name%"
@@ -52,7 +52,7 @@ items:
     lore:
       - "<gray>将所有未读私聊标记为已读</gray>"
       - "<white>Shift 右键</white> <gray>确认清空</gray>"
-      - "<gray>命令</gray> <white>/messages clear</white>"
+      - "<gray>命令</gray> <white>/friend messages clear</white>"
     actions:
       shift_right:
         - "[player] messages clear"

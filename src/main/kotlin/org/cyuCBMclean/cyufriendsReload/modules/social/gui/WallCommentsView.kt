@@ -1,10 +1,8 @@
 package org.cyuCBMclean.cyufriendsReload.modules.social.gui
 
-import kotlinx.coroutines.runBlocking
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
-import org.cyuCBMclean.cyufriendsReload.core.scheduler.CyuConcurrency
 import org.cyuCBMclean.cyufriendsReload.extension.uid
 import org.cyuCBMclean.cyufriendsReload.integration.hook.CyuIdHook
 import org.cyuCBMclean.cyufriendsReload.modules.social.SocialModule
@@ -33,29 +31,14 @@ class WallCommentsView(
     private val dateFormat = SimpleDateFormat("MM-dd HH:mm")
     private val viewerUid = player.uid
     private val viewerIsAdmin = player.hasPermission("cyufriends.admin")
-    @Volatile
-    private var loading = false
-    private var cachedComments: List<WallComment> = emptyList()
+private var cachedComments: List<WallComment> = emptyList()
 
-    override fun getSource(): List<WallComment> {
-        val includePending = canReviewPending()
-        val cached = module.manager.getWallRepliesSync(wallId, viewerUid, includePending = includePending)
-        cachedComments = cached
-        if (cached.isNotEmpty()) return cached
-        if (!loading) {
-            loading = true
-            CyuConcurrency.scheduler.runAsync(module.plugin) {
-                val loaded = runCatching { runBlocking { module.manager.getWallReplies(wallId, viewerUid, includePending = includePending) } }.getOrDefault(emptyList())
-                CyuConcurrency.scheduler.runEntity(module.plugin, player) {
-                    cachedComments = loaded
-                    loading = false
-                    onRender()
-                }
-            }
-        }
-        return cachedComments
+    override suspend fun prepareData() {
+        val includePending = viewerUid == ownerUid || viewerIsAdmin
+        cachedComments = module.manager.getWallReplies(wallId, viewerUid, includePending = includePending)
     }
 
+    override fun getSource(): List<WallComment> = cachedComments
     override fun viewReplacements(): Map<String, String> {
         return mapOf(
             "%wall_id%" to wallId.toString(),

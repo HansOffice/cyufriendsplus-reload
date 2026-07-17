@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.1.2
+
+- 修复 `/friend reload` 未完整刷新进服摘要、语言、声音和 GUI 的问题；配置校验失败时继续保留旧运行时
+- 拒绝将 Citizens NPC 添加为好友，并补齐黑名单公共聊天过滤的管理员绕过权限
+- 修复好友申请的并发、冷却和每日限额持久化，以及传送请求覆盖和关系写入的事务一致性问题
+- 私聊统一收归 `/friend msg`、`/friend reply` 和 `/friend messages`，不再占用服务器已有的 `/msg`、`/reply`、`/messages` 命令
+- 调整好友菜单为蓝色玻璃边框与头像展示，分页保留箭头；菜单配置不再混用 `rows` 与 `layout`
+- 将 GUI 与 PlaceholderAPI 的同步数据库读取迁出 Folia 玩家线程，并补齐 Paper / Folia 分离构建校验
+- 更新跨服后端的消息防重放与签名比较；配套代理端继续作为私有插件单独发布
+
 ## 1.0.8
 
 - 修复 GUI 在线玩家头像在 Folia 区域线程里同步调用 SkinsRestorer 的风险

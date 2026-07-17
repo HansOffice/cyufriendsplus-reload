@@ -1,6 +1,7 @@
 package org.cyuCBMclean.cyufriendsReload.modules.friend.gui
 
 import org.bukkit.entity.Player
+import org.bukkit.inventory.ItemStack
 import org.cyuCBMclean.cyufriendsReload.CyufriendsReload
 import org.cyuCBMclean.cyufriendsReload.extension.onlineScope
 import org.cyuCBMclean.cyufriendsReload.extension.onlineServerName
@@ -46,9 +47,15 @@ class FriendProfileView(
                 setItem(slot, null)
                 return@forEach
             }
+
             dynamicTemplates[slot] = template
-            val item = template.render(player, replacements)
-            setItem(slot, if (template.hasHeadSource()) item else GuiHeads.applyForUid(item, targetUid, player))
+            val item = template.render(player, replacements).clone()
+            val result = if (!template.hasHeadSource() && isPlayerHead(item)) {
+                GuiHeads.applyForUid(item, targetUid, player)
+            } else {
+                item
+            }
+            setItem(slot, result)
         }
     }
 
@@ -95,14 +102,14 @@ class FriendProfileView(
         val tagCount = friendData?.tagNames?.size?.toString() ?: "0"
         val pinState = if (friendData?.pinned == true) "已置顶" else "未置顶"
         val groupPinState = if (groupEnabled) {
-            if (module.preferencesManager.isGroupPinnedStoredSync(player.uid, groupName)) "分组置顶" else "普通显示"
+            if (module.preferencesManager.isGroupPinnedCached(player.uid, groupName)) "分组置顶" else "普通显示"
         } else {
             "未启用"
         }
         val friendSince = friendData?.createdAt?.takeIf { it > 0L }?.let { timeFormat.format(Date(it)) } ?: "未知时间"
         val lastInteraction = friendData?.lastInteractionAt?.takeIf { it > 0L }?.let { timeFormat.format(Date(it)) } ?: "暂无记录"
         val personal = module.preferencesManager.snapshotPersonal(player.uid, targetUid)
-        val mutualFriends = module.friendManager.mutualFriendUidsStoredSync(player.uid, targetUid)
+        val mutualFriends = module.friendManager.mutualFriendUidsCached(player.uid, targetUid)
         val mutualPreview = mutualFriends.take(4)
             .map { CyuIdHook.getName(it) ?: it }
             .joinToString("、")
@@ -174,6 +181,11 @@ class FriendProfileView(
 
     private fun personalStateName(state: FriendPersonalState, type: FriendPersonalType): String {
         return state.displayName(type)
+    }
+
+    private fun isPlayerHead(item: ItemStack): Boolean {
+        val typeName = item.type.name
+        return typeName.equals("PLAYER_HEAD", true) || typeName.equals("SKULL_ITEM", true)
     }
 
     private fun isTemplateAvailable(template: ItemTemplate): Boolean {

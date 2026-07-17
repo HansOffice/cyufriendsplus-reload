@@ -62,6 +62,12 @@ class FriendManager(private val repository: FriendRepository) {
         return isFriend(uid1, uid2)
     }
 
+    fun isFriendCached(uid1: String, uid2: String): Boolean {
+        return friendCache.getIfPresent(uid1)?.containsKey(uid2)
+            ?: friendCache.getIfPresent(uid2)?.containsKey(uid1)
+            ?: false
+    }
+
     suspend fun isFriendStored(uid1: String, uid2: String): Boolean {
         if (isFriend(uid1, uid2)) return true
         return repository.areFriends(uid1, uid2)
@@ -69,6 +75,18 @@ class FriendManager(private val repository: FriendRepository) {
 
     fun getOnlineFriends(uid: String): Set<String> {
         return friendCache.getIfPresent(uid)?.keys?.toSet() ?: emptySet()
+    }
+
+    fun getFriendEntriesCached(uid: String): List<FriendData> {
+        return friendCache.getIfPresent(uid)?.values?.let(::sort) ?: emptyList()
+    }
+
+    fun getFriendCountCached(uid: String): Int {
+        return friendCache.getIfPresent(uid)?.size ?: 0
+    }
+
+    fun getFriendDataCached(userUid: String, friendUid: String): FriendData? {
+        return friendCache.getIfPresent(userUid)?.get(friendUid)
     }
 
     suspend fun getFriends(uid: String): Set<String> {
@@ -378,6 +396,16 @@ class FriendManager(private val repository: FriendRepository) {
         val mine = getFriendEntriesStoredSync(userUid).mapTo(linkedSetOf(), FriendData::friendUid)
         if (mine.isEmpty()) return emptyList()
         return getFriendEntriesStoredSync(targetUid)
+            .map(FriendData::friendUid)
+            .filter { it in mine }
+            .distinct()
+            .sortedBy { (CyuIdHook.getName(it) ?: it).lowercase() }
+    }
+
+    fun mutualFriendUidsCached(userUid: String, targetUid: String): List<String> {
+        val mine = getFriendEntriesCached(userUid).mapTo(linkedSetOf(), FriendData::friendUid)
+        if (mine.isEmpty()) return emptyList()
+        return getFriendEntriesCached(targetUid)
             .map(FriendData::friendUid)
             .filter { it in mine }
             .distinct()

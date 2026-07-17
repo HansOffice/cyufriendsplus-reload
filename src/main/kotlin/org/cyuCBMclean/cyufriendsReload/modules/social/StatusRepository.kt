@@ -50,11 +50,19 @@ class StatusRepository(private val db: DatabaseManager) : BaseRepository {
             update(commentsSql)
             runCatching { update("ALTER TABLE $tableName ADD COLUMN visibility VARCHAR(16) DEFAULT 'PUBLIC'") }
             runCatching { update("ALTER TABLE $tableName ADD COLUMN pinned INTEGER DEFAULT 0") }
-            update("CREATE INDEX IF NOT EXISTS idx_${tableName}_uid_pinned_created ON $tableName (uid, pinned, created_at)")
-            update("CREATE INDEX IF NOT EXISTS idx_${tableName}_created ON $tableName (created_at)")
-            update("CREATE INDEX IF NOT EXISTS idx_${likesTable}_user ON $likesTable (user_uid)")
-            update("CREATE INDEX IF NOT EXISTS idx_${commentsTable}_status_created ON $commentsTable (status_id, created_at)")
-            update("CREATE INDEX IF NOT EXISTS idx_${commentsTable}_author_created ON $commentsTable (author_uid, created_at)")
+            if (isSQLite) {
+                runCatching { update("CREATE INDEX IF NOT EXISTS idx_${tableName}_uid_pinned_created ON $tableName (uid, pinned, created_at)") }
+                runCatching { update("CREATE INDEX IF NOT EXISTS idx_${tableName}_created ON $tableName (created_at)") }
+                runCatching { update("CREATE INDEX IF NOT EXISTS idx_${likesTable}_user ON $likesTable (user_uid)") }
+                runCatching { update("CREATE INDEX IF NOT EXISTS idx_${commentsTable}_status_created ON $commentsTable (status_id, created_at)") }
+                runCatching { update("CREATE INDEX IF NOT EXISTS idx_${commentsTable}_author_created ON $commentsTable (author_uid, created_at)") }
+            } else {
+                runCatching { update("ALTER TABLE $tableName ADD INDEX idx_${tableName}_uid_pinned_created (uid, pinned, created_at)") }
+                runCatching { update("ALTER TABLE $tableName ADD INDEX idx_${tableName}_created (created_at)") }
+                runCatching { update("ALTER TABLE $likesTable ADD INDEX idx_${likesTable}_user (user_uid)") }
+                runCatching { update("ALTER TABLE $commentsTable ADD INDEX idx_${commentsTable}_status_created (status_id, created_at)") }
+                runCatching { update("ALTER TABLE $commentsTable ADD INDEX idx_${commentsTable}_author_created (author_uid, created_at)") }
+            }
         }
     }
 
@@ -76,11 +84,19 @@ class StatusRepository(private val db: DatabaseManager) : BaseRepository {
             update(commentsSql)
             runCatching { update("ALTER TABLE $tableName ADD COLUMN visibility VARCHAR(16) DEFAULT 'PUBLIC'") }
             runCatching { update("ALTER TABLE $tableName ADD COLUMN pinned INTEGER DEFAULT 0") }
-            update("CREATE INDEX IF NOT EXISTS idx_${tableName}_uid_pinned_created ON $tableName (uid, pinned, created_at)")
-            update("CREATE INDEX IF NOT EXISTS idx_${tableName}_created ON $tableName (created_at)")
-            update("CREATE INDEX IF NOT EXISTS idx_${likesTable}_user ON $likesTable (user_uid)")
-            update("CREATE INDEX IF NOT EXISTS idx_${commentsTable}_status_created ON $commentsTable (status_id, created_at)")
-            update("CREATE INDEX IF NOT EXISTS idx_${commentsTable}_author_created ON $commentsTable (author_uid, created_at)")
+            if (isSQLite) {
+                runCatching { update("CREATE INDEX IF NOT EXISTS idx_${tableName}_uid_pinned_created ON $tableName (uid, pinned, created_at)") }
+                runCatching { update("CREATE INDEX IF NOT EXISTS idx_${tableName}_created ON $tableName (created_at)") }
+                runCatching { update("CREATE INDEX IF NOT EXISTS idx_${likesTable}_user ON $likesTable (user_uid)") }
+                runCatching { update("CREATE INDEX IF NOT EXISTS idx_${commentsTable}_status_created ON $commentsTable (status_id, created_at)") }
+                runCatching { update("CREATE INDEX IF NOT EXISTS idx_${commentsTable}_author_created ON $commentsTable (author_uid, created_at)") }
+            } else {
+                runCatching { update("ALTER TABLE $tableName ADD INDEX idx_${tableName}_uid_pinned_created (uid, pinned, created_at)") }
+                runCatching { update("ALTER TABLE $tableName ADD INDEX idx_${tableName}_created (created_at)") }
+                runCatching { update("ALTER TABLE $likesTable ADD INDEX idx_${likesTable}_user (user_uid)") }
+                runCatching { update("ALTER TABLE $commentsTable ADD INDEX idx_${commentsTable}_status_created (status_id, created_at)") }
+                runCatching { update("ALTER TABLE $commentsTable ADD INDEX idx_${commentsTable}_author_created (author_uid, created_at)") }
+            }
         }
     }
 

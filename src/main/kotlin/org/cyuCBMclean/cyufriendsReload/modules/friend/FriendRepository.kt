@@ -84,35 +84,38 @@ class FriendRepository(private val db: DatabaseManager) : BaseRepository {
         databaseManager.execute {
             update(
                 "CREATE TABLE IF NOT EXISTS $tableName (" +
-                    "user_uid VARCHAR(36), " +
-                    "friend_uid VARCHAR(36), " +
-                    "note_name VARCHAR(64), " +
-                    "note_detail VARCHAR(255), " +
-                    "group_name VARCHAR(64), " +
-                    "tag_name VARCHAR(32), " +
-                    "pinned INTEGER DEFAULT 0, " +
-                    "created_at BIGINT, " +
-                    "last_interaction_at BIGINT, " +
-                    "PRIMARY KEY(user_uid, friend_uid))"
+                        "user_uid VARCHAR(36), " +
+                        "friend_uid VARCHAR(36), " +
+                        "note_name VARCHAR(64), " +
+                        "note_detail VARCHAR(255), " +
+                        "group_name VARCHAR(64), " +
+                        "tag_name VARCHAR(32), " +
+                        "pinned INTEGER DEFAULT 0, " +
+                        "created_at BIGINT, " +
+                        "last_interaction_at BIGINT, " +
+                        "PRIMARY KEY(user_uid, friend_uid))"
             )
+
             update("CREATE TABLE IF NOT EXISTS $requestTable (sender_uid VARCHAR(36), receiver_uid VARCHAR(36), created_at BIGINT, PRIMARY KEY(sender_uid, receiver_uid))")
             update("CREATE TABLE IF NOT EXISTS $blockTable (user_uid VARCHAR(36), blocked_uid VARCHAR(36), PRIMARY KEY(user_uid, blocked_uid))")
+
             update(
                 "CREATE TABLE IF NOT EXISTS $tagsTable (" +
-                    "user_uid VARCHAR(36), " +
-                    "friend_uid VARCHAR(36), " +
-                    "tag_name VARCHAR(32), " +
-                    "tag_color VARCHAR(16), " +
-                    "created_at BIGINT, " +
-                    "PRIMARY KEY(user_uid, friend_uid, tag_name))"
+                        "user_uid VARCHAR(36), " +
+                        "friend_uid VARCHAR(36), " +
+                        "tag_name VARCHAR(32), " +
+                        "tag_color VARCHAR(16), " +
+                        "created_at BIGINT, " +
+                        "PRIMARY KEY(user_uid, friend_uid, tag_name))"
             )
+
             update(
                 "CREATE TABLE IF NOT EXISTS $recommendationIgnoreTable (" +
-                    "owner_uid VARCHAR(36), " +
-                    "candidate_uid VARCHAR(36), " +
-                    "ignored_at BIGINT, " +
-                    "expires_at BIGINT DEFAULT 0, " +
-                    "PRIMARY KEY(owner_uid, candidate_uid))"
+                        "owner_uid VARCHAR(36), " +
+                        "candidate_uid VARCHAR(36), " +
+                        "ignored_at BIGINT, " +
+                        "expires_at BIGINT DEFAULT 0, " +
+                        "PRIMARY KEY(owner_uid, candidate_uid))"
             )
 
             runCatching { update("ALTER TABLE $tableName ADD COLUMN note_name VARCHAR(64)") }
@@ -122,15 +125,38 @@ class FriendRepository(private val db: DatabaseManager) : BaseRepository {
             runCatching { update("ALTER TABLE $tableName ADD COLUMN pinned INTEGER DEFAULT 0") }
             runCatching { update("ALTER TABLE $tableName ADD COLUMN last_interaction_at BIGINT") }
             runCatching { update("ALTER TABLE $tagsTable ADD COLUMN tag_color VARCHAR(16)") }
-            runCatching { update("UPDATE $tableName SET last_interaction_at = created_at WHERE last_interaction_at IS NULL OR last_interaction_at = 0") }
 
-            update("CREATE INDEX IF NOT EXISTS idx_${tableName}_user_group ON $tableName (user_uid, group_name)")
-            update("CREATE INDEX IF NOT EXISTS idx_${tableName}_user_tag ON $tableName (user_uid, tag_name)")
-            update("CREATE INDEX IF NOT EXISTS idx_${tableName}_user_pinned ON $tableName (user_uid, pinned)")
-            update("CREATE INDEX IF NOT EXISTS idx_${tableName}_user_last_interaction ON $tableName (user_uid, last_interaction_at)")
-            update("CREATE INDEX IF NOT EXISTS idx_${tagsTable}_user_friend_created ON $tagsTable (user_uid, friend_uid, created_at)")
-            update("CREATE INDEX IF NOT EXISTS idx_${tagsTable}_user_tag ON $tagsTable (user_uid, tag_name)")
-            update("CREATE INDEX IF NOT EXISTS idx_${recommendationIgnoreTable}_owner_expires ON $recommendationIgnoreTable (owner_uid, expires_at)")
+            runCatching {
+                update("UPDATE $tableName SET last_interaction_at = created_at WHERE last_interaction_at IS NULL OR last_interaction_at = 0")
+            }
+
+            runCatching {
+                update("ALTER TABLE $tableName ADD INDEX idx_${tableName}_user_group (user_uid, group_name)")
+            }
+
+            runCatching {
+                update("ALTER TABLE $tableName ADD INDEX idx_${tableName}_user_tag (user_uid, tag_name)")
+            }
+
+            runCatching {
+                update("ALTER TABLE $tableName ADD INDEX idx_${tableName}_user_pinned (user_uid, pinned)")
+            }
+
+            runCatching {
+                update("ALTER TABLE $tableName ADD INDEX idx_${tableName}_user_last_interaction (user_uid, last_interaction_at)")
+            }
+
+            runCatching {
+                update("ALTER TABLE $tagsTable ADD INDEX idx_${tagsTable}_user_friend_created (user_uid, friend_uid, created_at)")
+            }
+
+            runCatching {
+                update("ALTER TABLE $tagsTable ADD INDEX idx_${tagsTable}_user_tag (user_uid, tag_name)")
+            }
+
+            runCatching {
+                update("ALTER TABLE $recommendationIgnoreTable ADD INDEX idx_${recommendationIgnoreTable}_owner_expires (owner_uid, expires_at)")
+            }
 
             val legacyTags = query(
                 "SELECT user_uid, friend_uid, tag_name, created_at FROM $tableName WHERE tag_name IS NOT NULL AND tag_name <> ''"
@@ -148,11 +174,12 @@ class FriendRepository(private val db: DatabaseManager) : BaseRepository {
                 }
                 rows
             }
+
             legacyTags.forEach { row ->
                 update(
                     "INSERT INTO $tagsTable (user_uid, friend_uid, tag_name, tag_color, created_at) " +
-                        "SELECT ?, ?, ?, NULL, ? WHERE NOT EXISTS (" +
-                        "SELECT 1 FROM $tagsTable WHERE user_uid = ? AND friend_uid = ? AND tag_name = ?)",
+                            "SELECT ?, ?, ?, NULL, ? WHERE NOT EXISTS (" +
+                            "SELECT 1 FROM $tagsTable WHERE user_uid = ? AND friend_uid = ? AND tag_name = ?)",
                     row[0],
                     row[1],
                     row[2],
@@ -189,12 +216,12 @@ class FriendRepository(private val db: DatabaseManager) : BaseRepository {
         query("SELECT 1 FROM $tableName WHERE user_uid = ? AND friend_uid = ? LIMIT 1", uid1, uid2) { rs -> rs.next() }
     }
 
-    suspend fun addFriend(uid1: String, uid2: String, time: Long) = db.execute {
+    suspend fun addFriend(uid1: String, uid2: String, time: Long) = db.transaction {
         update("INSERT INTO $tableName (user_uid, friend_uid, note_name, note_detail, group_name, tag_name, pinned, created_at, last_interaction_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", uid1, uid2, null, null, FriendDefaults.DEFAULT_GROUP_NAME, null, 0, time, time)
         update("INSERT INTO $tableName (user_uid, friend_uid, note_name, note_detail, group_name, tag_name, pinned, created_at, last_interaction_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", uid2, uid1, null, null, FriendDefaults.DEFAULT_GROUP_NAME, null, 0, time, time)
     }
 
-    suspend fun removeFriend(uid1: String, uid2: String) = db.execute {
+    suspend fun removeFriend(uid1: String, uid2: String) = db.transaction {
         update("DELETE FROM $tagsTable WHERE user_uid = ? AND friend_uid = ?", uid1, uid2)
         update("DELETE FROM $tagsTable WHERE user_uid = ? AND friend_uid = ?", uid2, uid1)
         update("DELETE FROM $tableName WHERE user_uid = ? AND friend_uid = ?", uid1, uid2)

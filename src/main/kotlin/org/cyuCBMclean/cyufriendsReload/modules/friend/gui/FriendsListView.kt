@@ -103,7 +103,7 @@ class FriendsListView(
 
     private fun filteredFriendUids(): List<String> {
         return module.friendManager
-            .getFriendEntriesStoredSync(player.uid)
+            .getFriendEntriesCached(player.uid)
             .asSequence()
             .filter { matchesTag(it) }
             .filter { matchesKeyword(it) }
@@ -193,7 +193,7 @@ class FriendsListView(
         val primaryTagColor = friendData?.primaryTagColor() ?: FriendDefaults.TAG_COLOR_PALETTE.first()
         val tagCount = friendData?.tagNames?.size?.toString() ?: "0"
         val pinState = if (friendData?.pinned == true) "已置顶" else "未置顶"
-        val groupPinState = if (friendData != null && module.preferencesManager.isGroupPinnedStoredSync(player.uid, friendData.groupName)) "分组置顶" else "普通显示"
+        val groupPinState = if (friendData != null && module.preferencesManager.isGroupPinnedCached(player.uid, friendData.groupName)) "分组置顶" else "普通显示"
         val friendSince = friendData?.createdAt?.takeIf { it > 0L }?.let { timeFormat.format(Date(it)) } ?: "未知时间"
         val lastInteraction = friendData?.lastInteractionAt?.takeIf { it > 0L }?.let { timeFormat.format(Date(it)) } ?: "暂无记录"
 
@@ -222,7 +222,7 @@ class FriendsListView(
     }
 
     private fun isGroupPinned(data: org.cyuCBMclean.cyufriendsReload.modules.friend.FriendData): Boolean {
-        return module.preferencesManager.isGroupPinnedStoredSync(player.uid, data.groupName)
+        return module.preferencesManager.isGroupPinnedCached(player.uid, data.groupName)
     }
 
     private fun cyclePrimaryTag(friendUid: String) {

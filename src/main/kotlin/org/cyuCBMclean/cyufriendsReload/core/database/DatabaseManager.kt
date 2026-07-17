@@ -78,6 +78,26 @@ class DatabaseManager(private val plugin: Plugin) {
         }
     }
 
+    suspend fun <T> transaction(block: Connection.() -> T): T = withContext(dbDispatcher) {
+        transactionSync(block)
+    }
+
+    fun <T> transactionSync(block: Connection.() -> T): T {
+        return dataSource.connection.use { connection ->
+            val previousAutoCommit = connection.autoCommit
+            connection.autoCommit = false
+            try {
+                val result = connection.block()
+                connection.commit()
+                result
+            } catch (exception: Throwable) {
+                runCatching { connection.rollback() }
+                throw exception
+            } finally {
+                runCatching { connection.autoCommit = previousAutoCommit }
+            }
+        }
+    }
     suspend fun ping(): Boolean = execute {
         runCatching { isValid(2) }.getOrElse {
             prepareStatement("SELECT 1").use { statement ->

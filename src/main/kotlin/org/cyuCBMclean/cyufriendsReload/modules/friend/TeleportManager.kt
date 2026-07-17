@@ -49,16 +49,21 @@ class TeleportManager(
         }
     }
 
-    fun sendRequest(receiverUid: String, request: TeleportRequest, onExpire: (TeleportRequest) -> Unit = {}) {
-        val replaced = clearRequest(receiverUid)
-        tpRequests[receiverUid] = request
+    fun sendRequest(receiverUid: String, request: TeleportRequest, onExpire: (TeleportRequest) -> Unit = {}): Boolean {
+        if (getRequest(receiverUid) != null || tpRequests.putIfAbsent(receiverUid, request) != null) {
+            DebugLogger.debug(1) {
+                "好友传送请求已拒绝: receiver=$receiverUid sender=${request.senderUid} reason=request-pending"
+            }
+            return false
+        }
         val delayTicks = ((request.expireAtMillis - System.currentTimeMillis()).coerceAtLeast(1000L) + 49L) / 50L
         timeoutTasks[receiverUid] = CyuConcurrency.scheduler.runLaterAsync(plugin, delayTicks) {
             expireRequest(receiverUid, request.requestId, onExpire)
         }
         DebugLogger.debug(1) {
-            "好友传送请求已挂起: receiver=$receiverUid sender=${request.senderUid} requestId=${request.requestId} delayTicks=$delayTicks replaced=${replaced != null}"
+            "好友传送请求已挂起: receiver=$receiverUid sender=${request.senderUid} requestId=${request.requestId} delayTicks=$delayTicks"
         }
+        return true
     }
 
     fun getRequest(receiverUid: String): TeleportRequest? {

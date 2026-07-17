@@ -1,5 +1,6 @@
 package org.cyuCBMclean.cyufriendsReload.modules.profile
 
+import org.cyuCBMclean.cyufriendsReload.core.config.Settings
 import org.cyuCBMclean.cyufriendsReload.core.database.BaseRepository
 import org.cyuCBMclean.cyufriendsReload.core.database.DatabaseManager
 import org.cyuCBMclean.cyufriendsReload.core.database.query
@@ -53,9 +54,31 @@ class ProfileRepository(private val db: DatabaseManager) : BaseRepository {
             runCatching { update("ALTER TABLE $tableName ADD COLUMN notify_wall_post BOOLEAN DEFAULT 1") }
             runCatching { update("ALTER TABLE $tableName ADD COLUMN notify_wall_like BOOLEAN DEFAULT 1") }
             runCatching { update("ALTER TABLE $tableName ADD COLUMN notify_wall_comment BOOLEAN DEFAULT 1") }
-            update("CREATE INDEX IF NOT EXISTS idx_${tableName}_birthday ON $tableName (birthday)")
-            update("CREATE INDEX IF NOT EXISTS idx_${tableName}_birthday_reminder ON $tableName (last_birthday_reminder)")
-            update("CREATE INDEX IF NOT EXISTS idx_${tableName}_birthday_broadcast ON $tableName (last_birthday_broadcast)")
+            if (Settings.databaseType.equals("SQLite", ignoreCase = true)) {
+                runCatching {
+                    update("CREATE INDEX IF NOT EXISTS idx_${tableName}_birthday ON $tableName (birthday)")
+                }
+
+                runCatching {
+                    update("CREATE INDEX IF NOT EXISTS idx_${tableName}_birthday_reminder ON $tableName (last_birthday_reminder)")
+                }
+
+                runCatching {
+                    update("CREATE INDEX IF NOT EXISTS idx_${tableName}_birthday_broadcast ON $tableName (last_birthday_broadcast)")
+                }
+            } else {
+                runCatching {
+                    update("ALTER TABLE $tableName ADD INDEX idx_${tableName}_birthday (birthday)")
+                }
+
+                runCatching {
+                    update("ALTER TABLE $tableName ADD INDEX idx_${tableName}_birthday_reminder (last_birthday_reminder)")
+                }
+
+                runCatching {
+                    update("ALTER TABLE $tableName ADD INDEX idx_${tableName}_birthday_broadcast (last_birthday_broadcast)")
+                }
+            }
         }
     }
 

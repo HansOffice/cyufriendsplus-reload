@@ -1,10 +1,8 @@
 package org.cyuCBMclean.cyufriendsReload.modules.group.gui
 
-import kotlinx.coroutines.runBlocking
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
-import org.cyuCBMclean.cyufriendsReload.core.scheduler.CyuConcurrency
 import org.cyuCBMclean.cyufriendsReload.extension.playAudio
 import org.cyuCBMclean.cyufriendsReload.extension.sendLang
 import org.cyuCBMclean.cyufriendsReload.extension.uid
@@ -41,13 +39,13 @@ class GroupMoveView(
         val uid = targetUid ?: return
         val ownerUid = player.uid
         val rawName = CyuIdHook.getName(uid) ?: friendName
-        CyuConcurrency.scheduler.runAsync(module.plugin) {
-            runBlocking { module.manager.moveFriend(ownerUid, uid, element) }
-            CyuConcurrency.scheduler.runEntity(module.plugin, player) {
+        runAsyncOperation(
+            operation = { module.manager.moveFriend(ownerUid, uid, element) },
+            onSuccess = {
                 player.sendLang("group-set", mapOf("target" to rawName, "group" to element))
                 player.playAudio("success")
                 player.performCommand("friend profile $rawName")
             }
-        }
+        )
     }
 }

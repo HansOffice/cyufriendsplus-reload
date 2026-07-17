@@ -31,7 +31,7 @@ class AddFriendView(
         val offlinePlayer = targetUid?.let { CyuIdHook.getOfflinePlayer(it) }
         val friendModule = CyufriendsReload.instance.moduleManager.getModule<FriendModule>("friend")
         val mutualFriends = if (targetUid != null && friendModule != null) {
-            friendModule.friendManager.mutualFriendUidsStoredSync(player.uid, targetUid)
+            friendModule.friendManager.mutualFriendUidsCached(player.uid, targetUid)
         } else {
             emptyList()
         }

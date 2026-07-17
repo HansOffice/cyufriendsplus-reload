@@ -14,7 +14,9 @@ import org.cyuCBMclean.cyufriendsReload.extension.onlineScope
 import org.cyuCBMclean.cyufriendsReload.extension.playAudio
 import org.cyuCBMclean.cyufriendsReload.extension.sendLang
 import org.cyuCBMclean.cyufriendsReload.extension.uid
+import org.cyuCBMclean.cyufriendsReload.integration.compat.NpcCompat
 import org.cyuCBMclean.cyufriendsReload.integration.hook.CyuIdHook
+import org.cyuCBMclean.cyufriendsReload.modules.chat.ChatCommands
 import org.cyuCBMclean.cyufriendsReload.modules.chat.ChatModule
 import org.cyuCBMclean.cyufriendsReload.modules.chat.gui.MessageChatView
 import org.cyuCBMclean.cyufriendsReload.modules.friend.gui.AddFriendView
@@ -60,12 +62,14 @@ object FriendCommands {
     private const val HELP_PAGE_SIZE = 10
     private val adminTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
 
-    fun register(plugin: CyufriendsReload, module: FriendModule) {
+    fun register(plugin: CyufriendsReload, module: FriendModule, chatModule: ChatModule?) {
         CommandDispatcher(plugin, "friend") {
 
             executes {
                 sendHelp(sender, null)
             }
+
+            chatModule?.let { ChatCommands.registerSubCommands(plugin, it, this) }
 
             subCommand("help") {
                 executes {
@@ -85,11 +89,29 @@ object FriendCommands {
                 onNoPermission = { it.sendLang("no-permission") }
 
                 executes {
-                    runCatching { plugin.reloadRuntime() }
-                        .onSuccess { sender.sendLang("reload-success") }
-                        .onFailure {
-                            sender.sendMessage("§c[CyuFriends] 重载失败，请查看控制台日志。")
-                        }
+                    val reloadSender = sender
+                    CyuConcurrency.scheduler.runGlobal(plugin) {
+                        runCatching { plugin.reloadRuntime() }
+                            .onSuccess {
+                                if (reloadSender is Player && reloadSender.isOnline) {
+                                    CyuConcurrency.scheduler.runEntity(plugin, reloadSender) {
+                                        reloadSender.sendLang("reload-success")
+                                    }
+                                } else {
+                                    reloadSender.sendLang("reload-success")
+                                }
+                            }
+                            .onFailure { exception ->
+                                plugin.logger.log(java.util.logging.Level.SEVERE, "插件重载失败", exception)
+                                if (reloadSender is Player && reloadSender.isOnline) {
+                                    CyuConcurrency.scheduler.runEntity(plugin, reloadSender) {
+                                        reloadSender.sendMessage("§c[CyuFriends] 重载失败：${exception.message ?: "配置无效"}")
+                                    }
+                                } else {
+                                    reloadSender.sendMessage("§c[CyuFriends] 重载失败：${exception.message ?: "配置无效"}")
+                                }
+                            }
+                    }
                 }
             }
 
@@ -464,6 +486,9 @@ object FriendCommands {
                     val requestNote = FriendRequestNotes.normalize(plugin, rawRequestNote)
                     val targetUid = CyuIdHook.getUidByName(targetName) ?: return@executes player.sendLang("player-not-found")
                     val targetPlayer = CyuIdHook.getOnlinePlayer(targetUid)
+                    if (targetPlayer != null && NpcCompat.isNpc(targetPlayer)) {
+                        return@executes player.sendLang("cannot-add-npc")
+                    }
                     val targetOnline = targetPlayer?.isOnline == true
                     val remotePresence = proxyModule?.remotePresence?.find(targetUid)
                     if (targetPlayer == null && remotePresence == null) return@executes player.sendLang("player-offline")
@@ -532,34 +557,28 @@ object FriendCommands {
                             }
                             return@runAsync
                         }
-                        val limit = runBlocking { module.requestManager.checkLimit(senderUid, cooldown, dailyLimit, todayStart) }
-                        if (limit != FriendRequestLimitResult.ALLOWED) {
+                        val submitResult = runBlocking {
+                            module.requestManager.submitRequest(
+                                senderUid,
+                                targetUid,
+                                requestNote,
+                                cooldown,
+                                dailyLimit,
+                                todayStart
+                            )
+                        }
+                        if (submitResult != FriendRequestSubmitResult.SENT) {
                             val remaining = module.requestManager.remainingCooldown(senderUid, cooldown).toString()
                             DebugLogger.debug(1) {
-                                "好友申请拦截: sender=$senderUid target=$targetUid reason=${limit.name.lowercase()} remaining=${remaining}s daily=$dailyLimit"
+                                "好友申请拦截: sender=$senderUid target=$targetUid reason=${submitResult.name.lowercase()} remaining=${remaining}s daily=$dailyLimit"
                             }
                             CyuConcurrency.scheduler.runEntity(plugin, player) {
-                                when (limit) {
-                                    FriendRequestLimitResult.COOLDOWN -> player.sendLang("request-cooldown", mapOf("seconds" to remaining))
-                                    FriendRequestLimitResult.DAILY_LIMIT -> player.sendLang("request-daily-limit", mapOf("amount" to dailyLimit.toString()))
-                                    FriendRequestLimitResult.ALLOWED -> {}
+                                when (submitResult) {
+                                    FriendRequestSubmitResult.ALREADY_SENT -> player.sendLang("request-already-sent")
+                                    FriendRequestSubmitResult.COOLDOWN -> player.sendLang("request-cooldown", mapOf("seconds" to remaining))
+                                    FriendRequestSubmitResult.DAILY_LIMIT -> player.sendLang("request-daily-limit", mapOf("amount" to dailyLimit.toString()))
+                                    FriendRequestSubmitResult.SENT -> {}
                                 }
-                            }
-                            return@runAsync
-                        }
-
-                        val saved = runBlocking {
-                            if (module.requestManager.hasRequestStored(senderUid, targetUid)) {
-                                false
-                            } else {
-                                module.requestManager.addRequest(senderUid, targetUid, requestNote)
-                                true
-                            }
-                        }
-                        if (!saved) {
-                            DebugLogger.debug(1) { "好友申请拦截: sender=$senderUid target=$targetUid reason=request-already-sent-race" }
-                            CyuConcurrency.scheduler.runEntity(plugin, player) {
-                                player.sendLang("request-already-sent")
                             }
                             return@runAsync
                         }
@@ -880,7 +899,7 @@ object FriendCommands {
                             DebugLogger.debug(1) {
                                 "好友传送请求已创建: sender=$senderUid target=$targetUid route=local timeout=${timeoutSeconds}s"
                             }
-                            module.teleportManager.sendRequest(targetUid, request) { expired ->
+                            val queued = module.teleportManager.sendRequest(targetUid, request) { expired ->
                                 val expiredSender = CyuIdHook.getOnlinePlayer(expired.senderUid)
                                 if (expiredSender != null && expiredSender.isOnline) {
                                     CyuConcurrency.scheduler.runEntity(plugin, expiredSender) {
@@ -893,6 +912,12 @@ object FriendCommands {
                                         expiredReceiver.sendLang("tp-request-expired-received", mapOf("sender" to expired.senderName))
                                     }
                                 }
+                            }
+                            if (!queued) {
+                                CyuConcurrency.scheduler.runEntity(plugin, player) {
+                                    player.sendLang("tp-request-pending")
+                                }
+                                return@runAsync
                             }
                             CyuConcurrency.scheduler.runEntity(plugin, player) {
                                 player.sendLang(

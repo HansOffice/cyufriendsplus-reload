@@ -65,9 +65,31 @@ class RelationshipTimelineRepository(private val db: DatabaseManager) : BaseRepo
                     "created_at BIGINT NOT NULL)"
             }
             update(sql)
-            update("CREATE INDEX IF NOT EXISTS idx_${tableName}_owner_friend_created ON $tableName (owner_uid, friend_uid, created_at)")
-            update("CREATE INDEX IF NOT EXISTS idx_${tableName}_owner_created ON $tableName (owner_uid, created_at)")
-            update("CREATE INDEX IF NOT EXISTS idx_${tableName}_friend_created ON $tableName (friend_uid, created_at)")
+            if (Settings.databaseType.equals("SQLite", ignoreCase = true)) {
+                runCatching {
+                    update("CREATE INDEX IF NOT EXISTS idx_${tableName}_owner_friend_created ON $tableName (owner_uid, friend_uid, created_at)")
+                }
+
+                runCatching {
+                    update("CREATE INDEX IF NOT EXISTS idx_${tableName}_owner_created ON $tableName (owner_uid, created_at)")
+                }
+
+                runCatching {
+                    update("CREATE INDEX IF NOT EXISTS idx_${tableName}_friend_created ON $tableName (friend_uid, created_at)")
+                }
+            } else {
+                runCatching {
+                    update("ALTER TABLE $tableName ADD INDEX idx_${tableName}_owner_friend_created (owner_uid, friend_uid, created_at)")
+                }
+
+                runCatching {
+                    update("ALTER TABLE $tableName ADD INDEX idx_${tableName}_owner_created (owner_uid, created_at)")
+                }
+
+                runCatching {
+                    update("ALTER TABLE $tableName ADD INDEX idx_${tableName}_friend_created (friend_uid, created_at)")
+                }
+            }
         }
     }
 

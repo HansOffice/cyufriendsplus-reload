@@ -80,12 +80,18 @@ class NotificationCenterView(
         }
     }
 
-    override fun getSource(): List<NotificationTask> {
+    override suspend fun prepareData() {
+        cachedTasks = loadTasks()
+    }
+
+    override fun getSource(): List<NotificationTask> = cachedTasks
+
+    private fun loadTasks(): List<NotificationTask> {
         val uid = player.uid
         val friendModule = plugin.moduleManager.getModule<FriendModule>("friend")
         val chatModule = plugin.moduleManager.getModule<ChatModule>("chat")
         val socialModule = plugin.moduleManager.getModule<SocialModule>("social")
-        val friendEntries = friendModule?.friendManager?.getFriendEntriesStoredSync(uid).orEmpty()
+        val friendEntries = friendModule?.friendManager?.getFriendEntriesCached(uid).orEmpty()
         val friendUids = friendEntries.mapTo(linkedSetOf(), org.cyuCBMclean.cyufriendsReload.modules.friend.FriendData::friendUid)
 
         val tasks = buildList {
@@ -146,7 +152,7 @@ class NotificationCenterView(
                 }
                 recommendations.forEach { recommendation ->
                     val candidateName = CyuIdHook.getName(recommendation.candidateUid) ?: recommendation.candidateUid
-                    val mutualPreview = friendModule.friendManager.mutualFriendUidsStoredSync(uid, recommendation.candidateUid)
+                    val mutualPreview = friendModule.friendManager.mutualFriendUidsCached(uid, recommendation.candidateUid)
                         .take(2)
                         .map { CyuIdHook.getName(it) ?: it }
                         .joinToString("、")
@@ -240,7 +246,7 @@ class NotificationCenterView(
         val pendingWalls = socialModule?.manager?.pendingWallCountSync(uid) ?: 0
         val pendingReplies = socialModule?.manager?.pendingWallReplyCountSync(uid) ?: 0
         val recommendCount = cachedTasks.count { it.type == NotificationTaskType.RECOMMENDATION }
-        val friendUids = friendModule?.friendManager?.getFriendEntriesStoredSync(uid)?.map { it.friendUid }?.toSet() ?: emptySet()
+        val friendUids = friendModule?.friendManager?.getFriendEntriesCached(uid)?.map { it.friendUid }?.toSet() ?: emptySet()
         val birthdayCounts = profileModule.manager.birthdayReminderCountsSync(friendUids)
         val socialSummary = if (socialModule == null) {
             "模块已关闭"

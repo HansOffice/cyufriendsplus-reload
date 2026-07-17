@@ -18,22 +18,21 @@ class SoundEngine(private val plugin: Plugin) {
             plugin.saveResource("sounds.yml", false)
         }
 
-        val yaml = YamlConfiguration.loadConfiguration(file)
-        soundCache.clear()
-
+        val yaml = YamlConfiguration().apply { load(file) }
+        val nextSounds = mutableMapOf<String, SoundData>()
         yaml.getKeys(false).forEach { key ->
             val soundName = yaml.getString("$key.sound")?.uppercase() ?: return@forEach
             val volume = yaml.getDouble("$key.volume", 1.0).toFloat()
             val pitch = yaml.getDouble("$key.pitch", 1.0).toFloat()
-
-            runCatching {
-                soundCache[key] = SoundData(Sound.valueOf(soundName), volume, pitch)
-            }.onFailure {
-                plugin.logger.warning("Invalid sound enum detected in sounds.yml at key: $key")
+            val sound = runCatching { Sound.valueOf(soundName) }.getOrElse {
+                throw IllegalArgumentException("sounds.yml 的音效 $key 无效: $soundName", it)
             }
+            nextSounds[key] = SoundData(sound, volume, pitch)
         }
-    }
 
+        soundCache.clear()
+        soundCache.putAll(nextSounds)
+    }
     fun play(player: Player, key: String) {
         val data = soundCache[key] ?: return
         player.playSound(player.location, data.sound, data.volume, data.pitch)

@@ -18,6 +18,7 @@ import org.cyuCBMclean.cyufriendsReload.extension.sendLang
 import org.cyuCBMclean.cyufriendsReload.integration.hook.CyuIdHook
 import org.cyuCBMclean.cyufriendsReload.modules.chat.ChatModule
 import org.cyuCBMclean.cyufriendsReload.modules.friend.listener.FriendInteractListener
+import org.cyuCBMclean.cyufriendsReload.modules.friend.listener.PublicChatFilterListener
 import java.util.concurrent.CompletableFuture
 
 class FriendModule(
@@ -75,20 +76,14 @@ class FriendModule(
 
         Bukkit.getPluginManager().registerEvents(this, plugin)
         Bukkit.getPluginManager().registerEvents(FriendInteractListener(plugin, this), plugin)
-        FriendCommands.register(plugin, this)
+        Bukkit.getPluginManager().registerEvents(PublicChatFilterListener(plugin, this), plugin)
+
     }
 
     override fun onDisable() {
         requestCleanupTask?.cancel()
         requestCleanupTask = null
-        Bukkit.getOnlinePlayers().forEach { player ->
-            val uid = CyuIdHook.getUid(player)
-            friendManager.unloadPlayer(uid)
-            requestManager.unloadPlayer(uid)
-            blockManager.unloadPlayer(uid)
-            preferencesManager.unloadPlayer(uid)
-            FriendListStateStore.clear(uid)
-        }
+        FriendListStateStore.clearAll()
     }
 
     override fun reloadConfig() {}

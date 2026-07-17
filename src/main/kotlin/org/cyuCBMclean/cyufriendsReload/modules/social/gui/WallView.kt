@@ -1,6 +1,5 @@
 package org.cyuCBMclean.cyufriendsReload.modules.social.gui
 
-import kotlinx.coroutines.runBlocking
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
@@ -18,8 +17,9 @@ import org.cyuCBMclean.cyufriendsReload.ui.layout.GuiPattern
 import org.cyuCBMclean.cyufriendsReload.ui.layout.GuiTextFormatter
 import org.cyuCBMclean.cyufriendsReload.ui.layout.ItemTemplate
 import org.cyuCBMclean.cyufriendsReload.ui.view.PaginatedView
-import java.text.SimpleDateFormat
-import java.util.Date
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 class WallView(
     player: Player,
@@ -34,14 +34,13 @@ class WallView(
         private const val HIDDEN_LINE = "__cyu_hidden__"
     }
 
-    private val dateFormat = SimpleDateFormat("MM-dd HH:mm")
+    private val dateFormat = DateTimeFormatter.ofPattern("MM-dd HH:mm").withZone(ZoneId.systemDefault())
     private val targetUid = CyuIdHook.getUidByName(targetName)
     private val viewerUid = player.uid
     private val viewerName = player.name
     private val viewerIsAdmin = player.hasPermission("cyufriends.admin")
 
-    @Volatile
-    private var loading = false
+    private var cachedEntries: List<WallEntry> = emptyList()
 
     @Volatile
     private var visibleCount = 0
@@ -83,40 +82,29 @@ class WallView(
         }
     }
 
-    override fun getSource(): List<WallEntry> {
-        val ownerUid = targetUid ?: return emptyList()
-        val cached = module.manager.getWallCommentsCached(ownerUid, viewerUid)
-        if (cached.isNotEmpty()) {
-            visibleCount = cached.size
-            pendingWallCount = if (canReviewPending()) cached.count { !it.approved } else 0
-            pendingReplyCount = if (canReviewPending()) cached.sumOf { it.pendingCommentCount } else 0
-            return cached.also(::refreshState)
+    override suspend fun prepareData() {
+        val ownerUid = targetUid ?: return
+        cachedEntries = module.manager.getWallComments(ownerUid, viewerUid)
+        visibleCount = cachedEntries.size
+        pendingWallCount = if (canReviewPending()) module.manager.getPendingWallEntries(ownerUid).size else 0
+        pendingReplyCount = if (canReviewPending()) cachedEntries.sumOf { it.pendingCommentCount } else 0
+        likedWallIds = if (cachedEntries.isEmpty()) {
+            emptySet()
+        } else {
+            module.manager.getLikedWallIdsSync(viewerUid, cachedEntries.map(WallEntry::id))
         }
-        if (!loading) {
-            loading = true
-            CyuConcurrency.scheduler.runAsync(module.plugin) {
-                val loaded = runCatching { runBlocking { module.manager.getWallComments(ownerUid, viewerUid) } }.getOrDefault(emptyList())
-                val loadedPendingWalls = if (canReviewPending()) {
-                    runCatching { runBlocking { module.manager.getPendingWallEntries(ownerUid).size } }.getOrDefault(0)
-                } else {
-                    0
-                }
-                val loadedPendingReplies = if (canReviewPending()) loaded.sumOf { it.pendingCommentCount } else 0
-                CyuConcurrency.scheduler.runEntity(module.plugin, player) {
-                    visibleCount = loaded.size
-                    pendingWallCount = loadedPendingWalls
-                    pendingReplyCount = loadedPendingReplies
-                    loading = false
-                    onRender()
-                }
-            }
+        unreadWallIds = if (cachedEntries.isEmpty()) {
+            emptySet()
+        } else {
+            module.manager.unreadWallIdsSync(ownerUid, viewerUid, cachedEntries)
         }
-        return emptyList<WallEntry>().also {
-            likedWallIds = emptySet()
-            unreadWallIds = emptySet()
+        if (cachedEntries.isNotEmpty()) {
+            module.manager.markWallSeenSync(ownerUid, viewerUid, cachedEntries)
+            submittedSeenAt = cachedEntries.maxOfOrNull(WallEntry::timestamp) ?: 0L
         }
     }
 
+    override fun getSource(): List<WallEntry> = cachedEntries
     override fun layoutReplacements(symbol: Char, slot: Int): Map<String, String> {
         val ownerName = resolvedOwnerName()
         return mapOf(
@@ -137,7 +125,7 @@ class WallView(
             "%author%" to authorName,
             "%author_uid%" to element.authorUid,
             "%owner%" to ownerName,
-            "%time%" to dateFormat.format(Date(element.timestamp)),
+            "%time%" to dateFormat.format(Instant.ofEpochMilli(element.timestamp)),
             "%wall_id%" to element.id.toString(),
             "%like_count%" to element.likeCount.toString(),
             "%comment_count%" to element.commentCount.toString(),
@@ -208,14 +196,14 @@ class WallView(
     private fun canPostToWall(): Boolean {
         val ownerUid = targetUid ?: return false
         val friendModule = module.plugin.moduleManager.getModule<FriendModule>("friend")
-        if (friendModule != null && friendModule.blockManager.isBlockedStable(ownerUid, viewerUid)) {
+        if (friendModule != null && friendModule.blockManager.isBlockedCached(ownerUid, viewerUid)) {
             return false
         }
         if (viewerUid == ownerUid) {
             return module.plugin.config.getBoolean("wallPermissions.allow-self", true)
         }
         val requireFriend = module.plugin.config.getBoolean("wallPermissions.post-requires-friend", true)
-        return !requireFriend || friendModule?.friendManager?.isFriendStable(viewerUid, ownerUid) == true
+        return !requireFriend || friendModule?.friendManager?.isFriendCached(viewerUid, ownerUid) == true
     }
 
     private fun actionLoreReplacements(element: WallEntry): Map<String, String> {
@@ -250,42 +238,6 @@ class WallView(
 
     private fun conditionalLine(condition: Boolean, line: String): String {
         return if (condition) line else HIDDEN_LINE
-    }
-
-    private fun refreshLikedWallIds(entries: List<WallEntry>) {
-        likedWallIds = if (entries.isEmpty()) {
-            emptySet()
-        } else {
-            module.manager.getLikedWallIdsSync(viewerUid, entries.map(WallEntry::id))
-        }
-    }
-
-    private fun refreshUnreadWallIds(entries: List<WallEntry>) {
-        val ownerUid = targetUid ?: run {
-            unreadWallIds = emptySet()
-            return
-        }
-        unreadWallIds = if (entries.isEmpty()) {
-            emptySet()
-        } else {
-            module.manager.unreadWallIdsSync(ownerUid, viewerUid, entries)
-        }
-    }
-
-    private fun scheduleSeenMark(entries: List<WallEntry>) {
-        val ownerUid = targetUid ?: return
-        val latestSeen = entries.maxOfOrNull(WallEntry::timestamp) ?: return
-        if (latestSeen <= submittedSeenAt) return
-        submittedSeenAt = latestSeen
-        CyuConcurrency.scheduler.runAsync(module.plugin) {
-            module.manager.markWallSeenSync(ownerUid, viewerUid, entries)
-        }
-    }
-
-    private fun refreshState(entries: List<WallEntry>) {
-        refreshLikedWallIds(entries)
-        refreshUnreadWallIds(entries)
-        scheduleSeenMark(entries)
     }
 
     private fun resolvedOwnerName(): String {

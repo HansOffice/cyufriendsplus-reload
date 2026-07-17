@@ -1,6 +1,5 @@
 package org.cyuCBMclean.cyufriendsReload.modules.friend.gui
 
-import kotlinx.coroutines.runBlocking
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
@@ -17,8 +16,9 @@ import org.cyuCBMclean.cyufriendsReload.ui.layout.GuiPattern
 import org.cyuCBMclean.cyufriendsReload.ui.layout.GuiTextFormatter
 import org.cyuCBMclean.cyufriendsReload.ui.layout.ItemTemplate
 import org.cyuCBMclean.cyufriendsReload.ui.view.PaginatedView
-import java.text.SimpleDateFormat
-import java.util.Date
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 class SentRequestsView(
     player: Player,
@@ -28,20 +28,14 @@ class SentRequestsView(
     title: String = "Sent Requests"
 ) : PaginatedView<FriendRequestEntry>(player, title, pattern, itemsMap, 'S', 'P', 'N') {
 
-    private val timeFormat = SimpleDateFormat("MM-dd HH:mm")
+    private val timeFormat = DateTimeFormatter.ofPattern("MM-dd HH:mm").withZone(ZoneId.systemDefault())
     private var cachedRequests: List<FriendRequestEntry> = emptyList()
 
-    override fun getSource(): List<FriendRequestEntry> {
-        val uid = player.uid
-        var requests = module.requestManager.getSentRequestEntries(uid)
-        if (requests.isEmpty()) {
-            runBlocking {
-                requests = module.requestManager.getSentRequestsFromDbForSync(uid)
-            }
-        }
-        cachedRequests = requests
-        return requests
+    override suspend fun prepareData() {
+        cachedRequests = module.requestManager.getSentRequestsFromDbForSync(player.uid)
     }
+
+    override fun getSource(): List<FriendRequestEntry> = cachedRequests
 
     override fun viewReplacements(): Map<String, String> {
         return mapOf(
@@ -85,7 +79,7 @@ class SentRequestsView(
         return mapOf(
             "%receiver_name%" to receiverName,
             "%receiver_uid%" to entry.receiverUid,
-            "%request_time%" to timeFormat.format(Date(entry.createdAt))
+            "%request_time%" to timeFormat.format(Instant.ofEpochMilli(entry.createdAt))
         )
     }
 

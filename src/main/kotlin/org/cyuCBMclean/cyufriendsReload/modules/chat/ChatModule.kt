@@ -52,16 +52,13 @@ class ChatModule(
 
         Bukkit.getPluginManager().registerEvents(this, plugin)
         Bukkit.getPluginManager().registerEvents(ChatEventListener(plugin), plugin)
-        ChatCommands.register(plugin, this)
+
     }
 
     override fun onDisable() {
         cleanupTask?.cancel()
         cleanupTask = null
-        Bukkit.getOnlinePlayers().forEach { player ->
-            manager.clearTarget(player.uid)
-            PendingTextInput.clear(player.uniqueId)
-        }
+        PendingTextInput.clearAll()
     }
 
     override fun reloadConfig() {}

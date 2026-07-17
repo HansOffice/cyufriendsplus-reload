@@ -37,6 +37,14 @@ class BlockManager(private val repository: BlockRepository) {
         return isBlocked(user, target)
     }
 
+    fun isBlockedCached(user: String, target: String): Boolean {
+        return blockCache.getIfPresent(user)?.contains(target) ?: false
+    }
+
+    fun getBlocksCached(user: String): Set<String> {
+        return blockCache.getIfPresent(user)?.toSet() ?: emptySet()
+    }
+
     suspend fun isBlockedStored(user: String, target: String): Boolean {
         if (isBlocked(user, target)) return true
         return repository.isBlocked(user, target)

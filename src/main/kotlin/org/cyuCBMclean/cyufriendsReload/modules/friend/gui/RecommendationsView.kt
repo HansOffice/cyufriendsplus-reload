@@ -29,9 +29,11 @@ class RecommendationsView(
     private val timeFormat = SimpleDateFormat("MM-dd HH:mm")
     private var cachedRecommendations: List<FriendRecommendation> = emptyList()
 
-    override fun getSource(): List<FriendRecommendation> {
-        return module.friendManager.recommendationsStoredSync(player.uid, 56).also { cachedRecommendations = it }
+    override suspend fun prepareData() {
+        cachedRecommendations = module.friendManager.recommendationsStoredSync(player.uid, 56)
     }
+
+    override fun getSource(): List<FriendRecommendation> = cachedRecommendations
 
     override fun viewReplacements(): Map<String, String> {
         return mapOf(
@@ -100,7 +102,7 @@ class RecommendationsView(
 
     private fun replacements(entry: FriendRecommendation): Map<String, String> {
         val candidateName = CyuIdHook.getName(entry.candidateUid) ?: "未知玩家"
-        val mutualUids = module.friendManager.mutualFriendUidsStoredSync(player.uid, entry.candidateUid)
+        val mutualUids = module.friendManager.mutualFriendUidsCached(player.uid, entry.candidateUid)
         val mutualPreview = mutualUids.take(3)
             .map { CyuIdHook.getName(it) ?: it }
             .joinToString("、")

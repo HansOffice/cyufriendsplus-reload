@@ -65,14 +65,25 @@ class WallRepository(private val db: DatabaseManager) : BaseRepository {
             runCatching { update("ALTER TABLE $tableName ADD COLUMN approved INTEGER DEFAULT 1") }
             runCatching { update("ALTER TABLE $tableName ADD COLUMN pinned INTEGER DEFAULT 0") }
             runCatching { update("ALTER TABLE $commentsTable ADD COLUMN approved INTEGER DEFAULT 1") }
-            update("CREATE INDEX IF NOT EXISTS idx_${tableName}_owner_created ON $tableName (owner_uid, created_at)")
-            update("CREATE INDEX IF NOT EXISTS idx_${tableName}_author_created ON $tableName (author_uid, created_at)")
-            update("CREATE INDEX IF NOT EXISTS idx_${tableName}_owner_pinned_created ON $tableName (owner_uid, pinned, created_at)")
-            update("CREATE INDEX IF NOT EXISTS idx_${tableName}_owner_approved_created ON $tableName (owner_uid, approved, created_at)")
-            update("CREATE INDEX IF NOT EXISTS idx_${likesTable}_user ON $likesTable (user_uid)")
-            update("CREATE INDEX IF NOT EXISTS idx_${commentsTable}_wall_created ON $commentsTable (wall_id, created_at)")
-            update("CREATE INDEX IF NOT EXISTS idx_${commentsTable}_wall_approved_created ON $commentsTable (wall_id, approved, created_at)")
-            update("CREATE INDEX IF NOT EXISTS idx_${commentsTable}_author_created ON $commentsTable (author_uid, created_at)")
+            if (isSQLite) {
+                runCatching { update("CREATE INDEX IF NOT EXISTS idx_${tableName}_owner_created ON $tableName (owner_uid, created_at)") }
+                runCatching { update("CREATE INDEX IF NOT EXISTS idx_${tableName}_author_created ON $tableName (author_uid, created_at)") }
+                runCatching { update("CREATE INDEX IF NOT EXISTS idx_${tableName}_owner_pinned_created ON $tableName (owner_uid, pinned, created_at)") }
+                runCatching { update("CREATE INDEX IF NOT EXISTS idx_${tableName}_owner_approved_created ON $tableName (owner_uid, approved, created_at)") }
+                runCatching { update("CREATE INDEX IF NOT EXISTS idx_${likesTable}_user ON $likesTable (user_uid)") }
+                runCatching { update("CREATE INDEX IF NOT EXISTS idx_${commentsTable}_wall_created ON $commentsTable (wall_id, created_at)") }
+                runCatching { update("CREATE INDEX IF NOT EXISTS idx_${commentsTable}_wall_approved_created ON $commentsTable (wall_id, approved, created_at)") }
+                runCatching { update("CREATE INDEX IF NOT EXISTS idx_${commentsTable}_author_created ON $commentsTable (author_uid, created_at)") }
+            } else {
+                runCatching { update("ALTER TABLE $tableName ADD INDEX idx_${tableName}_owner_created (owner_uid, created_at)") }
+                runCatching { update("ALTER TABLE $tableName ADD INDEX idx_${tableName}_author_created (author_uid, created_at)") }
+                runCatching { update("ALTER TABLE $tableName ADD INDEX idx_${tableName}_owner_pinned_created (owner_uid, pinned, created_at)") }
+                runCatching { update("ALTER TABLE $tableName ADD INDEX idx_${tableName}_owner_approved_created (owner_uid, approved, created_at)") }
+                runCatching { update("ALTER TABLE $likesTable ADD INDEX idx_${likesTable}_user (user_uid)") }
+                runCatching { update("ALTER TABLE $commentsTable ADD INDEX idx_${commentsTable}_wall_created (wall_id, created_at)") }
+                runCatching { update("ALTER TABLE $commentsTable ADD INDEX idx_${commentsTable}_wall_approved_created (wall_id, approved, created_at)") }
+                runCatching { update("ALTER TABLE $commentsTable ADD INDEX idx_${commentsTable}_author_created (author_uid, created_at)") }
+            }
         }
     }
 
@@ -96,14 +107,25 @@ class WallRepository(private val db: DatabaseManager) : BaseRepository {
             runCatching { update("ALTER TABLE $tableName ADD COLUMN approved INTEGER DEFAULT 1") }
             runCatching { update("ALTER TABLE $tableName ADD COLUMN pinned INTEGER DEFAULT 0") }
             runCatching { update("ALTER TABLE $commentsTable ADD COLUMN approved INTEGER DEFAULT 1") }
-            update("CREATE INDEX IF NOT EXISTS idx_${tableName}_owner_created ON $tableName (owner_uid, created_at)")
-            update("CREATE INDEX IF NOT EXISTS idx_${tableName}_author_created ON $tableName (author_uid, created_at)")
-            update("CREATE INDEX IF NOT EXISTS idx_${tableName}_owner_pinned_created ON $tableName (owner_uid, pinned, created_at)")
-            update("CREATE INDEX IF NOT EXISTS idx_${tableName}_owner_approved_created ON $tableName (owner_uid, approved, created_at)")
-            update("CREATE INDEX IF NOT EXISTS idx_${likesTable}_user ON $likesTable (user_uid)")
-            update("CREATE INDEX IF NOT EXISTS idx_${commentsTable}_wall_created ON $commentsTable (wall_id, created_at)")
-            update("CREATE INDEX IF NOT EXISTS idx_${commentsTable}_wall_approved_created ON $commentsTable (wall_id, approved, created_at)")
-            update("CREATE INDEX IF NOT EXISTS idx_${commentsTable}_author_created ON $commentsTable (author_uid, created_at)")
+            if (isSQLite) {
+                runCatching { update("CREATE INDEX IF NOT EXISTS idx_${tableName}_owner_created ON $tableName (owner_uid, created_at)") }
+                runCatching { update("CREATE INDEX IF NOT EXISTS idx_${tableName}_author_created ON $tableName (author_uid, created_at)") }
+                runCatching { update("CREATE INDEX IF NOT EXISTS idx_${tableName}_owner_pinned_created ON $tableName (owner_uid, pinned, created_at)") }
+                runCatching { update("CREATE INDEX IF NOT EXISTS idx_${tableName}_owner_approved_created ON $tableName (owner_uid, approved, created_at)") }
+                runCatching { update("CREATE INDEX IF NOT EXISTS idx_${likesTable}_user ON $likesTable (user_uid)") }
+                runCatching { update("CREATE INDEX IF NOT EXISTS idx_${commentsTable}_wall_created ON $commentsTable (wall_id, created_at)") }
+                runCatching { update("CREATE INDEX IF NOT EXISTS idx_${commentsTable}_wall_approved_created ON $commentsTable (wall_id, approved, created_at)") }
+                runCatching { update("CREATE INDEX IF NOT EXISTS idx_${commentsTable}_author_created ON $commentsTable (author_uid, created_at)") }
+            } else {
+                runCatching { update("ALTER TABLE $tableName ADD INDEX idx_${tableName}_owner_created (owner_uid, created_at)") }
+                runCatching { update("ALTER TABLE $tableName ADD INDEX idx_${tableName}_author_created (author_uid, created_at)") }
+                runCatching { update("ALTER TABLE $tableName ADD INDEX idx_${tableName}_owner_pinned_created (owner_uid, pinned, created_at)") }
+                runCatching { update("ALTER TABLE $tableName ADD INDEX idx_${tableName}_owner_approved_created (owner_uid, approved, created_at)") }
+                runCatching { update("ALTER TABLE $likesTable ADD INDEX idx_${likesTable}_user (user_uid)") }
+                runCatching { update("ALTER TABLE $commentsTable ADD INDEX idx_${commentsTable}_wall_created (wall_id, created_at)") }
+                runCatching { update("ALTER TABLE $commentsTable ADD INDEX idx_${commentsTable}_wall_approved_created (wall_id, approved, created_at)") }
+                runCatching { update("ALTER TABLE $commentsTable ADD INDEX idx_${commentsTable}_author_created (author_uid, created_at)") }
+            }
         }
     }
 

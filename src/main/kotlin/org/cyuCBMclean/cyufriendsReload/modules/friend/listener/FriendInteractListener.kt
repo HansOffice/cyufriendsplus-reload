@@ -14,6 +14,7 @@ import org.cyuCBMclean.cyufriendsReload.extension.uid
 import org.cyuCBMclean.cyufriendsReload.modules.friend.FriendModule
 import org.cyuCBMclean.cyufriendsReload.modules.friend.gui.AddFriendView
 import org.cyuCBMclean.cyufriendsReload.modules.friend.gui.FriendProfileView
+import org.cyuCBMclean.cyufriendsReload.integration.compat.NpcCompat
 import org.cyuCBMclean.cyufriendsReload.ui.layout.GuiLoader
 import org.cyuCBMclean.cyufriendsReload.ui.view.ViewTitles
 import java.util.UUID
@@ -31,6 +32,8 @@ class FriendInteractListener(
         if (!enabled()) return
         val target = event.rightClicked as? Player ?: return
         val player = event.player
+        if (NpcCompat.isNpc(target)) return
+
 
         if (!player.isSneaking) return
         if (event.hand != EquipmentSlot.HAND) return

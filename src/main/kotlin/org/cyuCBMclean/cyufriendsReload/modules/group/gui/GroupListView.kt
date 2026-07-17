@@ -54,6 +54,6 @@ class GroupListView(
     }
 
     private fun isPinned(groupName: String): Boolean {
-        return module.friendModule?.preferencesManager?.isGroupPinnedStoredSync(player.uid, groupName) == true
+        return module.friendModule?.preferencesManager?.isGroupPinnedCached(player.uid, groupName) == true
     }
 }

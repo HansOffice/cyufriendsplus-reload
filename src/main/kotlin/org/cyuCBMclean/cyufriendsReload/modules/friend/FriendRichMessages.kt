@@ -193,7 +193,7 @@ object FriendRichMessages {
                 clickable(
                     "messages-json-button-read",
                     "messages-json-hover-read",
-                    "/messages read ${summary.partnerUid}",
+                    "/friend messages read ${summary.partnerUid}",
                     placeholders
                 )
             )

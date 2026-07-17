@@ -30,13 +30,15 @@ class LanguageEngine(private val plugin: Plugin) {
             plugin.saveResource("messages.yml", false)
         }
 
-        val yaml = YamlConfiguration.loadConfiguration(file)
-        messageCache.clear()
-        missingKeysWarned.clear()
+        val yaml = YamlConfiguration().apply { load(file) }
+        val nextMessages = yaml.getKeys(true)
+            .filter { yaml.isString(it) }
+            .associateWith { yaml.getString(it)!! }
+        require(nextMessages.isNotEmpty()) { "messages.yml 没有可用语言键" }
 
-        yaml.getKeys(true).filter { yaml.isString(it) }.forEach { key ->
-            messageCache[key] = yaml.getString(key)!!
-        }
+        messageCache.clear()
+        messageCache.putAll(nextMessages)
+        missingKeysWarned.clear()
     }
 
     fun send(sender: CommandSender, key: String, vararg placeholders: TagResolver) {

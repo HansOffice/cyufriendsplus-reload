@@ -38,6 +38,28 @@ class FriendPreferencesManager(
         groupCache.invalidate(uid)
     }
 
+    fun snapshotCached(uid: String): FriendPreferences {
+        return cache.getIfPresent(uid) ?: FriendPreferences(uid)
+    }
+
+    fun snapshotPersonalCached(ownerUid: String, friendUid: String): FriendPersonalPreferences {
+        return personalCache.getIfPresent(ownerUid)?.get(friendUid)
+            ?: FriendPersonalPreferences(ownerUid, friendUid)
+    }
+
+    fun snapshotGroupCached(ownerUid: String, groupName: String): FriendGroupPreferences {
+        return groupCache.getIfPresent(ownerUid)?.get(normalizeGroup(groupName))
+            ?: FriendGroupPreferences(ownerUid, normalizeGroup(groupName))
+    }
+
+    fun isGroupPinnedCached(ownerUid: String, groupName: String): Boolean {
+        return snapshotGroupCached(ownerUid, groupName).pinned
+    }
+
+    fun lastOnlineCached(uid: String): Long {
+        return cache.getIfPresent(uid)?.lastOnline ?: 0L
+    }
+
     fun canReceiveTeleportCached(uid: String): Boolean {
         return teleportModeCached(uid) != FriendTeleportMode.DENY
     }

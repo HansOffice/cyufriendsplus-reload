@@ -2,6 +2,7 @@ package org.cyuCBMclean.cyufriendsReload
 
 import org.bukkit.Bukkit
 import org.bukkit.event.HandlerList
+import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.plugin.ServicePriority
 import org.cyuCBMclean.cyufriendsReload.api.service.CyuFriendsService
@@ -19,6 +20,7 @@ import org.cyuCBMclean.cyufriendsReload.integration.listener.CyuIdChangeListener
 import org.cyuCBMclean.cyufriendsReload.integration.placeholder.CyuFriendsPlaceholderExpansion
 import org.cyuCBMclean.cyufriendsReload.integration.placeholder.RelationalFriendsPlaceholderExpansion
 import org.cyuCBMclean.cyufriendsReload.modules.chat.ChatModule
+import org.cyuCBMclean.cyufriendsReload.modules.friend.FriendCommands
 import org.cyuCBMclean.cyufriendsReload.modules.friend.FriendModule
 import org.cyuCBMclean.cyufriendsReload.modules.group.GroupModule
 import org.cyuCBMclean.cyufriendsReload.modules.proxy.ProxyModule
@@ -141,6 +143,7 @@ class CyufriendsReload : JavaPlugin() {
     }
 
     fun reloadRuntime() {
+        validateReloadResources()
         shutdownRuntime()
         try {
             reloadConfig()
@@ -157,6 +160,33 @@ class CyufriendsReload : JavaPlugin() {
             shutdownRuntime()
             server.pluginManager.disablePlugin(this)
             throw exception
+        }
+    }
+
+    private fun validateReloadResources() {
+        val configFile = File(dataFolder, "config.yml")
+        val candidate = YamlConfiguration().apply { load(configFile) }
+        require(candidate.getStringList("joinChat.lines").all { it.isNotBlank() }) {
+            "config.yml 的 joinChat.lines 含有空行"
+        }
+
+        listOf("messages.yml", "sounds.yml").forEach { fileName ->
+            val file = File(dataFolder, fileName)
+            require(file.exists()) { "缺少 $fileName" }
+            YamlConfiguration().apply { load(file) }
+        }
+
+        val guiFolder = File(dataFolder, "gui")
+        bundledGuiFiles.filterNot(bundledGuiGuideFiles::contains).forEach { fileName ->
+            val file = File(guiFolder, fileName)
+            require(file.exists()) { "缺少 GUI 模板 gui/$fileName" }
+            val yaml = YamlConfiguration().apply { load(file) }
+            val layout = yaml.getStringList("layout")
+            require(layout.isNotEmpty()) { "gui/$fileName 缺少 layout" }
+            require(!yaml.contains("rows")) { "gui/$fileName 已使用 layout，不允许再配置 rows" }
+            require(layout.size <= 6 && layout.all { it.length == 9 }) {
+                "gui/$fileName 的 layout 必须为 1-6 行且每行 9 格"
+            }
         }
     }
 
@@ -248,6 +278,9 @@ class CyufriendsReload : JavaPlugin() {
         CyuIdHook.install(this)
         registerModules()
         moduleManager.enableAll()
+        moduleManager.getModule<FriendModule>("friend")?.let { friendModule ->
+            FriendCommands.register(this, friendModule, moduleManager.getModule("chat"))
+        }
         DebugLogger.debug(0, "模块启动完成：${enabledModuleSummary()}")
 
         server.pluginManager.registerEvents(GuiListener(), this)

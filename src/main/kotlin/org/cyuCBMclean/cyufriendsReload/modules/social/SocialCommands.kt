@@ -21,12 +21,13 @@ import org.cyuCBMclean.cyufriendsReload.modules.social.gui.WallPendingView
 import org.cyuCBMclean.cyufriendsReload.modules.social.gui.WallView
 import org.cyuCBMclean.cyufriendsReload.ui.layout.GuiLoader
 import org.cyuCBMclean.cyufriendsReload.ui.view.ViewTitles
-import java.text.SimpleDateFormat
-import java.util.Date
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 object SocialCommands {
 
-    private val commentTimeFormat = SimpleDateFormat("MM-dd HH:mm")
+    private val commentTimeFormat = DateTimeFormatter.ofPattern("MM-dd HH:mm").withZone(ZoneId.systemDefault())
 
     fun register(plugin: CyufriendsReload, module: SocialModule) {
         CommandDispatcher(plugin, "status") {
@@ -277,7 +278,7 @@ object SocialCommands {
                 player.sendMessage("§b[CyuFriends] §f动态评论 §7#${statusId}")
                 comments.asReversed().forEach { comment ->
                     val author = CyuIdHook.getName(comment.authorUid) ?: comment.authorUid
-                    val time = commentTimeFormat.format(Date(comment.timestamp))
+                    val time = commentTimeFormat.format(Instant.ofEpochMilli(comment.timestamp))
                     player.sendMessage("§7${comment.id}. §b$author §7[$time] §f${comment.content}")
                 }
             }
@@ -553,7 +554,7 @@ object SocialCommands {
                     if (chatMode) {
                         FriendRichMessages.sendPendingWallEntry(player, entry, author)
                     } else {
-                        val time = commentTimeFormat.format(Date(entry.timestamp))
+                        val time = commentTimeFormat.format(Instant.ofEpochMilli(entry.timestamp))
                         player.sendMessage("§7#${entry.id} §b$author §7[$time] §f${entry.visibility.displayName} §8| §f${entry.content}")
                     }
                 }
@@ -866,7 +867,7 @@ object SocialCommands {
                 }
                 replies.asReversed().forEach { reply ->
                     val author = CyuIdHook.getName(reply.authorUid) ?: reply.authorUid
-                    val time = commentTimeFormat.format(Date(reply.timestamp))
+                    val time = commentTimeFormat.format(Instant.ofEpochMilli(reply.timestamp))
                     val state = if (reply.approved) "§a已通过" else "§6待审核"
                     player.sendMessage("§7${reply.id}. §b$author §7[$time] $state §8| §f${reply.content}")
                 }
@@ -933,7 +934,7 @@ object SocialCommands {
                             author
                         )
                     } else {
-                        val time = commentTimeFormat.format(Date(reply.timestamp))
+                        val time = commentTimeFormat.format(Instant.ofEpochMilli(reply.timestamp))
                         player.sendMessage("§7${reply.id}. §b$author §7[$time] §8| §f${reply.content}")
                     }
                 }

@@ -1,6 +1,7 @@
 package org.cyuCBMclean.cyufriendsReload.modules.proxy
 
 import java.nio.charset.StandardCharsets
+import java.security.MessageDigest
 import java.util.Base64
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
@@ -16,6 +17,8 @@ class ProxySigner(secret: String) {
     }
 
     fun verify(canonical: String, signature: String): Boolean {
-        return sign(canonical) == signature
+        val expected = sign(canonical).toByteArray(StandardCharsets.UTF_8)
+        val actual = signature.toByteArray(StandardCharsets.UTF_8)
+        return MessageDigest.isEqual(expected, actual)
     }
 }
