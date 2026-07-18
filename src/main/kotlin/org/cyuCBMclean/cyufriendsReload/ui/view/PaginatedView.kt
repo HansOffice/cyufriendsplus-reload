@@ -9,9 +9,6 @@ import org.cyuCBMclean.cyufriendsReload.ui.layout.GuiPattern
 import org.cyuCBMclean.cyufriendsReload.ui.layout.ItemTemplate
 import kotlin.math.ceil
 
-/**
- * 翻页菜单的公共底座，列表页只关心数据和点击
- */
 abstract class PaginatedView<T>(
     player: Player,
     title: String,

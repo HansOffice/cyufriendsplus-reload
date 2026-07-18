@@ -18,9 +18,6 @@ interface CyuScheduler {
     fun cancelAll(plugin: Plugin)
 }
 
-/**
- * 统一调度入口，Paper 和 Folia 的差异别往业务里散
- */
 object CyuConcurrency {
     val isFolia: Boolean = PlatformSchedulerFactory.isFolia
 

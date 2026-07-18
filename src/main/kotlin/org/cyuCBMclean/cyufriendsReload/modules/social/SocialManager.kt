@@ -47,9 +47,6 @@ enum class SocialModerationResult {
     ALREADY_APPROVED
 }
 
-/**
- * 动态和留言墙的业务入口，GUI 和命令都别直接碰仓库
- */
 class SocialManager(
     private val plugin: CyufriendsReload,
     private val statusRepo: StatusRepository,

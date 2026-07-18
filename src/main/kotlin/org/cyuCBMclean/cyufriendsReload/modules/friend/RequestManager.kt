@@ -27,9 +27,6 @@ enum class FriendRequestSubmitResult {
     DAILY_LIMIT
 }
 
-/**
- * 好友申请单独管，别和正式好友关系混在一起
- */
 class RequestManager(private val repository: RequestRepository) {
 
     private val incomingRequests = Caffeine.newBuilder()

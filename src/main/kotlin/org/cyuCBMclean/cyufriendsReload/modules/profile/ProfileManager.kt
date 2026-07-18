@@ -31,9 +31,6 @@ data class BirthdayReminderEntry(
     val daysAhead: Int
 )
 
-/**
- * 玩家资料缓存，签名、生日和隐私设置都从这里取
- */
 class ProfileManager(
     private val plugin: CyufriendsReload,
     private val repository: ProfileRepository

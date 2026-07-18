@@ -19,9 +19,6 @@ data class PreparedChatMessage(
     val content: String? = null
 )
 
-/**
- * 私聊和离线留言共用这里，在线只是投递方式不同
- */
 class ChatManager(
     private val plugin: CyufriendsReload,
     private val repository: ChatRepository

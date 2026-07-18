@@ -5,9 +5,6 @@ import org.bukkit.plugin.Plugin
 import org.cyuCBMclean.cyufriendsReload.core.debug.DebugLogger
 import java.io.File
 
-/**
- * GUI 模板加载器，菜单长什么样交给 yml 决定
- */
 object GuiLoader {
     fun load(plugin: Plugin, fileName: String): GuiDefinition? {
         val file = File(plugin.dataFolder, "gui/$fileName")

@@ -12,9 +12,6 @@ import org.bukkit.plugin.Plugin
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 
-/**
- * UID 查询入口，优先走 cyuid-reload，没有结果再退回在线缓存和 UUID
- */
 object CyuIdHook {
 
     private val knownNamesByUid = ConcurrentHashMap<String, String>()

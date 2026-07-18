@@ -18,9 +18,6 @@ data class FriendTagSummary(
     val primaryCount: Int
 )
 
-/**
- * 好友关系的缓存层，数据库只在缓存缺口和写入时碰
- */
 class FriendManager(private val repository: FriendRepository) {
 
     private val friendCache = Caffeine.newBuilder()

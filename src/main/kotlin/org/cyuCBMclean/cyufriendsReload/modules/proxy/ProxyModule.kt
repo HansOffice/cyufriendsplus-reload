@@ -47,9 +47,6 @@ private data class PendingTeleportPrecheck(
     val timeoutTask: CyuTask
 )
 
-/**
- * 跨服后端模块先留着，1.0 默认不作为发布功能
- */
 class ProxyModule(
     val plugin: CyufriendsReload
 ) : CyuModule, Listener, PluginMessageListener {

@@ -15,9 +15,6 @@ import org.cyuCBMclean.cyufriendsReload.ui.view.PaginatedView
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.random.Random
 
-/**
- * 这里只做点击分发，真正动作交给各自的 Action 处理
- */
 object ActionRegistry {
 
     private val handlers = ConcurrentHashMap<String, (Player, String) -> Unit>()

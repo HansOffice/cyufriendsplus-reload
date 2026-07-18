@@ -58,9 +58,6 @@ data class LegacyMigrationResult(
         get() = scopes.sumOf(LegacyMigrationScopeResult::skipped)
 }
 
-/**
- * 旧版数据迁移用完就该退场，别让新逻辑依赖它
- */
 class LegacyDataMigrationAssistant(
     private val plugin: CyufriendsReload,
     private val db: DatabaseManager

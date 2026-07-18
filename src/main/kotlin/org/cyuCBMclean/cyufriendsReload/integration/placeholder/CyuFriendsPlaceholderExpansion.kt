@@ -24,9 +24,6 @@ import java.time.format.DateTimeFormatter
 import java.util.UUID
 import java.util.concurrent.TimeUnit
 
-/**
- * PlaceholderAPI 的主变量入口，别在这里做太重的实时计算
- */
 class CyuFriendsPlaceholderExpansion(
     private val plugin: CyufriendsReload,
     private val placeholderId: String = "cyufriends"

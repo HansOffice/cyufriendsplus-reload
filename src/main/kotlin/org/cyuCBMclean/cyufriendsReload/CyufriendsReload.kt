@@ -259,7 +259,6 @@ class CyufriendsReload : JavaPlugin() {
         val targetBytes = target.takeIf(File::exists)?.readBytes()
         val snapshotBytes = snapshot.takeIf(File::exists)?.readBytes()
 
-        // 玩家改过的 GUI 不覆盖，只更新还停在内置版本的文件
         if (targetBytes == null || (snapshotBytes != null && targetBytes.contentEquals(snapshotBytes))) {
             Files.write(target.toPath(), bundled)
         }

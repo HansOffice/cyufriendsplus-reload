@@ -19,9 +19,6 @@ data class TeleportRequest(
     }
 }
 
-/**
- * 传送请求只活一小段时间，过期就清掉
- */
 class TeleportManager(
     private val plugin: CyufriendsReload
 ) {

@@ -6,9 +6,6 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.logging.Level
 
-/**
- * 模块启动顺序在这里排，依赖没起来的模块先跳过
- */
 class ModuleManager(private val plugin: Plugin) {
 
     private val modules = CopyOnWriteArrayList<CyuModule>()

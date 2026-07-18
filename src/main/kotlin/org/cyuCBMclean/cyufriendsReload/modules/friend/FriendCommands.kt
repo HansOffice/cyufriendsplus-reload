@@ -3125,7 +3125,6 @@ object FriendCommands {
 
         val separatorIndex = cleanArgs.indexOf("--")
         if (separatorIndex >= 0) {
-            // 分组名可以带空格，GUI 批量移动也靠这个分隔
             val source = cleanArgs.take(separatorIndex).joinToString(" ").trim()
             if (source.isBlank()) return null
             val target = cleanArgs.drop(separatorIndex + 1).joinToString(" ").trim().takeIf(String::isNotBlank)
