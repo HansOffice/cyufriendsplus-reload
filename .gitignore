@@ -9,3 +9,4 @@ dependency-reduced-pom.xml
 # PlaceholderAPI resolves from Maven now; cyuid-reload is still a local companion jar.
 libs/*.jar
 !libs/cyuid-reload-1.0.3.jar
+!libs/cyuid-reload-paper-1.0.4.jar
