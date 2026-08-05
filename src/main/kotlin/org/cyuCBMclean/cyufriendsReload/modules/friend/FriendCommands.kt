@@ -2156,7 +2156,7 @@ object FriendCommands {
                         return@executes
                     }
 
-                    openFriendProfile(plugin, player, module, targetName)
+                    openFriendProfile(plugin, player, module, targetUid, targetName)
                 }
 
                 tabComplete {
@@ -2264,7 +2264,7 @@ object FriendCommands {
                         return@executes
                     }
 
-                    openFriendProfile(plugin, player, module, targetName, detailed = true)
+                    openFriendProfile(plugin, player, module, targetUid, targetName, detailed = true)
                 }
 
                 tabComplete {
@@ -2408,7 +2408,7 @@ object FriendCommands {
                             "%uid%" to targetUid
                         )
                     ) { pattern, items, title ->
-                        FriendProfileView(player, pattern, items, module, displayName, title).open()
+                        FriendProfileView(player, pattern, items, module, targetUid, displayName, title).open()
                     }
                 }
 
@@ -3413,13 +3413,14 @@ object FriendCommands {
         plugin: CyufriendsReload,
         player: Player,
         module: FriendModule,
+        targetUid: String,
         targetName: String,
         detailed: Boolean = false
     ) {
         val guiFile = if (detailed) "friend_profile_details.yml" else "friend_profile.yml"
         val title = if (detailed) ViewTitles.friendProfileDetails(targetName) else ViewTitles.friendProfile(targetName)
         openGui(player, plugin, guiFile, title, targetTitleReplacements(targetName)) { pattern, items, viewTitle ->
-            FriendProfileView(player, pattern, items, module, targetName, viewTitle).open()
+            FriendProfileView(player, pattern, items, module, targetUid, targetName, viewTitle).open()
         }
     }
 

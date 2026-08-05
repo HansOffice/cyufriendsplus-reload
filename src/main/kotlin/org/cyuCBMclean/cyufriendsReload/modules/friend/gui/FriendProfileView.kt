@@ -27,31 +27,29 @@ class FriendProfileView(
     pattern: GuiPattern,
     itemsMap: Map<Char, ItemTemplate>,
     private val module: FriendModule,
+    private val friendUid: String,
     private val friendName: String,
     title: String = "Friend Profile"
 ) : CyuView(player, title, pattern, itemsMap) {
 
-    private val dynamicTemplates = mutableMapOf<Int, ItemTemplate>()
+    private val dynamicSlots = mutableMapOf<Int, LayoutBinding>()
     private val timeFormat = SimpleDateFormat("yyyy-MM-dd HH:mm")
 
     override fun onRender() {
-        dynamicTemplates.clear()
-        val targetUid = CyuIdHook.getUidByName(friendName) ?: return
-        val replacements = replacements(targetUid)
-        val slots = layoutActions.keys.toList()
+        bindDynamicSlots()
+        rerenderLayoutBindings()
+        val replacements = replacements(friendUid)
 
-        slots.forEach { slot ->
-            val binding = layoutActions.remove(slot) ?: return@forEach
+        dynamicSlots.forEach { (slot, binding) ->
             val template = binding.template
             if (!isTemplateAvailable(template)) {
                 setItem(slot, null)
                 return@forEach
             }
 
-            dynamicTemplates[slot] = template
             val item = template.render(player, replacements).clone()
             val result = if (!template.hasHeadSource() && isPlayerHead(item)) {
-                GuiHeads.applyForUid(item, targetUid, player)
+                GuiHeads.applyForUid(item, friendUid, player)
             } else {
                 item
             }
@@ -60,10 +58,10 @@ class FriendProfileView(
     }
 
     override fun onDynamicClick(slot: Int, clickType: CyuClickType) {
-        val template = dynamicTemplates[slot] ?: return
-        val nodes = template.actions[clickType] ?: template.actions[CyuClickType.ALL] ?: return
-        val targetUid = CyuIdHook.getUidByName(friendName) ?: return
-        val replacements = replacements(targetUid)
+        val binding = dynamicSlots[slot] ?: return
+        if (!isTemplateAvailable(binding.template)) return
+        val nodes = binding.template.actions[clickType] ?: binding.template.actions[CyuClickType.ALL] ?: return
+        val replacements = replacements(friendUid)
         ActionRegistry.execute(
             player,
             nodes.map { node ->
@@ -74,6 +72,14 @@ class FriendProfileView(
                 )
             }
         )
+    }
+
+    private fun bindDynamicSlots() {
+        if (dynamicSlots.isNotEmpty()) return
+        layoutActions.toMap().forEach { (slot, binding) ->
+            dynamicSlots[slot] = binding
+            layoutActions.remove(slot)
+        }
     }
 
     private fun replacements(targetUid: String): Map<String, String> {

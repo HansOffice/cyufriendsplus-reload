@@ -56,13 +56,13 @@ class FriendInteractListener(
         if (playerUid == targetUid) return
 
         if (module.friendManager.isFriend(playerUid, targetUid)) {
-            openFriendProfile(player, target.name)
+            openFriendProfile(player, targetUid, target.name)
         } else {
             openAddFriend(player, target.name)
         }
     }
 
-    private fun openFriendProfile(player: Player, targetName: String) {
+    private fun openFriendProfile(player: Player, targetUid: String, targetName: String) {
         val guiData = GuiLoader.load(plugin, "friend_profile.yml") ?: run {
             player.sendLang("gui-open-failed")
             return
@@ -72,7 +72,7 @@ class FriendInteractListener(
             ViewTitles.friendProfile(targetName),
             mapOf("%target_name%" to targetName, "%friend_name%" to targetName, "%raw_name%" to targetName)
         )
-        FriendProfileView(player, guiData.pattern, guiData.items, module, targetName, title).open()
+        FriendProfileView(player, guiData.pattern, guiData.items, module, targetUid, targetName, title).open()
     }
 
     private fun openAddFriend(player: Player, targetName: String) {

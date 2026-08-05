@@ -11,6 +11,7 @@ import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.plugin.messaging.PluginMessageListener
 import org.cyuCBMclean.cyufriendsReload.CyufriendsReload
+import org.cyuCBMclean.cyufriendsReload.core.config.Settings
 import org.cyuCBMclean.cyufriendsReload.core.debug.DebugLogger
 import org.cyuCBMclean.cyufriendsReload.core.module.CyuModule
 import org.cyuCBMclean.cyufriendsReload.core.scheduler.CyuConcurrency
@@ -27,6 +28,7 @@ import org.cyuCBMclean.cyufriendsReload.modules.friend.RelationshipTimelineType
 import org.cyuCBMclean.cyufriendsReload.modules.profile.ProfileModule
 import org.cyuCBMclean.cyufriendsReload.modules.social.SocialInteractionNoticeType
 import org.cyuCBMclean.cyufriendsReload.modules.social.SocialModule
+import org.cyuCBMclean.cyuidReload.CyuidReload
 import java.util.concurrent.ConcurrentHashMap
 
 data class PendingDirectMessage(
@@ -83,7 +85,13 @@ class ProxyModule(
             "Proxy 模块初始化: enabled=${settings!!.enabled}, server=${settings!!.serverId}, channel=${settings!!.channel}"
         }
         Bukkit.getPluginManager().registerEvents(this, plugin)
-        if (settings!!.enabled && settings!!.hasSecureSecret()) {
+        if (settings!!.enabled && !Settings.databaseType.equals("mysql", ignoreCase = true)) {
+            plugin.logger.severe("cyufriends-reload proxy 已阻止启动：跨服模式要求 database.type 使用 MySQL 并由所有后端共用。")
+            settings = settings!!.copy(enabled = false)
+        } else if (settings!!.enabled && !cyuIdStorageIsCompatible()) {
+            plugin.logger.severe("cyufriends-reload proxy 已阻止启动：已安装的 cyuid-reload 必须使用共享 MySQL 存储。")
+            settings = settings!!.copy(enabled = false)
+        } else if (settings!!.enabled && settings!!.hasSecureSecret()) {
             registerChannels(settings!!.channel)
             publishLocalPresence()
             startPresenceRefresh(settings!!)
@@ -91,6 +99,11 @@ class ProxyModule(
             plugin.logger.severe("cyufriends-reload proxy 已阻止启动：proxy.secret 仍为默认值，请先修改配置。")
             settings = settings!!.copy(enabled = false)
         }
+    }
+
+    private fun cyuIdStorageIsCompatible(): Boolean {
+        if (!Bukkit.getPluginManager().isPluginEnabled("cyuid-reload")) return true
+        return runCatching { CyuidReload.Companion.api.usesSharedStorage() }.getOrDefault(false)
     }
 
     override fun onDisable() {

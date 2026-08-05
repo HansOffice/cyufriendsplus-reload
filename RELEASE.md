@@ -6,15 +6,16 @@
 
 ```bash
 mvn -DskipTests -Ppaper package
+mvn -DskipTests -Ppaper,full package
 mvn -DskipTests -Pfolia package
 ```
 
 确认这些文件存在：
 
-- `target/cyufriends-reload-paper-1.1.2.jar`
-- `target/cyufriends-reload-paper-1.1.2-legacy-all.jar`
-- `target/cyufriends-reload-paper-1.1.2-api.jar`
-- `target/cyufriends-reload-folia-1.1.2.jar`
+- `target/cyufriends-reload-paper-1.1.3.jar`
+- `target/cyufriends-reload-paper-1.1.3-legacy-all.jar`
+- `target/cyufriends-reload-paper-1.1.3-api.jar`
+- `target/cyufriends-reload-folia-1.1.3.jar`
 
 确认 `src/main/resources/plugin.yml` 里的版本来自 `${project.version}`，实际版本以 `pom.xml` 为准
 
@@ -23,7 +24,7 @@ mvn -DskipTests -Pfolia package
 发布新版本时只改 `pom.xml` 的 `<version>`：
 
 ```xml
-<version>1.1.2</version>
+<version>1.1.3</version>
 ```
 
 然后同步更新：
@@ -34,8 +35,8 @@ mvn -DskipTests -Pfolia package
 ## 打 tag
 
 ```bash
-git tag v1.1.2
-git push origin v1.1.2
+git tag v1.1.3
+git push origin v1.1.3
 ```
 
 GitHub Actions 会在 tag 推送后重新构建 jar，并上传 Actions artifact：
@@ -44,16 +45,9 @@ GitHub Actions 会在 tag 推送后重新构建 jar，并上传 Actions artifact
 - API jar artifact
 - Maven package 到 GitHub Packages
 
-GitHub Actions 不会自动创建 Release。公开发布时，在确认构建通过后手动创建 `v1.1.2` Release，并上传 Paper、Folia、API 和 `paper-legacy-all` 四个服务端构建包。配套代理端为私有插件，不上传到本仓库或本仓库的 Release
+GitHub Actions 会在 tag 推送后创建对应 Release，并上传 Paper、Folia、API 和 `paper-legacy-all` 四个服务端构建包。Paper 完整包使用 `-Ppaper,full` 构建，配套代理端为私有插件，不上传到本仓库或本仓库的 Release
 
-如果需要重新发布一个还没有公开过的首发 tag，可以移动 tag 后强制推送：
-
-```bash
-git tag -f v1.1.2
-git push origin v1.1.2 --force
-```
-
-公开发布后不要强改已经公开的 tag，补丁请发新版本
+已经公开的 tag 不移动；修复请发新的补丁版本
 
 ## 回滚
 
@@ -64,7 +58,7 @@ git push origin v1.1.2 --force
 3. 代码侧从对应 tag 新建修复分支
 
 ```bash
-git checkout -b fix/v1.1.2-hotfix v1.1.2
+git checkout -b fix/v1.1.3-hotfix v1.1.3
 ```
 
 修复完成后发布新的补丁版本，不建议强改已经公开的 tag

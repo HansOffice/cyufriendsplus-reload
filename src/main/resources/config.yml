@@ -274,6 +274,8 @@ modules:
 # 4. 代理端安装对应 proxy 插件
 # 5. 所有服使用同一套 channel / protocol-version / secret
 # 6. 每台后端的 server-id 唯一
+# 7. 所有后端的 cyufriends-reload database.type 必须为 MySQL 并共用同一数据库
+# 8. 如安装 cyuid-reload，它也必须使用 MySQL 并让所有后端共用同一数据库
 proxy:
   enabled: false
   server-id: "survival-1"   # 当前后端服唯一 ID
