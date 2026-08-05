@@ -49,13 +49,13 @@ Reload 不是旧版换名。它把原本堆在一起的好友系统拆成了更�
 
 稳定版会放在 GitHub Releases 中。普通服主下载插件本体即可：
 
-- Paper / Purpur：`cyufriends-reload-paper-1.1.3.jar`
-- Folia：`cyufriends-reload-folia-1.1.3.jar`
-- 需要完整依赖包：`cyufriends-reload-paper-1.1.3-legacy-all.jar`
+- Paper / Purpur：`cyufriends-reload-paper-1.1.4.jar`
+- Folia：`cyufriends-reload-folia-1.1.4.jar`
+- 需要完整依赖包：`cyufriends-reload-paper-1.1.4-legacy-all.jar`
 
 附属插件开发者可以下载 API jar，或通过 GitHub Packages 引入：
 
-- `cyufriends-reload-paper-1.1.3-api.jar`
+- `cyufriends-reload-paper-1.1.4-api.jar`
 
 ## GitHub Packages
 
@@ -74,7 +74,7 @@ API 依赖：
 <dependency>
     <groupId>org.cyuCBMclean</groupId>
     <artifactId>cyufriends-reload</artifactId>
-    <version>1.1.3</version>
+    <version>1.1.4</version>
     <classifier>api</classifier>
 </dependency>
 ```
@@ -144,10 +144,10 @@ mvn -DskipTests -Pfolia package
 
 构建完成后：
 
-- `target/cyufriends-reload-paper-1.1.3.jar` 是 Paper / Purpur 插件本体
-- `target/cyufriends-reload-folia-1.1.3.jar` 是 Folia 插件本体
-- `target/cyufriends-reload-paper-1.1.3-legacy-all.jar` 是完整依赖附加包
-- `target/cyufriends-reload-paper-1.1.3-api.jar` 是附属插件编译用 API
+- `target/cyufriends-reload-paper-1.1.4.jar` 是 Paper / Purpur 插件本体
+- `target/cyufriends-reload-folia-1.1.4.jar` 是 Folia 插件本体
+- `target/cyufriends-reload-paper-1.1.4-legacy-all.jar` 是完整依赖附加包
+- `target/cyufriends-reload-paper-1.1.4-api.jar` 是附属插件编译用 API
 
 其中 `-Ppaper` 生成轻量 Paper 包，`-Ppaper,full` 额外生成完整依赖附加包。Folia 只生成轻量包
 
@@ -161,7 +161,7 @@ mvn -DskipTests -Pfolia package
 
 ## 跨服说明
 
-CyuFriends Reload 1.1.3 默认安装即可用于单服。需要跨服同步时，请另行安装配套私有代理端插件，并在 `config.yml` 中开启 `modules.proxy` 与 `proxy.enabled`。所有后端的好友本体必须共用 MySQL；如安装 CyuID，它也必须共用 MySQL。否则插件会拒绝启用代理模块。代理端源码和发布包不包含在本开源仓库及本仓库的 GitHub Release 中
+CyuFriends Reload 1.1.4 默认安装即可用于单服。需要跨服同步时，请另行安装配套私有代理端插件，并在 `config.yml` 中开启 `modules.proxy` 与 `proxy.enabled`。所有后端的好友本体必须共用 MySQL；如安装 CyuID，它也必须共用 MySQL。否则插件会拒绝启用代理模块。代理端源码和发布包不包含在本开源仓库及本仓库的 GitHub Release 中
 
 ## 开源协作
 
