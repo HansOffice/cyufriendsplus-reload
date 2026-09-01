@@ -49,13 +49,13 @@ Reload 不是旧版换名。它把原本堆在一起的好友系统拆成了更�
 
 稳定版会放在 GitHub Releases 中。普通服主下载插件本体即可：
 
-- Paper / Purpur：`cyufriends-reload-paper-1.1.4.jar`
-- Folia：`cyufriends-reload-folia-1.1.4.jar`
-- 需要完整依赖包：`cyufriends-reload-paper-1.1.4-legacy-all.jar`
+- Paper / Purpur：`cyufriends-reload-paper-1.1.5.jar`
+- Folia：`cyufriends-reload-folia-1.1.5.jar`
+- 需要完整依赖包：`cyufriends-reload-paper-1.1.5-legacy-all.jar`
 
 附属插件开发者可以下载 API jar，或通过 GitHub Packages 引入：
 
-- `cyufriends-reload-paper-1.1.4-api.jar`
+- `cyufriends-reload-paper-1.1.5-api.jar`
 
 ## GitHub Packages
 

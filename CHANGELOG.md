@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1.5
+
+- 移除冗余的 `adventure-text-serializer-bungeecord` 依赖，富文本消息改由 `BukkitAudiences` 直接渲染发送
+- 解决高版本 Folia/Paper 环境下因 Adventure 版本差异导致的序列化器类初始化异常（`NoSuchMethodError` 与 `NoClassDefFoundError`）
+
 ## 1.1.4
 
 - 修订版本号，功能与 1.1.3 保持一致

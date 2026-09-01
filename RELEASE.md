@@ -12,10 +12,10 @@ mvn -DskipTests -Pfolia package
 
 确认这些文件存在：
 
-- `target/cyufriends-reload-paper-1.1.4.jar`
-- `target/cyufriends-reload-paper-1.1.4-legacy-all.jar`
-- `target/cyufriends-reload-paper-1.1.4-api.jar`
-- `target/cyufriends-reload-folia-1.1.4.jar`
+- `target/cyufriends-reload-paper-1.1.5.jar`
+- `target/cyufriends-reload-paper-1.1.5-legacy-all.jar`
+- `target/cyufriends-reload-paper-1.1.5-api.jar`
+- `target/cyufriends-reload-folia-1.1.5.jar`
 
 确认 `src/main/resources/plugin.yml` 里的版本来自 `${project.version}`，实际版本以 `pom.xml` 为准
 
@@ -24,7 +24,7 @@ mvn -DskipTests -Pfolia package
 发布新版本时只改 `pom.xml` 的 `<version>`：
 
 ```xml
-<version>1.1.4</version>
+<version>1.1.5</version>
 ```
 
 然后同步更新：
@@ -35,8 +35,8 @@ mvn -DskipTests -Pfolia package
 ## 打 tag
 
 ```bash
-git tag v1.1.4
-git push origin v1.1.4
+git tag v1.1.5
+git push origin v1.1.5
 ```
 
 GitHub Actions 会在 tag 推送后重新构建 jar，并上传 Actions artifact：

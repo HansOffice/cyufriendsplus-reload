@@ -3,10 +3,8 @@ package org.cyuCBMclean.cyufriendsReload.modules.friend
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.ClickEvent
 import net.kyori.adventure.text.event.HoverEvent
-import net.kyori.adventure.text.serializer.bungeecord.BungeeComponentSerializer
 import org.bukkit.entity.Player
 import org.cyuCBMclean.cyufriendsReload.CyufriendsReload
-import org.cyuCBMclean.cyufriendsReload.core.config.ColorCompat
 import org.cyuCBMclean.cyufriendsReload.modules.chat.ChatConversationSummary
 import org.cyuCBMclean.cyufriendsReload.modules.social.PendingWallReplyEntry
 import org.cyuCBMclean.cyufriendsReload.modules.social.WallEntry
@@ -18,8 +16,6 @@ import org.cyuCBMclean.cyufriendsReload.extension.sendLang
 object FriendRichMessages {
 
     private val lineTimeFormatter = DateTimeFormatter.ofPattern("MM-dd HH:mm")
-    private val bungeeSerializer: BungeeComponentSerializer
-        get() = if (ColorCompat.rgbSupported) BungeeComponentSerializer.get() else BungeeComponentSerializer.legacy()
 
     private fun message(key: String, placeholders: Map<String, String> = emptyMap()): Component {
         return CyufriendsReload.instance.langEngine.component(key, placeholders) ?: Component.empty()
@@ -37,7 +33,8 @@ object FriendRichMessages {
     }
 
     private fun sendRich(player: Player, component: Component) {
-        player.spigot().sendMessage(*bungeeSerializer.serialize(component))
+        if (!player.isOnline) return
+        CyufriendsReload.instance.langEngine.audiences.player(player).sendMessage(component)
     }
 
     private fun preview(content: String, limit: Int = 24): String {
